@@ -1,0 +1,280 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark theme (default) */
+:root,
+.dark {
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #171717;
+  --bg-card: #0a0a0a;
+  --bg-input: #0a0a0a;
+  --text-primary: #ffffff;
+  --text-secondary: #a3a3a3;
+  --text-muted: #525252;
+  --border-color: #262626;
+  --border-light: #171717;
+  --accent-primary: #ffffff;
+  --accent-secondary: #737373;
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Light theme */
+.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-tertiary: #f5f5f5;
+  --bg-card: #ffffff;
+  --bg-input: #fafafa;
+  --text-primary: #0a0a0a;
+  --text-secondary: #525252;
+  --text-muted: #a3a3a3;
+  --border-color: #e5e5e5;
+  --border-light: #f5f5f5;
+  --accent-primary: #000000;
+  --accent-secondary: #525252;
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom scrollbar - Dark */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0a0a0a;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #404040;
+}
+
+/* Custom scrollbar - Light */
+.light ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.light ::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 4px;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+
+/* Form inputs */
+input, select, textarea {
+  font-family: inherit;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+/* Glass morphism effect */
+.dark .glass {
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.light .glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient text */
+.dark .gradient-text {
+  background: linear-gradient(135deg, #ffffff, #737373);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.light .gradient-text {
+  background: linear-gradient(135deg, #000000, #525252);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Button hover effects */
+.dark .btn-glow:hover {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.light .btn-glow:hover {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.dark .card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.light .card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Table styles */
+.table-row {
+  transition: background-color 0.2s ease;
+}
+
+.dark .table-row:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.light .table-row:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Status badges - Dark */
+.badge {
+  @apply px-2.5 py-1 rounded-full text-xs font-medium transition-colors;
+}
+
+.dark .badge-success {
+  @apply bg-white/10 text-white border border-white/20;
+}
+
+.dark .badge-warning {
+  @apply bg-neutral-800 text-neutral-300 border border-neutral-700;
+}
+
+.dark .badge-error {
+  @apply bg-neutral-900 text-neutral-400 border border-neutral-600;
+}
+
+.dark .badge-info {
+  @apply bg-white/5 text-neutral-300 border border-neutral-700;
+}
+
+.dark .badge-neutral {
+  @apply bg-neutral-900 text-neutral-500 border border-neutral-800;
+}
+
+/* Status badges - Light */
+.light .badge-success {
+  @apply bg-neutral-900 text-white border border-neutral-800;
+}
+
+.light .badge-warning {
+  @apply bg-neutral-200 text-neutral-700 border border-neutral-300;
+}
+
+.light .badge-error {
+  @apply bg-neutral-100 text-neutral-600 border border-neutral-300;
+}
+
+.light .badge-info {
+  @apply bg-neutral-100 text-neutral-600 border border-neutral-200;
+}
+
+.light .badge-neutral {
+  @apply bg-neutral-100 text-neutral-500 border border-neutral-200;
+}
+
+/* Toast theming */
+.dark .toast-theme {
+  background: #171717 !important;
+  color: #ffffff !important;
+  border: 1px solid #262626 !important;
+}
+
+.light .toast-theme {
+  background: #ffffff !important;
+  color: #0a0a0a !important;
+  border: 1px solid #e5e5e5 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Theme-aware utility classes */
+.theme-bg {
+  background-color: var(--bg-primary);
+}
+
+.theme-bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.theme-bg-card {
+  background-color: var(--bg-card);
+}
+
+.theme-text {
+  color: var(--text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--text-secondary);
+}
+
+.theme-border {
+  border-color: var(--border-color);
+}

@@ -1,0 +1,88 @@
+import { NavLink } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
+import {
+  LayoutDashboard,
+  Users,
+  Wallet,
+  Receipt,
+  FileText,
+  Settings,
+  UserPlus,
+  CreditCard,
+  UserCog,
+  FileCheck,
+} from 'lucide-react';
+import { cn } from '../../lib/utils';
+
+const navigation = [
+  { name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['admin', 'hr', 'employee'] },
+  { name: 'Employees', href: '/employees', icon: Users, roles: ['admin', 'hr'] },
+  { name: 'Payroll', href: '/payroll', icon: Wallet, roles: ['admin', 'hr'] },
+  { name: 'Expenses', href: '/expenses', icon: Receipt, roles: ['admin', 'hr'] },
+  { name: 'My Payslips', href: '/my-payslips', icon: CreditCard, roles: ['employee'] },
+  { name: 'My Expenses', href: '/my-expenses', icon: Receipt, roles: ['employee'] },
+  { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin', 'hr', 'accountant'] },
+  { name: 'Generated Reports', href: '/reports/generated', icon: FileCheck, roles: ['admin', 'hr', 'accountant'] },
+  { name: 'Invitations', href: '/invitations', icon: UserPlus, roles: ['admin', 'hr'] },
+  { name: 'Users', href: '/users', icon: UserCog, roles: ['admin'] },
+  { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin'] },
+];
+
+export default function Sidebar() {
+  const { user } = useAuth();
+  const { theme } = useTheme();
+
+  const filteredNav = navigation.filter(
+    (item) => user && item.roles.includes(user.role)
+  );
+
+  return (
+    <aside className="w-64 bg-[var(--bg-primary)] border-r border-[var(--border-color)] flex flex-col transition-colors">
+      {/* Logo */}
+      <div className="h-16 flex items-center px-6 border-b border-[var(--border-color)]">
+        <div className="flex items-center gap-3">
+          <img 
+            src="/obelisk_white.png" 
+            alt="Obelisk" 
+            className={cn("w-10 h-10", theme === 'light' && 'invert')}
+          />
+          <div>
+            <h1 className="font-semibold text-[var(--text-primary)]">Obelisk Portal</h1>
+            <p className="text-xs text-[var(--text-muted)]">HR & Payroll</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-4 space-y-1">
+        {filteredNav.map((item) => (
+          <NavLink
+            key={item.name}
+            to={item.href}
+            className={({ isActive }) =>
+              cn(
+                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
+                isActive
+                  ? theme === 'dark' 
+                    ? 'bg-white text-black' 
+                    : 'bg-black text-white'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-bg)]'
+              )
+            }
+          >
+            <item.icon className="w-5 h-5" />
+            {item.name}
+          </NavLink>
+        ))}
+      </nav>
+
+      {/* Footer */}
+      <div className="p-4 border-t border-[var(--border-color)]">
+        <div className="text-xs text-[var(--text-muted)] text-center">
+          © 2024 Obelisk Portal
+        </div>
+      </div>
+    </aside>
+  );
+}

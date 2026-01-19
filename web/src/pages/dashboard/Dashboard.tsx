@@ -1,0 +1,290 @@
+import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '../../contexts/AuthContext';
+import { api } from '../../lib/api';
+import { formatRupiah, getIndonesianMonth } from '../../lib/utils';
+import Card from '../../components/ui/Card';
+import { Users, Wallet, Receipt, TrendingUp, Calendar, FileText } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+
+interface DashboardStats {
+  totalEmployees: number;
+  activeEmployees: number;
+  pendingExpenses: number;
+  currentMonthPayroll: {
+    totalGross: number;
+    totalNet: number;
+    status: string;
+  } | null;
+}
+
+export default function Dashboard() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin' || user?.role === 'hr';
+
+  // Fetch dashboard stats for admin/hr
+  const { data: stats } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: async () => {
+      const [employees, expenses, payrollSummary] = await Promise.all([
+        api.get<any[]>('/employees'),
+        api.get<any[]>('/expenses/pending'),
+        api.get<any>(`/reports/payroll-summary?year=${new Date().getFullYear()}`),
+      ]);
+
+      const currentMonth = new Date().getMonth() + 1;
+      const currentMonthData = payrollSummary.monthlyData?.find(
+        (m: any) => m.month === currentMonth
+      );
+
+      return {
+        totalEmployees: employees.length,
+        activeEmployees: employees.filter((e) => e.status === 'active').length,
+        pendingExpenses: expenses.length,
+        currentMonthPayroll: currentMonthData,
+        monthlyData: payrollSummary.monthlyData || [],
+      };
+    },
+    enabled: isAdmin,
+  });
+
+  // Fetch employee's own data
+  const { data: myPayslips } = useQuery({
+    queryKey: ['my-payslips'],
+    queryFn: () => api.get<any[]>(`/employees/${user?.employeeId}/payslips`),
+    enabled: !!user?.employeeId,
+  });
+
+  const { data: myExpenses } = useQuery({
+    queryKey: ['my-expenses'],
+    queryFn: () => api.get<any[]>('/expenses'),
+    enabled: !!user?.employeeId,
+  });
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  // Admin/HR Dashboard
+  if (isAdmin) {
+    const chartData = stats?.monthlyData?.map((m: any) => ({
+      name: getIndonesianMonth(m.month).substring(0, 3),
+      gross: m.totalGross / 1000000,
+      net: m.totalNet / 1000000,
+    })) || [];
+
+    return (
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="space-y-6"
+      >
+        <div>
+          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+          <p className="text-neutral-500">Company overview</p>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <motion.div variants={itemVariants}>
+            <Card className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-neutral-500">Total Employees</p>
+                  <p className="text-3xl font-bold text-white mt-1">
+                    {stats?.totalEmployees || 0}
+                  </p>
+                  <p className="text-sm text-neutral-400 mt-1">
+                    {stats?.activeEmployees || 0} active
+                  </p>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Card className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-neutral-500">This Month's Payroll</p>
+                  <p className="text-3xl font-bold text-white mt-1">
+                    {stats?.currentMonthPayroll
+                      ? formatRupiah(stats.currentMonthPayroll.totalNet)
+                      : '-'}
+                  </p>
+                  <p className="text-sm text-neutral-500 mt-1">
+                    {stats?.currentMonthPayroll?.status || 'Not created'}
+                  </p>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Wallet className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Card className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-neutral-500">Pending Expenses</p>
+                  <p className="text-3xl font-bold text-white mt-1">
+                    {stats?.pendingExpenses || 0}
+                  </p>
+                  <p className="text-sm text-neutral-400 mt-1">Awaiting review</p>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Receipt className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Card className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-neutral-500">Period</p>
+                  <p className="text-3xl font-bold text-white mt-1">
+                    {getIndonesianMonth(new Date().getMonth() + 1).substring(0, 3)}
+                  </p>
+                  <p className="text-sm text-neutral-500 mt-1">{new Date().getFullYear()}</p>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+
+        {/* Chart */}
+        <motion.div variants={itemVariants}>
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Payroll Trend {new Date().getFullYear()}
+            </h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData}>
+                  <defs>
+                    <linearGradient id="grossGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ffffff" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#ffffff" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="netGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#737373" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#737373" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="name" stroke="#525252" fontSize={12} />
+                  <YAxis stroke="#525252" fontSize={12} tickFormatter={(v) => `${v}M`} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#0a0a0a',
+                      border: '1px solid #262626',
+                      borderRadius: '8px',
+                    }}
+                    formatter={(value: number) => [`Rp ${value.toFixed(0)} million`, '']}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="gross"
+                    stroke="#ffffff"
+                    fill="url(#grossGradient)"
+                    name="Gross"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="net"
+                    stroke="#737373"
+                    fill="url(#netGradient)"
+                    name="Net"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
+  // Employee Dashboard
+  const latestPayslip = myPayslips?.[0]?.payslip;
+  const pendingExpenses = myExpenses?.filter((e: any) => e.expense.status === 'pending') || [];
+
+  return (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-6"
+    >
+      <div>
+        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+        <p className="text-neutral-500">Welcome back, {user?.employee?.fullName}</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <motion.div variants={itemVariants}>
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-white">Latest Payslip</h3>
+              <FileText className="w-5 h-5 text-neutral-500" />
+            </div>
+            {latestPayslip ? (
+              <div>
+                <p className="text-2xl font-bold text-white">
+                  {formatRupiah(parseFloat(latestPayslip.netSalary))}
+                </p>
+                <p className="text-sm text-neutral-500 mt-1">Take home pay</p>
+              </div>
+            ) : (
+              <p className="text-neutral-500">No data available</p>
+            )}
+          </Card>
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-white">Pending Expenses</h3>
+              <Receipt className="w-5 h-5 text-neutral-500" />
+            </div>
+            <p className="text-2xl font-bold text-white">{pendingExpenses.length}</p>
+            <p className="text-sm text-neutral-500 mt-1">Awaiting approval</p>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-white">Status</h3>
+              <TrendingUp className="w-5 h-5 text-neutral-500" />
+            </div>
+            <span className="badge badge-success">Active</span>
+            <p className="text-sm text-neutral-500 mt-2">
+              Employee #: {user?.employee?.employeeNumber}
+            </p>
+          </Card>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
