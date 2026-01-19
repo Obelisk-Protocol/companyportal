@@ -41,7 +41,7 @@ Make sure your code is pushed to GitHub/GitLab/Bitbucket.
 5. **Deploy**
    - Click **Save and Deploy**
    - Wait for the build to complete (usually 2-3 minutes)
-   - Your site will be live at `https://your-project.pages.dev`
+   - Your site will be live at `https://companyportal.pages.dev`
 
 ### 3. Custom Domain (Optional)
 
@@ -55,7 +55,7 @@ Make sure your code is pushed to GitHub/GitLab/Bitbucket.
 
 After deploying, update your Railway environment variable:
 ```
-FRONTEND_URL = https://your-project.pages.dev
+FRONTEND_URL = https://companyportal.pages.dev
 ```
 
 Or if using a custom domain:

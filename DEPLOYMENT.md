@@ -38,7 +38,7 @@ Replace `your-railway-api-url.railway.app` with your actual Railway API URL.
 
 1. Click **Save and Deploy**
 2. Cloudflare will automatically build and deploy your site
-3. Your site will be available at `https://your-project.pages.dev`
+3. Your site will be available at `https://companyportal.pages.dev`
 
 ### Step 4: Custom Domain (Optional)
 
@@ -83,7 +83,7 @@ RESEND_API_KEY=your_resend_api_key
 FROM_EMAIL=Your Company <noreply@yourdomain.com>
 
 # Frontend URL (for email links)
-FRONTEND_URL=https://your-cloudflare-pages-url.pages.dev
+FRONTEND_URL=https://companyportal.pages.dev
 
 # Server
 PORT=3000

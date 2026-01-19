@@ -25,27 +25,23 @@ app.use('*', logger());
 app.use('*', prettyJSON());
 // CORS configuration - allow multiple origins for production and development
 const frontendUrl = process.env.FRONTEND_URL || 'https://companyportal.pages.dev';
-const allowedOrigins = [frontendUrl, 'https://companyportal.pages.dev', 'http://localhost:5173'];
+const allowedOrigins = [
+  frontendUrl,
+  'https://companyportal.pages.dev',
+  'http://localhost:5173',
+  'http://localhost:3000',
+];
+
+// Remove duplicates
+const uniqueOrigins = [...new Set(allowedOrigins)];
 
 app.use('*', cors({
-  origin: (origin) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return frontendUrl;
-    // Check if origin matches any allowed origin
-    const isAllowed = allowedOrigins.some(allowed => {
-      try {
-        const originUrl = new URL(origin);
-        const allowedUrl = new URL(allowed);
-        return originUrl.origin === allowedUrl.origin;
-      } catch {
-        return origin === allowed;
-      }
-    });
-    return isAllowed ? origin : frontendUrl;
-  },
+  origin: uniqueOrigins,
   credentials: true,
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization'],
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposeHeaders: ['Content-Length', 'Content-Type'],
+  maxAge: 86400, // 24 hours
 }));
 
 // Health check

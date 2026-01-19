@@ -30,7 +30,7 @@ A comprehensive HR and payroll management system for Indonesian companies, built
 - PDF-lib (Document generation)
 
 ### Deployment
-- Cloudflare Pages (Frontend)
+- Cloudflare Pages (Frontend) - [https://companyportal.pages.dev](https://companyportal.pages.dev)
 - Railway (Backend API)
 - Cloudflare R2 (File Storage)
 
