@@ -60,6 +60,7 @@ export default function Sidebar() {
           <NavLink
             key={item.name}
             to={item.href}
+            end={item.href === '/reports'} // Only match exactly for /reports, not /reports/generated
             className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
