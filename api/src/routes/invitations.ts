@@ -93,7 +93,7 @@ invitations.post('/', requireRole('admin', 'hr'), zValidator('json', createInvit
     inviterName
   );
   
-  const invitationLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/accept-invitation/${token}`;
+  const invitationLink = `${process.env.FRONTEND_URL || 'https://companyportal.pages.dev'}/accept-invitation/${token}`;
   
   return c.json({
     invitation,
@@ -203,7 +203,7 @@ invitations.post('/:id/resend', requireRole('admin', 'hr'), async (c) => {
     inviterName
   );
   
-  const invitationLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/accept-invitation/${token}`;
+  const invitationLink = `${process.env.FRONTEND_URL || 'https://companyportal.pages.dev'}/accept-invitation/${token}`;
   
   return c.json({
     invitation: updated,

@@ -24,8 +24,8 @@ const app = new Hono();
 app.use('*', logger());
 app.use('*', prettyJSON());
 // CORS configuration - allow multiple origins for production and development
-const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-const allowedOrigins = [frontendUrl, 'http://localhost:5173'];
+const frontendUrl = process.env.FRONTEND_URL || 'https://companyportal.pages.dev';
+const allowedOrigins = [frontendUrl, 'https://companyportal.pages.dev', 'http://localhost:5173'];
 
 app.use('*', cors({
   origin: (origin) => {
