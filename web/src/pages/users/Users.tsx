@@ -105,7 +105,7 @@ export default function Users() {
             </TableHeader>
             <TableBody>
               {users.map((user) => {
-                const isCurrentUser = user.id === currentUser?.userId;
+                const isCurrentUser = user.id === currentUser?.id;
                 return (
                   <TableRow key={user.id}>
                     <TableCell>

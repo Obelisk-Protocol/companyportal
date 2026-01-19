@@ -7,17 +7,6 @@ import { Users, Wallet, Receipt, TrendingUp, Calendar, FileText } from 'lucide-r
 import { motion } from 'framer-motion';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-interface DashboardStats {
-  totalEmployees: number;
-  activeEmployees: number;
-  pendingExpenses: number;
-  currentMonthPayroll: {
-    totalGross: number;
-    totalNet: number;
-    status: string;
-  } | null;
-}
-
 export default function Dashboard() {
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin' || user?.role === 'hr';

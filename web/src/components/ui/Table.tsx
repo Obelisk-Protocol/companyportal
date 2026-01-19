@@ -22,7 +22,7 @@ export function TableHeader({ children }: { children: ReactNode }) {
   );
 }
 
-export function TableHead({ children, className }: { children: ReactNode; className?: string }) {
+export function TableHead({ children, className }: { children?: ReactNode; className?: string }) {
   return (
     <th
       className={cn(

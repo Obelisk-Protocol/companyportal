@@ -114,7 +114,7 @@ export default function MyPayslips() {
           <h3 className="text-lg font-semibold text-white mb-4">Latest Payslip Details</h3>
           {(() => {
             const latest = payslips[0];
-            const { payslip, payrollRun } = latest;
+            const { payslip } = latest;
 
             return (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

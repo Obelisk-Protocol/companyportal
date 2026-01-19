@@ -4,7 +4,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { toast } from 'react-hot-toast';
 import Button from '../../components/ui/Button';
-import Input from '../../components/ui/Input';
 import { Lock, Mail, Sun, Moon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';

@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      const userData = await api.get('/auth/me');
+      const userData = await api.get<User>('/auth/me');
       setUser(userData);
     } catch (error) {
       console.error('Failed to refresh user:', error);
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await api.post('/auth/login', { email, password });
+    const response = await api.post<{ accessToken: string; refreshToken: string; user: User }>('/auth/login', { email, password });
     
     localStorage.setItem('accessToken', response.accessToken);
     localStorage.setItem('refreshToken', response.refreshToken);

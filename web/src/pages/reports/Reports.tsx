@@ -6,7 +6,7 @@ import { formatRupiah, getIndonesianMonth } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '../../components/ui/Table';
-import { FileText, Download, Printer } from 'lucide-react';
+import { FileText, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { toast } from 'react-hot-toast';
