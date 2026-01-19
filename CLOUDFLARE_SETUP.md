@@ -78,6 +78,17 @@ FRONTEND_URL = https://portal.yourcompany.com
 
 ## Troubleshooting
 
+### Build Fails with VitePress Error
+**Error:** `npx vitepress build` or "dead link(s) found"
+
+**Solution:** Cloudflare Pages is incorrectly detecting your project as VitePress. Fix this by:
+1. Go to your Cloudflare Pages project → **Settings** → **Builds & deployments**
+2. Make sure the build configuration is set to:
+   - **Framework preset:** `Vite` (NOT VitePress)
+   - **Build command:** `cd web && npm install && npm run build`
+   - **Build output directory:** `web/dist`
+3. If Framework preset shows "VitePress", manually change it to "Vite" or "None" and enter the build command above
+
 ### Build Fails
 - Check build logs in Cloudflare dashboard
 - Verify Node version (should be 18 or 20)
