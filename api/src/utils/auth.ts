@@ -9,8 +9,10 @@ const REFRESH_TOKEN_EXPIRY = '7d';
 export interface JWTPayload {
   userId: string;
   email: string;
-  role: 'admin' | 'hr' | 'employee' | 'accountant';
+  role: 'admin' | 'hr' | 'employee' | 'accountant' | 'client';
   employeeId?: string;
+  companyId?: string;
+  individualClientId?: string;
 }
 
 /**

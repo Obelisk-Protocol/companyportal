@@ -32,7 +32,7 @@ export async function authMiddleware(c: Context, next: Next) {
 /**
  * Role-based authorization middleware
  */
-export function requireRole(...roles: ('admin' | 'hr' | 'employee' | 'accountant')[]) {
+export function requireRole(...roles: ('admin' | 'hr' | 'employee' | 'accountant' | 'client')[]) {
   return async (c: Context, next: Next) => {
     const user = c.get('user');
     

@@ -17,6 +17,10 @@ import Invitations from './pages/invitations/Invitations';
 import MyPayslips from './pages/payslips/MyPayslips';
 import Users from './pages/users/Users';
 import Profile from './pages/profile/Profile';
+import Clients from './pages/crm/Clients';
+import CreateCompany from './pages/crm/CreateCompany';
+import CreateIndividual from './pages/crm/CreateIndividual';
+import ClientDetail from './pages/crm/ClientDetail';
 
 function PrivateRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { user, isLoading } = useAuth();
@@ -155,6 +159,40 @@ export default function App() {
           element={
             <PrivateRoute allowedRoles={['admin']}>
               <Settings />
+            </PrivateRoute>
+          }
+        />
+
+        {/* CRM Routes - Admin/HR/Accountant */}
+        <Route
+          path="crm/clients"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr', 'accountant']}>
+              <Clients />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="crm/clients/new/company"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr']}>
+              <CreateCompany />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="crm/clients/new/individual"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr']}>
+              <CreateIndividual />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="crm/clients/:type/:id"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr', 'accountant']}>
+              <ClientDetail />
             </PrivateRoute>
           }
         />

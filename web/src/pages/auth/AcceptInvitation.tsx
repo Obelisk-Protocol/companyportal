@@ -96,8 +96,9 @@ export default function AcceptInvitation() {
     }
 
     const isAccountant = invitation?.role === 'accountant';
+    const isClient = invitation?.role === 'client';
 
-    if (!isAccountant && formData.nik.length !== 16) {
+    if (!isAccountant && !isClient && formData.nik.length !== 16) {
       toast.error('NIK must be 16 digits');
       return;
     }
@@ -105,12 +106,12 @@ export default function AcceptInvitation() {
     setIsSubmitting(true);
 
     try {
-      if (isAccountant) {
-        // Simple registration for accountants
+      if (isAccountant || isClient) {
+        // Simple registration for accountants and clients
         await api.post('/auth/register', {
           token,
           password: formData.password,
-          fullName: formData.fullName,
+          fullName: formData.fullName || invitation?.name,
         });
       } else {
         // Full registration for employees
@@ -220,8 +221,8 @@ export default function AcceptInvitation() {
               </div>
             </div>
 
-            {/* Show full form only for non-accountants */}
-            {invitation?.role !== 'accountant' && (
+            {/* Show full form only for employees */}
+            {invitation?.role !== 'accountant' && invitation?.role !== 'client' && (
               <>
                 {/* Personal Info */}
                 <div>

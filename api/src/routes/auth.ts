@@ -25,8 +25,8 @@ const loginSchema = z.object({
 const registerSchema = z.object({
   token: z.string(),
   password: z.string().min(8),
-  // Employee details (optional for accountants)
-  fullName: z.string().min(2),
+  // Employee details (optional for accountants and clients)
+  fullName: z.string().min(2).optional(),
   phone: z.string().optional(),
   nik: z.string().length(16).optional(),
   npwp: z.string().optional(),
@@ -66,8 +66,10 @@ auth.post('/login', zValidator('json', loginSchema), async (c) => {
   const accessToken = await generateAccessToken({
     userId: user.id,
     email: user.email,
-    role: user.role as 'admin' | 'hr' | 'employee' | 'accountant',
+    role: user.role as 'admin' | 'hr' | 'employee' | 'accountant' | 'client',
     employeeId: user.employeeId || undefined,
+    companyId: user.companyId || undefined,
+    individualClientId: user.individualClientId || undefined,
   });
   
   const { token: refreshToken, expiresAt } = await generateRefreshToken();
@@ -93,6 +95,8 @@ auth.post('/login', zValidator('json', loginSchema), async (c) => {
       email: user.email,
       role: user.role,
       employeeId: user.employeeId,
+      companyId: user.companyId,
+      individualClientId: user.individualClientId,
     },
   });
 });
@@ -132,8 +136,10 @@ auth.post('/refresh', async (c) => {
   const accessToken = await generateAccessToken({
     userId: user.id,
     email: user.email,
-    role: user.role as 'admin' | 'hr' | 'employee' | 'accountant',
+    role: user.role as 'admin' | 'hr' | 'employee' | 'accountant' | 'client',
     employeeId: user.employeeId || undefined,
+    companyId: user.companyId || undefined,
+    individualClientId: user.individualClientId || undefined,
   });
   
   // Optionally rotate refresh token
@@ -193,7 +199,8 @@ auth.get('/me', authMiddleware, async (c) => {
     id: userData.id,
     email: userData.email,
     role: userData.role,
-    employee,
+    employeeId: userData.employeeId || undefined,
+    employee: employee || undefined,
   });
 });
 
@@ -269,11 +276,20 @@ auth.post('/register', zValidator('json', registerSchema), async (c) => {
   // Hash password
   const passwordHash = await hashPassword(data.password);
 
-  // For accountants, skip employee creation
+  // For accountants and clients, skip employee creation
   let employeeId: string | null = null;
+  let companyId: string | null = null;
+  let individualClientId: string | null = null;
   
-  if (invitation.role !== 'accountant') {
-    // Validate required fields for non-accountants
+  if (invitation.role === 'client') {
+    // Link to CRM client - no employee creation needed
+    companyId = invitation.companyId || null;
+    individualClientId = invitation.individualClientId || null;
+  } else if (invitation.role !== 'accountant') {
+    // Validate required fields for employees
+    if (!data.fullName) {
+      return c.json({ error: 'Full name is required' }, 400);
+    }
     if (!data.nik || data.nik.length !== 16) {
       return c.json({ error: 'NIK is required and must be 16 digits' }, 400);
     }
@@ -317,6 +333,8 @@ auth.post('/register', zValidator('json', registerSchema), async (c) => {
       passwordHash,
       role: invitation.role,
       employeeId,
+      companyId,
+      individualClientId,
       isActive: true,
     })
     .returning();
@@ -335,7 +353,7 @@ auth.post('/register', zValidator('json', registerSchema), async (c) => {
   const accessToken = await generateAccessToken({
     userId: user.id,
     email: user.email,
-    role: user.role as 'admin' | 'hr' | 'employee' | 'accountant',
+    role: user.role as 'admin' | 'hr' | 'employee' | 'accountant' | 'client',
     employeeId: employeeId || undefined,
   });
   
@@ -355,6 +373,8 @@ auth.post('/register', zValidator('json', registerSchema), async (c) => {
       email: user.email,
       role: user.role,
       employeeId: employeeId || null,
+      companyId: companyId || null,
+      individualClientId: individualClientId || null,
     },
   }, 201);
 });

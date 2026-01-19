@@ -4,8 +4,10 @@ import { api } from '../lib/api';
 interface User {
   id: string;
   email: string;
-  role: 'admin' | 'hr' | 'employee' | 'accountant';
+  role: 'admin' | 'hr' | 'employee' | 'accountant' | 'client';
   employeeId?: string;
+  companyId?: string;
+  individualClientId?: string;
   employee?: {
     id: string;
     fullName: string;
@@ -20,6 +22,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  // Test mode: switch roles without logging in
+  switchRole?: (role: 'admin' | 'hr' | 'employee' | 'accountant' | 'client') => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -70,8 +74,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  // Test mode: switch roles for testing UI without logging in
+  const switchRole = (role: 'admin' | 'hr' | 'employee' | 'accountant' | 'client') => {
+    if (!user) {
+      // Create a test user if none exists
+      setUser({
+        id: 'test-user-id',
+        email: `test-${role}@example.com`,
+        role,
+      });
+    } else {
+      // Update existing user's role
+      setUser({
+        ...user,
+        role,
+      });
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, isLoading, login, logout, refreshUser, switchRole }}>
       {children}
     </AuthContext.Provider>
   );

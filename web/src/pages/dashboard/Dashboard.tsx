@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { api } from '../../lib/api';
 import { formatRupiah, getIndonesianMonth } from '../../lib/utils';
 import Card from '../../components/ui/Card';
-import { Users, Wallet, Receipt, TrendingUp, Calendar, FileText } from 'lucide-react';
+import { Users, Wallet, Receipt, TrendingUp, Calendar, FileText, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -15,9 +15,10 @@ export default function Dashboard() {
   const { data: stats } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
-      const [employees, expenses, payrollSummary] = await Promise.all([
+      const [employees, pendingExpenses, allExpenses, payrollSummary] = await Promise.all([
         api.get<any[]>('/employees'),
         api.get<any[]>('/expenses/pending'),
+        api.get<any[]>('/expenses'),
         api.get<any>(`/reports/payroll-summary?year=${new Date().getFullYear()}`),
       ]);
 
@@ -26,10 +27,23 @@ export default function Dashboard() {
         (m: any) => m.month === currentMonth
       );
 
+      // Calculate expense statistics
+      const approvedExpenses = allExpenses.filter((e: any) => e.expense.status === 'approved');
+      const currentMonthApproved = approvedExpenses.filter((e: any) => {
+        const expenseDate = new Date(e.expense.expenseDate);
+        return expenseDate.getMonth() + 1 === currentMonth && expenseDate.getFullYear() === new Date().getFullYear();
+      });
+      const totalApprovedAmount = currentMonthApproved.reduce((sum: number, e: any) => 
+        sum + parseFloat(e.expense.amount), 0
+      );
+
       return {
         totalEmployees: employees.length,
         activeEmployees: employees.filter((e) => e.status === 'active').length,
-        pendingExpenses: expenses.length,
+        pendingExpenses: pendingExpenses.length,
+        approvedExpenses: approvedExpenses.length,
+        currentMonthApprovedCount: currentMonthApproved.length,
+        currentMonthApprovedAmount: totalApprovedAmount,
         currentMonthPayroll: currentMonthData,
         monthlyData: payrollSummary.monthlyData || [],
       };
@@ -86,7 +100,7 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <motion.div variants={itemVariants}>
             <Card className="p-6">
               <div className="flex items-center justify-between">
@@ -139,6 +153,25 @@ export default function Dashboard() {
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
                   <Receipt className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Card className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-neutral-500">Approved This Month</p>
+                  <p className="text-3xl font-bold text-white mt-1">
+                    {formatRupiah(stats?.currentMonthApprovedAmount || 0)}
+                  </p>
+                  <p className="text-sm text-neutral-400 mt-1">
+                    {stats?.currentMonthApprovedCount || 0} expenses
+                  </p>
+                </div>
+                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Check className="w-6 h-6 text-white" />
                 </div>
               </div>
             </Card>

@@ -18,6 +18,7 @@ const expenseSchema = z.object({
   category: z.enum(['transport', 'meals', 'accommodation', 'supplies', 'training', 'medical', 'other']),
   expenseDate: z.string(),
   receiptUrl: z.string().optional(),
+  employeeId: z.string().optional(), // Allow admin/hr to specify employee
 });
 
 // Review expense schema
@@ -109,14 +110,35 @@ expenses.post('/', zValidator('json', expenseSchema), async (c) => {
   const user = c.get('user');
   const data = c.req.valid('json');
   
-  if (!user.employeeId) {
-    return c.json({ error: 'No employee profile linked to this user' }, 400);
+  // Determine which employeeId to use
+  let targetEmployeeId: string;
+  
+  if (data.employeeId && (user.role === 'admin' || user.role === 'hr')) {
+    // Admin/HR can create expenses for any employee
+    targetEmployeeId = data.employeeId;
+    
+    // Verify employee exists
+    const [employee] = await db
+      .select()
+      .from(schema.employees)
+      .where(eq(schema.employees.id, targetEmployeeId))
+      .limit(1);
+    
+    if (!employee) {
+      return c.json({ error: 'Employee not found' }, 404);
+    }
+  } else {
+    // Employees can only create expenses for themselves
+    if (!user.employeeId) {
+      return c.json({ error: 'No employee profile linked to this user' }, 400);
+    }
+    targetEmployeeId = user.employeeId;
   }
   
   const [expense] = await db
     .insert(schema.expenses)
     .values({
-      employeeId: user.employeeId,
+      employeeId: targetEmployeeId,
       title: data.title,
       description: data.description,
       amount: String(data.amount),

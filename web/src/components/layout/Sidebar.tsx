@@ -1,6 +1,8 @@
 import { NavLink } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import { api } from '../../lib/api';
 import {
   LayoutDashboard,
   Users,
@@ -12,6 +14,7 @@ import {
   CreditCard,
   UserCog,
   FileCheck,
+  Building2,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -24,6 +27,7 @@ const navigation = [
   { name: 'My Expenses', href: '/my-expenses', icon: Receipt, roles: ['employee'] },
   { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin', 'hr', 'accountant'] },
   { name: 'Generated Reports', href: '/reports/generated', icon: FileCheck, roles: ['admin', 'hr', 'accountant'] },
+  { name: 'CRM', href: '/crm/clients', icon: Building2, roles: ['admin', 'hr', 'accountant'] },
   { name: 'Invitations', href: '/invitations', icon: UserPlus, roles: ['admin', 'hr'] },
   { name: 'Users', href: '/users', icon: UserCog, roles: ['admin'] },
   { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin'] },
@@ -32,6 +36,13 @@ const navigation = [
 export default function Sidebar() {
   const { user } = useAuth();
   const { theme } = useTheme();
+
+  // Fetch company data for logo
+  const { data: company } = useQuery({
+    queryKey: ['company'],
+    queryFn: () => api.get<any>('/company').catch(() => null),
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  });
 
   const filteredNav = navigation.filter(
     (item) => user && item.roles.includes(user.role)
@@ -42,13 +53,23 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="h-16 flex items-center px-6 border-b border-[var(--border-color)]">
         <div className="flex items-center gap-3">
-          <img 
-            src="/obelisk_white.png" 
-            alt="Obelisk" 
-            className={cn("w-10 h-10", theme === 'light' && 'invert')}
-          />
+          {company?.logoUrl ? (
+            <img 
+              src={company.logoUrl} 
+              alt={company.name || 'Company Logo'} 
+              className="h-10 w-10 object-contain"
+            />
+          ) : (
+            <img 
+              src="/obelisk_white.png" 
+              alt="Obelisk" 
+              className={cn("w-10 h-10", theme === 'light' && 'invert')}
+            />
+          )}
           <div>
-            <h1 className="font-semibold text-[var(--text-primary)]">Obelisk Portal</h1>
+            <h1 className="font-semibold text-[var(--text-primary)]">
+              {company?.name || 'Obelisk Portal'}
+            </h1>
             <p className="text-xs text-[var(--text-muted)]">HR & Payroll</p>
           </div>
         </div>

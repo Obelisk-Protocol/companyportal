@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
-import { formatRupiah, getIndonesianMonth } from '../../lib/utils';
+import { formatRupiah, getIndonesianMonth, getStatusBadgeClass, getStatusLabel, cn } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '../../components/ui/Table';
-import { FileText, Download } from 'lucide-react';
+import { FileText, Download, Receipt } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { toast } from 'react-hot-toast';
 
-type ReportType = 'pph21' | 'bpjs' | 'summary';
+type ReportType = 'pph21' | 'bpjs' | 'summary' | 'expenses';
 
 export default function Reports() {
   const { user } = useAuth();
@@ -36,6 +36,12 @@ export default function Reports() {
     queryKey: ['report-bpjs', month, year],
     queryFn: () => api.get<any>(`/reports/bpjs/monthly?month=${month}&year=${year}`),
     enabled: reportType === 'bpjs',
+  });
+
+  const { data: expensesData, isLoading: expensesLoading } = useQuery({
+    queryKey: ['expenses-report', month, year],
+    queryFn: () => api.get<any[]>('/expenses'),
+    enabled: reportType === 'expenses',
   });
 
   const generateSPTPdfMutation = useMutation({
@@ -358,6 +364,105 @@ export default function Reports() {
             <Card className="p-12 text-center">
               <FileText className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
               <p className="text-neutral-500">No data available for this period</p>
+            </Card>
+          )}
+        </>
+      )}
+
+      {/* Expenses Report */}
+      {reportType === 'expenses' && (
+        <>
+          {expensesLoading ? (
+            <Card className="p-12 text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white mx-auto"></div>
+            </Card>
+          ) : expensesData && expensesData.length > 0 ? (
+            <>
+              {/* Summary Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card className="p-4">
+                  <p className="text-sm text-neutral-500">Total Expenses</p>
+                  <p className="text-xl font-bold text-white">
+                    {formatRupiah(
+                      expensesData.reduce((sum: number, e: any) => sum + parseFloat(e.expense.amount), 0)
+                    )}
+                  </p>
+                </Card>
+                <Card className="p-4">
+                  <p className="text-sm text-neutral-500">Approved</p>
+                  <p className="text-xl font-bold text-white">
+                    {formatRupiah(
+                      expensesData
+                        .filter((e: any) => e.expense.status === 'approved')
+                        .reduce((sum: number, e: any) => sum + parseFloat(e.expense.amount), 0)
+                    )}
+                  </p>
+                </Card>
+                <Card className="p-4">
+                  <p className="text-sm text-neutral-500">Pending</p>
+                  <p className="text-xl font-bold text-white">
+                    {expensesData.filter((e: any) => e.expense.status === 'pending').length}
+                  </p>
+                </Card>
+                <Card className="p-4">
+                  <p className="text-sm text-neutral-500">Rejected</p>
+                  <p className="text-xl font-bold text-white">
+                    {expensesData.filter((e: any) => e.expense.status === 'rejected').length}
+                  </p>
+                </Card>
+              </div>
+
+              {/* Expenses Table */}
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold text-white mb-4">All Expenses</h3>
+                <Table>
+                  <TableHeader>
+                    <TableHead>Employee</TableHead>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableHeader>
+                  <TableBody>
+                    {expensesData.map((item: any) => {
+                      const { expense, employee } = item;
+                      return (
+                        <TableRow key={expense.id}>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium text-white">{employee.fullName}</p>
+                              <p className="text-sm text-neutral-500">{employee.employeeNumber}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <p className="text-white">{expense.title}</p>
+                          </TableCell>
+                          <TableCell>
+                            <span className="badge badge-info">
+                              {expense.category}
+                            </span>
+                          </TableCell>
+                          <TableCell>{new Date(expense.expenseDate).toLocaleDateString()}</TableCell>
+                          <TableCell className="font-semibold">
+                            {formatRupiah(parseFloat(expense.amount))}
+                          </TableCell>
+                          <TableCell>
+                            <span className={cn('badge', getStatusBadgeClass(expense.status))}>
+                              {getStatusLabel(expense.status)}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </Card>
+            </>
+          ) : (
+            <Card className="p-12 text-center">
+              <Receipt className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
+              <p className="text-neutral-500">No expenses found</p>
             </Card>
           )}
         </>

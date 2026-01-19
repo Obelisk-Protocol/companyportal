@@ -22,6 +22,7 @@ const companySchema = z.object({
   email: z.string().email().optional(),
   logoUrl: z.string().url().optional(),
   jkkRiskLevel: z.number().min(0.24).max(1.74).optional(),
+  solanaWallet: z.string().optional(), // Solana wallet address (base58, typically 32-44 chars)
 });
 
 // GET /company - Get company settings
@@ -57,6 +58,7 @@ company.put('/', requireRole('admin'), zValidator('json', companySchema.partial(
         email: data.email,
         logoUrl: data.logoUrl,
         jkkRiskLevel: data.jkkRiskLevel ? String(data.jkkRiskLevel) : '0.24',
+        solanaWallet: data.solanaWallet,
       })
       .returning();
     
@@ -75,6 +77,7 @@ company.put('/', requireRole('admin'), zValidator('json', companySchema.partial(
   if (data.email !== undefined) updateData.email = data.email;
   if (data.logoUrl !== undefined) updateData.logoUrl = data.logoUrl;
   if (data.jkkRiskLevel !== undefined) updateData.jkkRiskLevel = String(data.jkkRiskLevel);
+  if (data.solanaWallet !== undefined) updateData.solanaWallet = data.solanaWallet;
   
   const [updated] = await db
     .update(schema.companies)
@@ -108,6 +111,7 @@ company.post('/setup', async (c) => {
       phone: body.phone,
       email: body.email,
       jkkRiskLevel: '0.24',
+      solanaWallet: body.solanaWallet,
     })
     .returning();
   

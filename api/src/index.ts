@@ -17,6 +17,7 @@ import upload from './routes/upload.js';
 import company from './routes/company.js';
 import users from './routes/users.js';
 import me from './routes/me.js';
+import crm from './routes/crm.js';
 
 const app = new Hono();
 
@@ -66,6 +67,7 @@ app.route('/api/upload', upload);
 app.route('/api/company', company);
 app.route('/api/users', users);
 app.route('/api/me', me);
+app.route('/api/crm', crm);
 
 // 404 handler
 app.notFound((c) => {

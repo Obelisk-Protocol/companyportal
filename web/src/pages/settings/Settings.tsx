@@ -4,7 +4,7 @@ import { api } from '../../lib/api';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
-import { Building, Save } from 'lucide-react';
+import { Building, Save, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
@@ -20,7 +20,10 @@ export default function Settings() {
     phone: '',
     email: '',
     jkkRiskLevel: 0.24,
+    solanaWallet: '',
+    logoUrl: '',
   });
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
 
   const { data: company, isLoading } = useQuery({
     queryKey: ['company'],
@@ -39,6 +42,8 @@ export default function Settings() {
         phone: company.phone || '',
         email: company.email || '',
         jkkRiskLevel: parseFloat(company.jkkRiskLevel) || 0.24,
+        solanaWallet: company.solanaWallet || '',
+        logoUrl: company.logoUrl || '',
       });
     }
   }, [company]);
@@ -57,6 +62,27 @@ export default function Settings() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateMutation.mutate(formData);
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingLogo(true);
+    try {
+      const result = await api.upload<{ url: string }>('/upload/logo', file);
+      setFormData({ ...formData, logoUrl: result.url });
+      toast.success('Logo uploaded successfully');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to upload logo');
+    } finally {
+      setIsUploadingLogo(false);
+      e.target.value = ''; // Reset input
+    }
+  };
+
+  const handleRemoveLogo = () => {
+    setFormData({ ...formData, logoUrl: '' });
   };
 
   if (isLoading) {
@@ -83,6 +109,79 @@ export default function Settings() {
           <div className="flex items-center gap-2 mb-6">
             <Building className="w-5 h-5 text-white" />
             <h3 className="font-semibold text-white">Company Information</h3>
+          </div>
+
+          {/* Logo Upload Section */}
+          <div className="mb-6 pb-6 border-b border-neutral-700">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
+              Company Logo
+            </label>
+            {formData.logoUrl ? (
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <img
+                    src={formData.logoUrl}
+                    alt="Company logo"
+                    className="h-20 w-20 object-contain bg-neutral-800 rounded-lg p-2 border border-neutral-700"
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-neutral-400 mb-2">Logo uploaded</p>
+                  <div className="flex gap-2">
+                    <label className="cursor-pointer">
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                        onChange={handleLogoUpload}
+                        className="hidden"
+                        disabled={isUploadingLogo}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={isUploadingLogo}
+                        as="span"
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        {isUploadingLogo ? 'Uploading...' : 'Replace'}
+                      </Button>
+                    </label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleRemoveLogo}
+                      disabled={isUploadingLogo}
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Remove
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <label className="cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                  onChange={handleLogoUpload}
+                  className="hidden"
+                  disabled={isUploadingLogo}
+                />
+                <div className="flex flex-col items-center justify-center gap-3 p-8 bg-neutral-900 border-2 border-dashed border-neutral-700 rounded-lg hover:border-neutral-600 transition-colors">
+                  <ImageIcon className="w-8 h-8 text-neutral-600" />
+                  <div className="text-center">
+                    <p className="text-neutral-300 font-medium">
+                      {isUploadingLogo ? 'Uploading...' : 'Upload Company Logo'}
+                    </p>
+                    <p className="text-sm text-neutral-600 mt-1">
+                      JPEG, PNG, WebP, or SVG up to 2MB
+                    </p>
+                  </div>
+                </div>
+              </label>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -157,6 +256,15 @@ export default function Settings() {
               <p className="text-xs text-neutral-600 mt-1">
                 Based on workplace accident risk level in your industry
               </p>
+            </div>
+            <div className="md:col-span-2">
+              <Input
+                label="Solana Wallet Address"
+                value={formData.solanaWallet}
+                onChange={(e) => setFormData({ ...formData, solanaWallet: e.target.value })}
+                placeholder="e.g., 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"
+                helperText="Optional: Your company's Solana wallet address for crypto payments"
+              />
             </div>
           </div>
 

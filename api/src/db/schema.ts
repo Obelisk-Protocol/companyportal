@@ -13,6 +13,7 @@ export const companies = pgTable('companies', {
   email: text('email'),
   logoUrl: text('logo_url'),
   jkkRiskLevel: decimal('jkk_risk_level', { precision: 4, scale: 2 }).default('0.24'),
+  solanaWallet: text('solana_wallet'), // Solana wallet address for crypto payments
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
@@ -22,8 +23,11 @@ export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').unique().notNull(),
   passwordHash: text('password_hash').notNull(),
-  role: text('role').notNull().$type<'admin' | 'hr' | 'employee' | 'accountant'>(),
+  role: text('role').notNull().$type<'admin' | 'hr' | 'employee' | 'accountant' | 'client'>(),
   employeeId: uuid('employee_id').references(() => employees.id),
+  // CRM client links
+  companyId: uuid('company_id').references(() => crmCompanies.id),
+  individualClientId: uuid('individual_client_id').references(() => individualClients.id),
   isActive: boolean('is_active').default(true),
   lastLogin: timestamp('last_login', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
@@ -220,13 +224,17 @@ export const expenses = pgTable('expenses', {
   index('idx_expenses_status').on(table.status),
 ]);
 
-// Invitations
+// Invitations (defined after CRM tables for references)
 export const invitations = pgTable('invitations', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').notNull(),
   name: text('name').notNull(),
-  role: text('role').notNull().default('employee').$type<'admin' | 'hr' | 'employee' | 'accountant'>(),
+  role: text('role').notNull().default('employee').$type<'admin' | 'hr' | 'employee' | 'accountant' | 'client'>(),
   token: text('token').unique().notNull(),
+  
+  // Link to CRM clients (for client invitations) - references added after table definitions
+  companyId: uuid('company_id'),
+  individualClientId: uuid('individual_client_id'),
   
   status: text('status').default('pending').$type<'pending' | 'accepted' | 'expired' | 'cancelled'>(),
   
@@ -278,4 +286,101 @@ export const generatedReports = pgTable('generated_reports', {
 }, (table) => [
   index('idx_generated_reports_period').on(table.periodYear, table.periodMonth),
   index('idx_generated_reports_type').on(table.reportType),
+]);
+
+// CRM: Client Companies
+export const crmCompanies = pgTable('crm_companies', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  
+  // Company Information
+  name: text('name').notNull(), // Trading name
+  legalName: text('legal_name'), // Legal/registered name
+  companyType: text('company_type').$type<'PT' | 'CV' | 'Firma' | 'UD' | 'Other'>(),
+  
+  // Tax & Registration
+  npwp: text('npwp'), // Tax ID
+  nib: text('nib'), // Business Identification Number
+  
+  // Contact Information
+  address: text('address'),
+  city: text('city'),
+  province: text('province'),
+  postalCode: text('postal_code'),
+  phone: text('phone'),
+  email: text('email'),
+  website: text('website'),
+  
+  // Business Details
+  industry: text('industry'), // Industry/sector
+  size: integer('size'), // Employee count
+  
+  // Payment Information
+  solanaWallet: text('solana_wallet'), // Solana wallet address for crypto payments
+  
+  // Status
+  status: text('status').default('active').$type<'active' | 'inactive' | 'prospect' | 'lead'>(),
+  registrationDate: date('registration_date'),
+  
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_crm_companies_status').on(table.status),
+  index('idx_crm_companies_name').on(table.name),
+]);
+
+// CRM: Individual Clients
+export const individualClients = pgTable('individual_clients', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  
+  // Personal Information
+  fullName: text('full_name').notNull(),
+  nik: text('nik'), // ID Card Number (16 digits)
+  npwp: text('npwp'), // Personal tax ID (if applicable)
+  
+  // Contact Information
+  email: text('email'),
+  phone: text('phone'),
+  address: text('address'),
+  city: text('city'),
+  province: text('province'),
+  postalCode: text('postal_code'),
+  
+  // Additional Details
+  dateOfBirth: date('date_of_birth'),
+  occupation: text('occupation'),
+  
+  // Payment Information
+  solanaWallet: text('solana_wallet'), // Solana wallet address for crypto payments
+  
+  // Status
+  status: text('status').default('active').$type<'active' | 'inactive' | 'prospect'>(),
+  
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_individual_clients_status').on(table.status),
+  index('idx_individual_clients_name').on(table.fullName),
+]);
+
+// CRM: Company Contacts
+export const companyContacts = pgTable('company_contacts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  companyId: uuid('company_id').notNull().references(() => crmCompanies.id, { onDelete: 'cascade' }),
+  
+  // Contact Details
+  name: text('name').notNull(),
+  email: text('email'),
+  phone: text('phone'),
+  position: text('position'), // Role (CEO, CFO, HR Manager, etc.)
+  
+  // Flags
+  isPrimary: boolean('is_primary').default(false),
+  
+  // Notes
+  notes: text('notes'),
+  
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_company_contacts_company').on(table.companyId),
 ]);

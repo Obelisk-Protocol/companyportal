@@ -104,6 +104,44 @@ upload.post('/ktp', async (c) => {
   return c.json(result);
 });
 
+// POST /upload/logo - Upload company logo
+upload.post('/logo', async (c) => {
+  const user = c.get('user');
+  
+  // Only admin can upload company logo
+  if (user.role !== 'admin') {
+    return c.json({ error: 'Forbidden' }, 403);
+  }
+  
+  const formData = await c.req.formData();
+  const file = formData.get('file') as File;
+  
+  if (!file) {
+    return c.json({ error: 'No file provided' }, 400);
+  }
+  
+  // Validate file type (images only)
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'];
+  if (!allowedTypes.includes(file.type)) {
+    return c.json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, SVG' }, 400);
+  }
+  
+  // Validate file size (max 2MB)
+  const maxSize = 2 * 1024 * 1024;
+  if (file.size > maxSize) {
+    return c.json({ error: 'File too large. Maximum size is 2MB' }, 400);
+  }
+  
+  // Read file
+  const buffer = await file.arrayBuffer();
+  
+  // Generate key and upload
+  const key = generateFileKey('logos', file.name);
+  const result = await uploadToR2(new Uint8Array(buffer), key, file.type);
+  
+  return c.json(result);
+});
+
 // POST /upload/document - Upload general document
 upload.post('/document', async (c) => {
   const user = c.get('user');

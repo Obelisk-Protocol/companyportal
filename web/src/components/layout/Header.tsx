@@ -37,7 +37,7 @@ export default function Header() {
     <header className="h-16 border-b border-[var(--border-color)] bg-[var(--bg-primary)]/50 backdrop-blur-sm flex items-center justify-between px-6 transition-colors">
       <div>
         <h2 className="text-lg font-semibold text-[var(--text-primary)]">
-          Welcome, {user?.employee?.fullName || user?.email}
+          Welcome, {user?.employee?.fullName?.split(' ')[0] || user?.email?.split('@')[0] || 'User'}
         </h2>
         <p className="text-sm text-[var(--text-secondary)]">
           {new Date().toLocaleDateString('en-US', {
@@ -85,7 +85,7 @@ export default function Header() {
             </div>
             <div className="text-left hidden md:block">
               <p className="text-sm font-medium text-[var(--text-primary)]">
-                {user?.employee?.fullName || user?.email}
+                {user?.employee?.fullName?.split(' ')[0] || user?.email?.split('@')[0] || 'User'}
               </p>
               <span className={cn('badge text-xs', getRoleBadge(user?.role || ''))}>
                 {getRoleLabel(user?.role || '')}
