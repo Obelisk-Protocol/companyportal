@@ -53,6 +53,16 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Force text colors to override inherited body color in light mode */
+.light .text-neutral-900 {
+  color: rgb(17 24 39) !important;
+}
+
+/* Ensure dark:text-white only applies in dark mode */
+.dark .dark\:text-white {
+  color: rgb(255 255 255) !important;
+}
+
 /* Custom scrollbar - Dark */
 .dark ::-webkit-scrollbar {
   width: 8px;

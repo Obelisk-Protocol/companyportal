@@ -115,7 +115,7 @@ export default function Dashboard() {
                     {stats?.activeEmployees || 0} active
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
                   <Users className="w-6 h-6 text-neutral-900 dark:text-white" />
                 </div>
               </div>
@@ -136,7 +136,7 @@ export default function Dashboard() {
                     {stats?.currentMonthPayroll?.status || 'Not created'}
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
                   <Wallet className="w-6 h-6 text-neutral-900 dark:text-white" />
                 </div>
               </div>
@@ -153,7 +153,7 @@ export default function Dashboard() {
                   </p>
                   <p className="text-sm text-neutral-400 mt-1">Awaiting review</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
                   <Receipt className="w-6 h-6 text-neutral-900 dark:text-white" />
                 </div>
               </div>
@@ -172,7 +172,7 @@ export default function Dashboard() {
                     {stats?.currentMonthApprovedCount || 0} expenses
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
                   <Check className="w-6 h-6 text-neutral-900 dark:text-white" />
                 </div>
               </div>
@@ -189,7 +189,7 @@ export default function Dashboard() {
                   </p>
                   <p className="text-sm text-neutral-500 mt-1">{new Date().getFullYear()}</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
                   <Calendar className="w-6 h-6 text-neutral-900 dark:text-white" />
                 </div>
               </div>
