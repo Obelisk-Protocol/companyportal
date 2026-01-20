@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import App from './App';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { NavigationProvider } from './contexts/NavigationContext';
 import './index.css';
 
 const queryClient = new QueryClient({
@@ -23,14 +24,16 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <ThemeProvider>
           <AuthProvider>
-            <App />
-            <Toaster 
-              position="top-right"
-              toastOptions={{
-                duration: 4000,
-                className: 'toast-theme',
-              }}
-            />
+            <NavigationProvider>
+              <App />
+              <Toaster 
+                position="top-right"
+                toastOptions={{
+                  duration: 4000,
+                  className: 'toast-theme',
+                }}
+              />
+            </NavigationProvider>
           </AuthProvider>
         </ThemeProvider>
       </BrowserRouter>

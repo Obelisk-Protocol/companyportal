@@ -6,6 +6,7 @@ import { db, schema } from '../db/index.js';
 import { authMiddleware, requireRole } from '../middleware/auth.js';
 import { generateInvoicePdf } from '../utils/pdf.js';
 import { uploadToR2, generateFileKey } from '../utils/r2.js';
+import { sendInvoiceEmail } from '../utils/email.js';
 
 const invoices = new Hono();
 
@@ -32,6 +33,8 @@ const createInvoiceSchema = z.object({
   discount: z.number().min(0).default(0),
   currency: z.string().default('IDR'),
   paymentTerms: z.string().optional(),
+  paymentMethod: z.enum(['bank_transfer', 'crypto']).optional(),
+  paymentInstructions: z.string().optional(),
   notes: z.string().optional(),
   internalNotes: z.string().optional(),
 });
@@ -217,8 +220,11 @@ invoices.post('/', requireRole('admin', 'hr'), zValidator('json', createInvoiceS
       total: String(total),
       currency: data.currency,
       paymentTerms: data.paymentTerms,
+      paymentMethod: data.paymentMethod || null,
       notes: data.notes,
-      internalNotes: data.internalNotes,
+      internalNotes: data.internalNotes ? 
+        (data.paymentInstructions ? `${data.internalNotes}\n\n[PAYMENT_INSTRUCTIONS]${data.paymentInstructions}[/PAYMENT_INSTRUCTIONS]` : data.internalNotes) :
+        (data.paymentInstructions ? `[PAYMENT_INSTRUCTIONS]${data.paymentInstructions}[/PAYMENT_INSTRUCTIONS]` : null),
       paymentStatus: 'pending',
       createdBy: user.userId,
     })
@@ -285,6 +291,30 @@ invoices.post('/', requireRole('admin', 'hr'), zValidator('json', createInvoiceS
         solanaWallet: company.solanaWallet,
       },
       client,
+    };
+    
+    // Extract payment instructions from internalNotes if present
+    let paymentInstructions: string | null = data.paymentInstructions || null;
+    if (!paymentInstructions && invoice.internalNotes) {
+      const match = invoice.internalNotes.match(/\[PAYMENT_INSTRUCTIONS\](.*?)\[\/PAYMENT_INSTRUCTIONS\]/s);
+      if (match) {
+        paymentInstructions = match[1];
+      }
+    }
+    
+    const pdfBytes = await generateInvoicePdf({
+      company: {
+        name: company.name,
+        npwp: company.npwp,
+        address: company.address,
+        city: company.city,
+        province: company.province,
+        phone: company.phone,
+        email: company.email,
+        logoUrl: company.logoUrl,
+        solanaWallet: company.solanaWallet,
+      },
+      client,
       invoice: {
         invoiceNumber: invoice.invoiceNumber,
         invoiceDate: invoice.invoiceDate,
@@ -297,6 +327,8 @@ invoices.post('/', requireRole('admin', 'hr'), zValidator('json', createInvoiceS
         total: invoice.total,
         currency: invoice.currency || 'IDR',
         paymentTerms: invoice.paymentTerms || null,
+        paymentMethod: invoice.paymentMethod || null,
+        paymentInstructions: paymentInstructions,
         notes: invoice.notes || null,
         paymentStatus: invoice.paymentStatus || 'pending',
         paidAmount: invoice.paidAmount || null,
@@ -442,11 +474,19 @@ invoices.put('/:id', requireRole('admin', 'hr'), zValidator('json', updateInvoic
         total: String(total),
         currency: invoice.currency || 'IDR',
         paymentTerms: invoice.paymentTerms || null,
+        paymentMethod: invoice.paymentMethod || null,
+        paymentInstructions: (() => {
+          if (invoice.internalNotes) {
+            const match = invoice.internalNotes.match(/\[PAYMENT_INSTRUCTIONS\](.*?)\[\/PAYMENT_INSTRUCTIONS\]/s);
+            if (match) return match[1];
+          }
+          return null;
+        })(),
         notes: invoice.notes || null,
         paymentStatus: invoice.paymentStatus || 'pending',
         paidAmount: invoice.paidAmount || null,
       },
-      });
+    });
       
       const key = generateFileKey('invoices', `${invoice.invoiceNumber}-${Date.now()}.pdf`);
       const uploadResult = await uploadToR2(pdfBytes, key, 'application/pdf');
@@ -542,6 +582,87 @@ invoices.get('/:id/pdf', async (c) => {
   }
   
   return c.json({ pdfUrl: invoice.pdfUrl });
+});
+
+// POST /invoices/:id/send-email - Send invoice via email (Admin/HR only)
+invoices.post('/:id/send-email', requireRole('admin', 'hr'), zValidator('json', z.object({
+  to: z.string().email(),
+  message: z.string().optional(),
+})), async (c) => {
+  const { id } = c.req.param();
+  const { to, message } = c.req.valid('json');
+  
+  const [invoice] = await db
+    .select()
+    .from(schema.invoices)
+    .where(eq(schema.invoices.id, id))
+    .limit(1);
+  
+  if (!invoice) {
+    return c.json({ error: 'Invoice not found' }, 404);
+  }
+  
+  if (!invoice.pdfUrl) {
+    return c.json({ error: 'PDF not generated yet' }, 400);
+  }
+  
+  // Get client info
+  let clientName = 'Client';
+  let clientEmail = to;
+  
+  if (invoice.companyId) {
+    const [company] = await db
+      .select()
+      .from(schema.crmCompanies)
+      .where(eq(schema.crmCompanies.id, invoice.companyId))
+      .limit(1);
+    if (company) {
+      clientName = company.name;
+      clientEmail = to || company.email || '';
+    }
+  } else if (invoice.individualClientId) {
+    const [individual] = await db
+      .select()
+      .from(schema.individualClients)
+      .where(eq(schema.individualClients.id, invoice.individualClientId))
+      .limit(1);
+    if (individual) {
+      clientName = individual.fullName;
+      clientEmail = to || individual.email || '';
+    }
+  }
+  
+  if (!clientEmail) {
+    return c.json({ error: 'Client email not found' }, 400);
+  }
+  
+  // Format total amount
+  const formatRupiah = (amount: string) => {
+    const num = parseFloat(amount);
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: invoice.currency || 'IDR',
+    }).format(num);
+  };
+  
+  // Send email
+  const emailResult = await sendInvoiceEmail(
+    clientEmail,
+    clientName,
+    invoice.invoiceNumber,
+    invoice.invoiceDate,
+    invoice.dueDate,
+    formatRupiah(invoice.total),
+    invoice.pdfUrl,
+    message
+  );
+  
+  return c.json({
+    success: emailResult.success,
+    emailId: emailResult.id,
+    error: emailResult.error,
+    sentTo: clientEmail,
+  });
 });
 
 // DELETE /invoices/:id - Delete invoice (Admin only)

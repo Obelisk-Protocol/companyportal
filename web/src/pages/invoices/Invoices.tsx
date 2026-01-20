@@ -6,7 +6,7 @@ import { formatRupiah } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '../../components/ui/Table';
-import { ReceiptText, Eye, Calendar, CheckCircle, Clock, XCircle, DollarSign } from 'lucide-react';
+import { ReceiptText, Eye, Calendar, CheckCircle, Clock, XCircle, DollarSign, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Invoices() {
@@ -59,15 +59,25 @@ export default function Invoices() {
     );
   }
 
+  const isAdminOrHr = user?.role === 'admin' || user?.role === 'hr';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Invoices</h1>
-        <p className="text-neutral-500">View and manage your invoices</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Invoices</h1>
+          <p className="text-[var(--text-secondary)]">View and manage your invoices</p>
+        </div>
+        {isAdminOrHr && (
+          <Button onClick={() => navigate('/invoices/new')}>
+            <Plus className="w-4 h-4 mr-2" />
+            Create Invoice
+          </Button>
+        )}
       </div>
 
       <Card>

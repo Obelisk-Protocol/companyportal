@@ -1,4 +1,4 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb, PDFImage } from 'pdf-lib';
 import { formatRupiah, getIndonesianMonth } from './payroll.js';
 
 interface PayslipPdfData {
@@ -748,14 +748,35 @@ export async function generateInvoicePdf(data: InvoicePdfData): Promise<Uint8Arr
   const margin = 50;
   let y = height - margin;
   
+  // Load and embed logo if available
+  let logoImage: PDFImage | null = null;
+  if (company.logoUrl) {
+    try {
+      const logoResponse = await fetch(company.logoUrl);
+      if (logoResponse.ok) {
+        const logoBytes = await logoResponse.arrayBuffer();
+        // Determine image type from content type or URL
+        const contentType = logoResponse.headers.get('content-type') || '';
+        if (contentType.includes('png') || company.logoUrl.toLowerCase().includes('.png')) {
+          logoImage = await pdfDoc.embedPng(logoBytes);
+        } else if (contentType.includes('jpeg') || contentType.includes('jpg') || company.logoUrl.toLowerCase().match(/\.(jpg|jpeg)$/)) {
+          logoImage = await pdfDoc.embedJpg(logoBytes);
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to load logo:', error);
+    }
+  }
+  
   const drawText = (text: string, x: number, yPos: number, options: { font?: typeof font; size?: number; color?: ReturnType<typeof rgb>; maxWidth?: number } = {}) => {
+    const maxWidth = options.maxWidth || (width - margin * 2 - x);
     page.drawText(text, {
       x,
       y: yPos,
       font: options.font || font,
       size: options.size || 10,
       color: options.color || rgb(0, 0, 0),
-      maxWidth: options.maxWidth,
+      maxWidth,
     });
   };
   
@@ -768,57 +789,95 @@ export async function generateInvoicePdf(data: InvoicePdfData): Promise<Uint8Arr
     });
   };
   
+  // Draw logo if available (top right)
+  const logoSize = 60;
+  const logoY = height - margin - 10;
+  if (logoImage) {
+    try {
+      // Scale logo to fit
+      const logoDims = logoImage.scale(logoSize / logoImage.width);
+      page.drawImage(logoImage, {
+        x: width - margin - logoDims.width,
+        y: logoY - logoDims.height,
+        width: logoDims.width,
+        height: logoDims.height,
+      });
+    } catch (error) {
+      console.warn('Failed to draw logo:', error);
+    }
+  }
+  
   // Header - Invoice Title
   drawText('INVOICE', margin, y, { font: fontBold, size: 24 });
   y -= 35;
   
-  // Company Info (Left)
-  drawText(company.name, margin, y, { font: fontBold, size: 12 });
+  // Company Info (Left) - with proper text wrapping for address
+  const companyInfoX = margin;
+  const companyInfoWidth = logoImage ? width / 2 - margin - 20 : width / 2 - margin;
+  
+  drawText(company.name, companyInfoX, y, { font: fontBold, size: 12, maxWidth: companyInfoWidth });
   y -= 15;
+  
   if (company.address) {
-    drawText(company.address, margin, y, { size: 9 });
-    y -= 12;
+    // Split long addresses into multiple lines
+    const addressLines = splitLongText(company.address, companyInfoWidth, 9);
+    for (const line of addressLines) {
+      drawText(line, companyInfoX, y, { size: 9, maxWidth: companyInfoWidth });
+      y -= 12;
+    }
   }
+  
   if (company.city || company.province) {
-    drawText(`${company.city || ''} ${company.province || ''}`.trim(), margin, y, { size: 9 });
-    y -= 12;
+    const cityProvince = `${company.city || ''} ${company.province || ''}`.trim();
+    if (cityProvince) {
+      drawText(cityProvince, companyInfoX, y, { size: 9, maxWidth: companyInfoWidth });
+      y -= 12;
+    }
   }
+  
   if (company.phone) {
-    drawText(`Phone: ${company.phone}`, margin, y, { size: 9 });
+    drawText(`Phone: ${company.phone}`, companyInfoX, y, { size: 9, maxWidth: companyInfoWidth });
     y -= 12;
   }
   if (company.email) {
-    drawText(`Email: ${company.email}`, margin, y, { size: 9 });
+    drawText(`Email: ${company.email}`, companyInfoX, y, { size: 9, maxWidth: companyInfoWidth });
     y -= 12;
   }
-  drawText(`NPWP: ${company.npwp}`, margin, y, { size: 9 });
+  drawText(`NPWP: ${company.npwp}`, companyInfoX, y, { size: 9, maxWidth: companyInfoWidth });
   y -= 20;
   
   // Client Info (Right)
-  const clientX = width - margin - 150;
+  const clientX = width - margin - 200;
+  const clientInfoWidth = 200;
   y = height - margin;
-  drawText('Bill To:', clientX, y, { font: fontBold, size: 10 });
+  drawText('Bill To:', clientX, y, { font: fontBold, size: 10, maxWidth: clientInfoWidth });
   y -= 15;
-  drawText(client.name, clientX, y, { font: fontBold, size: 11 });
+  drawText(client.name, clientX, y, { font: fontBold, size: 11, maxWidth: clientInfoWidth });
   y -= 15;
   if (client.address) {
-    drawText(client.address, clientX, y, { size: 9 });
-    y -= 12;
+    const addressLines = splitLongText(client.address, clientInfoWidth, 9);
+    for (const line of addressLines) {
+      drawText(line, clientX, y, { size: 9, maxWidth: clientInfoWidth });
+      y -= 12;
+    }
   }
   if (client.city || client.province) {
-    drawText(`${client.city || ''} ${client.province || ''}`.trim(), clientX, y, { size: 9 });
-    y -= 12;
+    const cityProvince = `${client.city || ''} ${client.province || ''}`.trim();
+    if (cityProvince) {
+      drawText(cityProvince, clientX, y, { size: 9, maxWidth: clientInfoWidth });
+      y -= 12;
+    }
   }
   if (client.email) {
-    drawText(`Email: ${client.email}`, clientX, y, { size: 9 });
+    drawText(`Email: ${client.email}`, clientX, y, { size: 9, maxWidth: clientInfoWidth });
     y -= 12;
   }
   if (client.phone) {
-    drawText(`Phone: ${client.phone}`, clientX, y, { size: 9 });
+    drawText(`Phone: ${client.phone}`, clientX, y, { size: 9, maxWidth: clientInfoWidth });
     y -= 12;
   }
   if (client.npwp) {
-    drawText(`NPWP: ${client.npwp}`, clientX, y, { size: 9 });
+    drawText(`NPWP: ${client.npwp}`, clientX, y, { size: 9, maxWidth: clientInfoWidth });
   }
   
   y = height - margin - 120;
@@ -940,15 +999,49 @@ export async function generateInvoicePdf(data: InvoicePdfData): Promise<Uint8Arr
   drawText('Payment Information:', margin, y, { font: fontBold, size: 10 });
   y -= 15;
   
-  if (company.solanaWallet) {
-    drawText(`Solana Wallet: ${company.solanaWallet}`, margin, y, { size: 9, color: rgb(0.2, 0.4, 0.8) });
-    y -= 12;
-  }
-  if (client.solanaWallet) {
-    drawText(`Client Solana Wallet: ${client.solanaWallet}`, margin, y, { size: 9, color: rgb(0.2, 0.4, 0.8) });
+  // Parse payment instructions
+  let paymentInstructions: any = null;
+  if (invoice.paymentInstructions) {
+    try {
+      paymentInstructions = JSON.parse(invoice.paymentInstructions);
+    } catch (e) {
+      // If parsing fails, treat as plain text
+      paymentInstructions = null;
+    }
   }
   
-  y -= 40;
+  if (invoice.paymentMethod === 'bank_transfer' && paymentInstructions) {
+    drawText(`Payment Method: Bank Transfer`, margin, y, { size: 9, font: fontBold });
+    y -= 12;
+    if (paymentInstructions.bankName) {
+      drawText(`Bank: ${paymentInstructions.bankName}`, margin, y, { size: 9 });
+      y -= 12;
+    }
+    if (paymentInstructions.bankAccountNumber) {
+      drawText(`Account Number: ${paymentInstructions.bankAccountNumber}`, margin, y, { size: 9 });
+      y -= 12;
+    }
+    if (paymentInstructions.bankAccountName) {
+      drawText(`Account Name: ${paymentInstructions.bankAccountName}`, margin, y, { size: 9 });
+      y -= 12;
+    }
+  } else if (invoice.paymentMethod === 'crypto') {
+    const walletAddress = paymentInstructions?.walletAddress || company.solanaWallet || '';
+    if (walletAddress) {
+      drawText(`Payment Method: Crypto (Solana)`, margin, y, { size: 9, font: fontBold });
+      y -= 12;
+      drawText(`Wallet Address: ${walletAddress}`, margin, y, { size: 9, color: rgb(0.2, 0.4, 0.8) });
+      y -= 12;
+    }
+  } else {
+    // Fallback: show company wallet if available
+    if (company.solanaWallet) {
+      drawText(`Solana Wallet: ${company.solanaWallet}`, margin, y, { size: 9, color: rgb(0.2, 0.4, 0.8) });
+      y -= 12;
+    }
+  }
+  
+  y -= 20;
   
   // Footer
   drawText('Thank you for your business!', margin, y, { size: 9, color: rgb(0.5, 0.5, 0.5) });
@@ -956,4 +1049,44 @@ export async function generateInvoicePdf(data: InvoicePdfData): Promise<Uint8Arr
   drawText('This invoice is electronically generated and valid without signature.', margin, y, { size: 8, color: rgb(0.5, 0.5, 0.5) });
   
   return pdfDoc.save();
+}
+
+// Helper function to split long text into multiple lines based on max width
+function splitLongText(text: string, maxWidth: number, fontSize: number): string[] {
+  // Approximate character width (Helvetica at given size)
+  // This is a rough estimate - actual width depends on font metrics
+  const avgCharWidth = fontSize * 0.6;
+  const maxCharsPerLine = Math.floor(maxWidth / avgCharWidth);
+  
+  if (text.length <= maxCharsPerLine) {
+    return [text];
+  }
+  
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let currentLine = '';
+  
+  for (const word of words) {
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    if (testLine.length <= maxCharsPerLine) {
+      currentLine = testLine;
+    } else {
+      if (currentLine) {
+        lines.push(currentLine);
+      }
+      // If a single word is too long, truncate it
+      if (word.length > maxCharsPerLine) {
+        lines.push(word.substring(0, maxCharsPerLine - 3) + '...');
+        currentLine = '';
+      } else {
+        currentLine = word;
+      }
+    }
+  }
+  
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+  
+  return lines;
 }

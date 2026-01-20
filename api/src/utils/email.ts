@@ -177,3 +177,204 @@ This invitation will expire in 7 days. If you didn't expect this invitation, you
 © ${new Date().getFullYear()} Obelisk Portal. All rights reserved.
 `.trim();
 }
+
+/**
+ * Send an invoice email to a client
+ */
+export async function sendInvoiceEmail(
+  to: string,
+  clientName: string,
+  invoiceNumber: string,
+  invoiceDate: string,
+  dueDate: string,
+  total: string,
+  pdfUrl: string,
+  message?: string
+): Promise<SendEmailResult> {
+  if (!resend) {
+    console.log('[Email] Resend not configured - skipping email');
+    console.log(`[Email] Would send invoice ${invoiceNumber} to ${to}`);
+    return { success: true, error: 'Email service not configured' };
+  }
+
+  try {
+    // Fetch PDF for attachment if URL provided
+    let pdfBuffer: Buffer | undefined;
+    if (pdfUrl) {
+      try {
+        const pdfResponse = await fetch(pdfUrl);
+        if (pdfResponse.ok) {
+          const arrayBuffer = await pdfResponse.arrayBuffer();
+          pdfBuffer = Buffer.from(arrayBuffer);
+        }
+      } catch (err) {
+        console.warn('[Email] Failed to fetch PDF for attachment:', err);
+      }
+    }
+
+    const { data, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: [to],
+      subject: `Invoice ${invoiceNumber} from ${process.env.COMPANY_NAME || 'Obelisk Portal'}`,
+      html: getInvoiceEmailHtml(clientName, invoiceNumber, invoiceDate, dueDate, total, pdfUrl, message),
+      text: getInvoiceEmailText(clientName, invoiceNumber, invoiceDate, dueDate, total, pdfUrl, message),
+      attachments: pdfBuffer ? [{
+        filename: `Invoice-${invoiceNumber}.pdf`,
+        content: pdfBuffer,
+      }] : undefined,
+    });
+
+    if (error) {
+      console.error('[Email] Failed to send invoice:', error);
+      return { success: false, error: error.message };
+    }
+
+    console.log(`[Email] Invoice sent to ${to}, ID: ${data?.id}`);
+    return { success: true, id: data?.id };
+  } catch (err) {
+    console.error('[Email] Error sending invoice:', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
+  }
+}
+
+/**
+ * HTML template for invoice email
+ */
+function getInvoiceEmailHtml(
+  clientName: string,
+  invoiceNumber: string,
+  invoiceDate: string,
+  dueDate: string,
+  total: string,
+  pdfUrl: string,
+  message?: string
+): string {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice ${invoiceNumber}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table role="presentation" style="width: 100%; max-width: 560px; border-collapse: collapse;">
+          <!-- Header -->
+          <tr>
+            <td style="text-align: center; padding-bottom: 32px;">
+              <div style="display: inline-block; background-color: #0a0a0a; border-radius: 12px; padding: 12px 24px;">
+                <span style="color: #ffffff; font-size: 24px; font-weight: bold; letter-spacing: -0.5px;">Obelisk Portal</span>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Main Content -->
+          <tr>
+            <td style="background-color: #ffffff; border-radius: 12px; padding: 40px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+              <h1 style="margin: 0 0 24px; font-size: 24px; font-weight: 600; color: #0a0a0a; text-align: center;">
+                Invoice ${invoiceNumber}
+              </h1>
+              
+              <p style="margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: #404040;">
+                Hi ${clientName},
+              </p>
+              
+              <p style="margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: #404040;">
+                Please find attached your invoice ${invoiceNumber} for your records.
+              </p>
+              
+              <div style="background-color: #f5f5f5; border-radius: 8px; padding: 20px; margin: 24px 0;">
+                <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding: 8px 0; color: #737373; font-size: 14px;">Invoice Date:</td>
+                    <td style="padding: 8px 0; text-align: right; color: #0a0a0a; font-size: 14px; font-weight: 500;">${new Date(invoiceDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #737373; font-size: 14px;">Due Date:</td>
+                    <td style="padding: 8px 0; text-align: right; color: #0a0a0a; font-size: 14px; font-weight: 500;">${new Date(dueDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #737373; font-size: 14px; font-weight: 600;">Total Amount:</td>
+                    <td style="padding: 8px 0; text-align: right; color: #0a0a0a; font-size: 18px; font-weight: 700;">${total}</td>
+                  </tr>
+                </table>
+              </div>
+              
+              ${message ? `
+              <div style="background-color: #fafafa; border-left: 3px solid #0a0a0a; padding: 16px; margin: 24px 0; border-radius: 4px;">
+                <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #404040; white-space: pre-wrap;">${message}</p>
+              </div>
+              ` : ''}
+              
+              ${pdfUrl ? `
+              <!-- CTA Button -->
+              <table role="presentation" style="width: 100%; border-collapse: collapse; margin-top: 32px;">
+                <tr>
+                  <td align="center">
+                    <a href="${pdfUrl}" style="display: inline-block; background-color: #0a0a0a; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; padding: 14px 32px; border-radius: 8px;">
+                      View Invoice PDF
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              ` : ''}
+              
+              <p style="margin: 32px 0 0; font-size: 14px; line-height: 1.6; color: #737373;">
+                If you have any questions about this invoice, please don't hesitate to contact us.
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="padding-top: 24px; text-align: center;">
+              <p style="margin: 0; font-size: 12px; color: #a3a3a3;">
+                © ${new Date().getFullYear()} Obelisk Portal. All rights reserved.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
+/**
+ * Plain text version of invoice email
+ */
+function getInvoiceEmailText(
+  clientName: string,
+  invoiceNumber: string,
+  invoiceDate: string,
+  dueDate: string,
+  total: string,
+  pdfUrl: string,
+  message?: string
+): string {
+  return `
+Hi ${clientName},
+
+Please find attached your invoice ${invoiceNumber} for your records.
+
+Invoice Details:
+- Invoice Number: ${invoiceNumber}
+- Invoice Date: ${new Date(invoiceDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+- Due Date: ${new Date(dueDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+- Total Amount: ${total}
+
+${message ? `\nMessage:\n${message}\n` : ''}
+
+${pdfUrl ? `View invoice: ${pdfUrl}` : ''}
+
+If you have any questions about this invoice, please don't hesitate to contact us.
+
+---
+© ${new Date().getFullYear()} Obelisk Portal. All rights reserved.
+  `.trim();
+}
