@@ -310,7 +310,7 @@ export default function PdfSignaturePlacement({
 
           {/* Active Cursor Indicator */}
           {activeFieldType && (
-            <div className="absolute top-4 right-4 bg-primary text-neutral-900 dark:text-white px-4 py-2 rounded-lg shadow-lg z-50">
+            <div className="absolute top-4 right-4 bg-primary text-[var(--text-primary)] px-4 py-2 rounded-lg shadow-lg z-50">
               <p className="text-sm font-semibold">
                 Click on PDF to place {activeFieldType === 'client' || activeFieldType === 'employee' 
                   ? activeFieldType === 'client' ? 'Client' : 'Employee'

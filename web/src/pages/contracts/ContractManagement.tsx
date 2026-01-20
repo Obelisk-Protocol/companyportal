@@ -261,7 +261,7 @@ export default function ContractManagement() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Contract Management</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Contract Management</h1>
           <p className="text-neutral-500">Manage all contracts for employees and clients</p>
         </div>
         <Button onClick={() => setIsCreateModalOpen(true)}>
@@ -331,21 +331,21 @@ export default function ContractManagement() {
                 <TableRow key={contract.id}>
                   <TableCell>
                     <div>
-                      <p className="font-medium text-neutral-900 dark:text-white">{contract.title}</p>
+                      <p className="font-medium text-[var(--text-primary)]">{contract.title}</p>
                       <p className="text-sm text-neutral-500">{contract.contractNumber}</p>
                     </div>
                   </TableCell>
                   <TableCell>
                     {contract.client ? (
                       <div>
-                        <p className="text-neutral-900 dark:text-white">{contract.client.name || contract.client.fullName}</p>
+                        <p className="text-[var(--text-primary)]">{contract.client.name || contract.client.fullName}</p>
                         <p className="text-xs text-neutral-500">
                           {contract.client.type === 'company' ? 'Company' : 'Individual'}
                         </p>
                       </div>
                     ) : contract.employee ? (
                       <div>
-                        <p className="text-neutral-900 dark:text-white">{contract.employee.fullName}</p>
+                        <p className="text-[var(--text-primary)]">{contract.employee.fullName}</p>
                         <p className="text-xs text-neutral-500">
                           Employee #{contract.employee.employeeNumber}
                         </p>
@@ -366,7 +366,7 @@ export default function ContractManagement() {
                   </TableCell>
                   <TableCell>
                     {contract.value ? (
-                      <span className="font-medium text-neutral-900 dark:text-white">
+                      <span className="font-medium text-[var(--text-primary)]">
                         {formatRupiah(parseFloat(contract.value))}
                       </span>
                     ) : (
@@ -453,7 +453,7 @@ export default function ContractManagement() {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
               Contract Category *
             </label>
             <select
@@ -469,7 +469,7 @@ export default function ContractManagement() {
 
           {formData.contractCategory === 'employee' ? (
             <div>
-              <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
                 Employee *
               </label>
               <select
@@ -489,7 +489,7 @@ export default function ContractManagement() {
           ) : (
             <>
               <div>
-                <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
                   Client Company
                 </label>
                 <select
@@ -506,7 +506,7 @@ export default function ContractManagement() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
                   Individual Client
                 </label>
                 <select
@@ -526,7 +526,7 @@ export default function ContractManagement() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
               Title *
             </label>
             <Input
@@ -538,7 +538,7 @@ export default function ContractManagement() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
               Contract Type
             </label>
             <select
@@ -557,7 +557,7 @@ export default function ContractManagement() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
                 Start Date *
               </label>
               <Input
@@ -568,7 +568,7 @@ export default function ContractManagement() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
                 End Date
               </label>
               <Input
@@ -582,7 +582,7 @@ export default function ContractManagement() {
           {formData.contractCategory === 'client' && (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
                   Value
                 </label>
                 <Input
@@ -595,7 +595,7 @@ export default function ContractManagement() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
                   Currency
                 </label>
                 <Input
@@ -608,7 +608,7 @@ export default function ContractManagement() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
               Payment Terms
             </label>
             <Input
@@ -619,7 +619,7 @@ export default function ContractManagement() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
               Description
             </label>
             <textarea
@@ -632,7 +632,7 @@ export default function ContractManagement() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
               Contract PDF Document *
             </label>
             {formData.documentUrl ? (
@@ -705,7 +705,7 @@ export default function ContractManagement() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
               Notes
             </label>
             <textarea

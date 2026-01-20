@@ -91,7 +91,7 @@ export default function GeneratedReports() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Generated Reports</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Generated Reports</h1>
           <p className="text-neutral-500">Automatically generated monthly tax reports</p>
         </div>
         <div>
@@ -112,7 +112,7 @@ export default function GeneratedReports() {
 
       <Card className="p-6">
         <div className="mb-6">
-          <h2 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">SPT Masa PPh 21 Reports</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-2">SPT Masa PPh 21 Reports</h2>
           <p className="text-sm text-neutral-500">
             Monthly tax returns are automatically generated on the 1st of each month for the previous month.
           </p>
@@ -137,7 +137,7 @@ export default function GeneratedReports() {
                 <TableRow key={report.id}>
                   <TableCell>
                     <div>
-                      <p className="font-medium text-neutral-900 dark:text-white">
+                      <p className="font-medium text-[var(--text-primary)]">
                         {getIndonesianMonth(report.periodMonth)} {report.periodYear}
                       </p>
                     </div>

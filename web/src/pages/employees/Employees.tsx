@@ -65,7 +65,7 @@ export default function Employees() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Employees</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Employees</h1>
           <p className="text-neutral-500">Manage employee records</p>
         </div>
         <Button onClick={() => navigate('/invitations')}>
@@ -116,7 +116,7 @@ export default function Employees() {
                         <User className="w-5 h-5 text-neutral-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-neutral-900 dark:text-white">{employee.fullName}</p>
+                        <p className="font-medium text-[var(--text-primary)]">{employee.fullName}</p>
                         <p className="text-sm text-neutral-500">{employee.email}</p>
                       </div>
                     </div>
@@ -171,9 +171,9 @@ export default function Employees() {
             <div className="flex items-start gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
               <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-neutral-900 dark:text-white font-medium">Are you sure?</p>
+                <p className="text-[var(--text-primary)] font-medium">Are you sure?</p>
                 <p className="text-sm text-neutral-400 mt-1">
-                  This will permanently delete <strong className="text-neutral-900 dark:text-white">{deleteModal.fullName}</strong> and all associated data including:
+                  This will permanently delete <strong className="text-[var(--text-primary)]">{deleteModal.fullName}</strong> and all associated data including:
                 </p>
                 <ul className="text-sm text-neutral-400 mt-2 list-disc list-inside">
                   <li>User login account</li>

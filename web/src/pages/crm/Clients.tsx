@@ -107,11 +107,11 @@ export default function Clients() {
                 <div className="flex items-center gap-3">
                   {client.clientType === 'company' ? (
                     <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                      <Building2 className="w-5 h-5 text-neutral-900 dark:text-white" />
+                      <Building2 className="w-5 h-5 text-[var(--text-primary)]" />
                     </div>
                   ) : (
                     <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                      <User className="w-5 h-5 text-neutral-900 dark:text-white" />
+                      <User className="w-5 h-5 text-[var(--text-primary)]" />
                     </div>
                   )}
                   <div>

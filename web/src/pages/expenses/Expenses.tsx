@@ -154,7 +154,7 @@ export default function Expenses() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Expenses</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Expenses</h1>
           <p className="text-neutral-500">Review and manage employee expenses</p>
         </div>
         <Button onClick={() => setIsCreateModalOpen(true)}>
@@ -204,13 +204,13 @@ export default function Expenses() {
                   <TableRow key={expense.id}>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-neutral-900 dark:text-white">{employee.fullName}</p>
+                        <p className="font-medium text-[var(--text-primary)]">{employee.fullName}</p>
                         <p className="text-sm text-neutral-500">{employee.employeeNumber}</p>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-neutral-900 dark:text-white">{expense.title}</p>
+                        <p className="font-medium text-[var(--text-primary)]">{expense.title}</p>
                         {expense.description && (
                           <p className="text-sm text-neutral-500 truncate max-w-xs">
                             {expense.description}
@@ -382,8 +382,8 @@ export default function Expenses() {
               <Check className="w-8 h-8 text-green-500" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">Expense Added!</h3>
-              <p className="text-neutral-400">
+              <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">Expense Added!</h3>
+              <p className="text-[var(--text-muted)]">
                 The expense has been successfully added for {employees?.find((e: any) => e.id === formData.employeeId)?.fullName || 'the employee'}.
               </p>
             </div>
@@ -461,14 +461,14 @@ export default function Expenses() {
                     {receiptFile ? (
                       <div className="flex items-center gap-3">
                         <Check className="w-5 h-5 text-green-500" />
-                        <span className="text-neutral-900 dark:text-white">{receiptFile.name}</span>
+                        <span className="text-[var(--text-primary)]">{receiptFile.name}</span>
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             setReceiptFile(null);
                           }}
-                          className="text-neutral-400 hover:text-neutral-900 dark:text-white"
+                          className="text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -476,7 +476,7 @@ export default function Expenses() {
                     ) : (
                       <div className="flex flex-col items-center gap-2">
                         <Upload className="w-8 h-8 text-neutral-500" />
-                        <span className="text-neutral-400">Click to select receipt</span>
+                        <span className="text-[var(--text-muted)]">Click to select receipt</span>
                       </div>
                     )}
                   </div>

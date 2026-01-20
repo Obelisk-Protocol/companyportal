@@ -103,7 +103,7 @@ export default function MyExpenses() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">My Expenses</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">My Expenses</h1>
           <p className="text-neutral-500">Submit reimbursement requests</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
@@ -134,7 +134,7 @@ export default function MyExpenses() {
                   <TableRow key={expense.id}>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-neutral-900 dark:text-white">{expense.title}</p>
+                        <p className="font-medium text-[var(--text-primary)]">{expense.title}</p>
                         {expense.description && (
                           <p className="text-sm text-neutral-500 truncate max-w-xs">
                             {expense.description}
@@ -245,7 +245,7 @@ export default function MyExpenses() {
           />
           
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-1.5">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">
               Receipt (photo/PDF)
             </label>
             <div className="flex items-center gap-3">
@@ -268,7 +268,7 @@ export default function MyExpenses() {
                   href={formData.receiptUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-neutral-900 dark:text-white hover:text-neutral-300"
+                  className="text-[var(--text-primary)] hover:text-[var(--text-secondary)]"
                 >
                   <ExternalLink className="w-5 h-5" />
                 </a>

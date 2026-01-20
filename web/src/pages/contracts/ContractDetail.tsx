@@ -161,7 +161,7 @@ export default function ContractDetail() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">{contract.title}</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">{contract.title}</h1>
           <p className="text-neutral-500">{contract.contractNumber}</p>
         </div>
         {canSign && (
@@ -212,7 +212,7 @@ export default function ContractDetail() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="p-6">
-          <h3 className="font-semibold text-neutral-900 dark:text-white mb-4">Contract Details</h3>
+          <h3 className="font-semibold text-[var(--text-primary)] mb-4">Contract Details</h3>
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-neutral-400">
               <Calendar className="w-4 h-4" />
@@ -233,20 +233,20 @@ export default function ContractDetail() {
             {contract.contractType && (
               <div>
                 <span className="text-neutral-400">Type: </span>
-                <span className="text-neutral-900 dark:text-white capitalize">{contract.contractType}</span>
+                <span className="text-[var(--text-primary)] capitalize">{contract.contractType}</span>
               </div>
             )}
             {contract.paymentTerms && (
               <div>
                 <span className="text-neutral-400">Payment Terms: </span>
-                <span className="text-neutral-900 dark:text-white">{contract.paymentTerms}</span>
+                <span className="text-[var(--text-primary)]">{contract.paymentTerms}</span>
               </div>
             )}
           </div>
         </Card>
 
         <Card className="p-6">
-          <h3 className="font-semibold text-neutral-900 dark:text-white mb-4">Status</h3>
+          <h3 className="font-semibold text-[var(--text-primary)] mb-4">Status</h3>
           <div className="space-y-3">
             <div>
               <span className="text-neutral-400">Status: </span>
@@ -262,7 +262,7 @@ export default function ContractDetail() {
             {contract.signedByClientAt && (
               <div>
                 <span className="text-neutral-400">Signed by Client: </span>
-                <span className="text-neutral-900 dark:text-white">
+                <span className="text-[var(--text-primary)]">
                   {new Date(contract.signedByClientAt).toLocaleString()}
                 </span>
               </div>
@@ -270,7 +270,7 @@ export default function ContractDetail() {
             {contract.signedByEmployeeAt && (
               <div>
                 <span className="text-neutral-400">Signed by Employee: </span>
-                <span className="text-neutral-900 dark:text-white">
+                <span className="text-[var(--text-primary)]">
                   {new Date(contract.signedByEmployeeAt).toLocaleString()}
                 </span>
               </div>
@@ -278,7 +278,7 @@ export default function ContractDetail() {
             {contract.signedByCompanyAt && (
               <div>
                 <span className="text-neutral-400">Signed by Company: </span>
-                <span className="text-neutral-900 dark:text-white">
+                <span className="text-[var(--text-primary)]">
                   {new Date(contract.signedByCompanyAt).toLocaleString()}
                 </span>
               </div>
@@ -289,20 +289,20 @@ export default function ContractDetail() {
 
       {contract.description && (
         <Card className="p-6">
-          <h3 className="font-semibold text-neutral-900 dark:text-white mb-4">Description</h3>
+          <h3 className="font-semibold text-[var(--text-primary)] mb-4">Description</h3>
           <p className="text-neutral-400 whitespace-pre-wrap">{contract.description}</p>
         </Card>
       )}
 
       {(contract.client || contract.employee) && (
         <Card className="p-6">
-          <h3 className="font-semibold text-neutral-900 dark:text-white mb-4">
+          <h3 className="font-semibold text-[var(--text-primary)] mb-4">
             {contract.client ? 'Client Information' : 'Employee Information'}
           </h3>
           <div className="space-y-2">
             {contract.client ? (
               <>
-                <p className="text-neutral-900 dark:text-white">{contract.client.name || contract.client.fullName}</p>
+                <p className="text-[var(--text-primary)]">{contract.client.name || contract.client.fullName}</p>
                 {contract.client.email && (
                   <p className="text-neutral-400">Email: {contract.client.email}</p>
                 )}
@@ -312,7 +312,7 @@ export default function ContractDetail() {
               </>
             ) : contract.employee ? (
               <>
-                <p className="text-neutral-900 dark:text-white">{contract.employee.fullName}</p>
+                <p className="text-[var(--text-primary)]">{contract.employee.fullName}</p>
                 <p className="text-neutral-400">Employee #: {contract.employee.employeeNumber}</p>
                 {contract.employee.email && (
                   <p className="text-neutral-400">Email: {contract.employee.email}</p>
@@ -334,7 +334,7 @@ export default function ContractDetail() {
 
       {contract.documentUrl && (
         <Card className="p-6">
-          <h3 className="font-semibold text-neutral-900 dark:text-white mb-4">Contract Document</h3>
+          <h3 className="font-semibold text-[var(--text-primary)] mb-4">Contract Document</h3>
           <Button
             variant="outline"
             onClick={() => window.open(contract.documentUrl, '_blank')}
@@ -357,7 +357,7 @@ export default function ContractDetail() {
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
               Your Name
             </label>
             <Input
@@ -368,7 +368,7 @@ export default function ContractDetail() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
               Signature
             </label>
             <div className="border-2 border-neutral-700 rounded-lg p-4 bg-white">

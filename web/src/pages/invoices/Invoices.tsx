@@ -66,7 +66,7 @@ export default function Invoices() {
       className="space-y-6"
     >
       <div>
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Invoices</h1>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Invoices</h1>
         <p className="text-neutral-500">View and manage your invoices</p>
       </div>
 
@@ -89,7 +89,7 @@ export default function Invoices() {
                 <TableRow key={invoice.id}>
                   <TableCell>
                     <div>
-                      <p className="font-medium text-neutral-900 dark:text-white">{invoice.invoiceNumber}</p>
+                      <p className="font-medium text-[var(--text-primary)]">{invoice.invoiceNumber}</p>
                       {invoice.contract && (
                         <p className="text-xs text-neutral-500">
                           Contract: {invoice.contract.contractNumber}
@@ -100,7 +100,7 @@ export default function Invoices() {
                   <TableCell>
                     {invoice.client ? (
                       <div>
-                        <p className="text-neutral-900 dark:text-white">{invoice.client.name || invoice.client.fullName}</p>
+                        <p className="text-[var(--text-primary)]">{invoice.client.name || invoice.client.fullName}</p>
                         <p className="text-xs text-neutral-500">
                           {invoice.client.type === 'company' ? 'Company' : 'Individual'}
                         </p>
@@ -124,7 +124,7 @@ export default function Invoices() {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <DollarSign className="w-4 h-4 text-neutral-400" />
-                      <span className="font-medium text-neutral-900 dark:text-white">
+                      <span className="font-medium text-[var(--text-primary)]">
                         {formatRupiah(parseFloat(invoice.total))}
                       </span>
                     </div>

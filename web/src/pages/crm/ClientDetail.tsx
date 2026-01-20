@@ -123,11 +123,11 @@ export default function ClientDetail() {
             <div className="flex items-center gap-3 mb-6">
               {isCompany ? (
                 <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
-                  <Building2 className="w-6 h-6 text-neutral-900 dark:text-white" />
+                  <Building2 className="w-6 h-6 text-[var(--text-primary)]" />
                 </div>
               ) : (
                 <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
-                  <User className="w-6 h-6 text-neutral-900 dark:text-white" />
+                  <User className="w-6 h-6 text-[var(--text-primary)]" />
                 </div>
               )}
               <div>

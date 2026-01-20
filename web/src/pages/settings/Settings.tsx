@@ -100,15 +100,15 @@ export default function Settings() {
       className="space-y-6"
     >
       <div>
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Settings</h1>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Settings</h1>
         <p className="text-neutral-500">Company configuration</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
-            <Building className="w-5 h-5 text-neutral-900 dark:text-white" />
-            <h3 className="font-semibold text-neutral-900 dark:text-white">Company Information</h3>
+            <Building className="w-5 h-5 text-[var(--text-primary)]" />
+            <h3 className="font-semibold text-[var(--text-primary)]">Company Information</h3>
           </div>
 
           {/* Logo Upload Section */}

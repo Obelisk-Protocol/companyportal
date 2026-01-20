@@ -81,7 +81,7 @@ export default function InvoiceDetail() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">{invoice.invoiceNumber}</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">{invoice.invoiceNumber}</h1>
           <p className="text-neutral-500">Invoice Details</p>
         </div>
         <div className="flex gap-3">
@@ -96,7 +96,7 @@ export default function InvoiceDetail() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="p-6">
-          <h3 className="font-semibold text-neutral-900 dark:text-white mb-4">Invoice Information</h3>
+          <h3 className="font-semibold text-[var(--text-primary)] mb-4">Invoice Information</h3>
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-neutral-400">
               <Calendar className="w-4 h-4" />
@@ -109,20 +109,20 @@ export default function InvoiceDetail() {
             {invoice.paymentTerms && (
               <div>
                 <span className="text-neutral-400">Payment Terms: </span>
-                <span className="text-neutral-900 dark:text-white">{invoice.paymentTerms}</span>
+                <span className="text-[var(--text-primary)]">{invoice.paymentTerms}</span>
               </div>
             )}
             {invoice.contract && (
               <div>
                 <span className="text-neutral-400">Contract: </span>
-                <span className="text-neutral-900 dark:text-white">{invoice.contract.contractNumber}</span>
+                <span className="text-[var(--text-primary)]">{invoice.contract.contractNumber}</span>
               </div>
             )}
           </div>
         </Card>
 
         <Card className="p-6">
-          <h3 className="font-semibold text-neutral-900 dark:text-white mb-4">Payment Status</h3>
+          <h3 className="font-semibold text-[var(--text-primary)] mb-4">Payment Status</h3>
           <div className="space-y-3">
             <div>
               <span className="text-neutral-400">Status: </span>
@@ -130,14 +130,14 @@ export default function InvoiceDetail() {
             </div>
             <div>
               <span className="text-neutral-400">Total Amount: </span>
-              <span className="text-neutral-900 dark:text-white font-semibold">
+              <span className="text-[var(--text-primary)] font-semibold">
                 {formatRupiah(parseFloat(invoice.total))} {invoice.currency}
               </span>
             </div>
             {invoice.paidAmount && parseFloat(invoice.paidAmount) > 0 && (
               <div>
                 <span className="text-neutral-400">Paid Amount: </span>
-                <span className="text-neutral-900 dark:text-white">
+                <span className="text-[var(--text-primary)]">
                   {formatRupiah(parseFloat(invoice.paidAmount))} {invoice.currency}
                 </span>
               </div>
@@ -145,7 +145,7 @@ export default function InvoiceDetail() {
             {invoice.paidAmount && parseFloat(invoice.paidAmount) < parseFloat(invoice.total) && (
               <div>
                 <span className="text-neutral-400">Remaining: </span>
-                <span className="text-neutral-900 dark:text-white">
+                <span className="text-[var(--text-primary)]">
                   {formatRupiah(parseFloat(invoice.total) - parseFloat(invoice.paidAmount))} {invoice.currency}
                 </span>
               </div>
@@ -153,7 +153,7 @@ export default function InvoiceDetail() {
             {invoice.paidAt && (
               <div>
                 <span className="text-neutral-400">Paid At: </span>
-                <span className="text-neutral-900 dark:text-white">
+                <span className="text-[var(--text-primary)]">
                   {new Date(invoice.paidAt).toLocaleString()}
                 </span>
               </div>
@@ -161,13 +161,13 @@ export default function InvoiceDetail() {
             {invoice.paymentMethod && (
               <div>
                 <span className="text-neutral-400">Payment Method: </span>
-                <span className="text-neutral-900 dark:text-white capitalize">{invoice.paymentMethod.replace('_', ' ')}</span>
+                <span className="text-[var(--text-primary)] capitalize">{invoice.paymentMethod.replace('_', ' ')}</span>
               </div>
             )}
             {invoice.paymentReference && (
               <div>
                 <span className="text-neutral-400">Reference: </span>
-                <span className="text-neutral-900 dark:text-white">{invoice.paymentReference}</span>
+                <span className="text-[var(--text-primary)]">{invoice.paymentReference}</span>
               </div>
             )}
           </div>
@@ -176,9 +176,9 @@ export default function InvoiceDetail() {
 
       {invoice.client && (
         <Card className="p-6">
-          <h3 className="font-semibold text-neutral-900 dark:text-white mb-4">Client Information</h3>
+          <h3 className="font-semibold text-[var(--text-primary)] mb-4">Client Information</h3>
           <div className="space-y-2">
-            <p className="text-neutral-900 dark:text-white">{invoice.client.name || invoice.client.fullName}</p>
+            <p className="text-[var(--text-primary)]">{invoice.client.name || invoice.client.fullName}</p>
             {invoice.client.email && (
               <p className="text-neutral-400">Email: {invoice.client.email}</p>
             )}
@@ -202,7 +202,7 @@ export default function InvoiceDetail() {
       )}
 
       <Card className="p-6">
-        <h3 className="font-semibold text-neutral-900 dark:text-white mb-4">Line Items</h3>
+        <h3 className="font-semibold text-[var(--text-primary)] mb-4">Line Items</h3>
         <Table>
           <TableHeader>
             <TableRow>
@@ -246,7 +246,7 @@ export default function InvoiceDetail() {
                 <span>-{formatRupiah(parseFloat(invoice.discount))} {invoice.currency}</span>
               </div>
             )}
-            <div className="flex justify-between text-neutral-900 dark:text-white font-bold text-lg pt-2 border-t border-neutral-700">
+            <div className="flex justify-between text-[var(--text-primary)] font-bold text-lg pt-2 border-t border-neutral-700">
               <span>Total:</span>
               <span>{formatRupiah(parseFloat(invoice.total))} {invoice.currency}</span>
             </div>
@@ -256,7 +256,7 @@ export default function InvoiceDetail() {
 
       {invoice.notes && (
         <Card className="p-6">
-          <h3 className="font-semibold text-neutral-900 dark:text-white mb-4">Notes</h3>
+          <h3 className="font-semibold text-[var(--text-primary)] mb-4">Notes</h3>
           <p className="text-neutral-400 whitespace-pre-wrap">{invoice.notes}</p>
         </Card>
       )}

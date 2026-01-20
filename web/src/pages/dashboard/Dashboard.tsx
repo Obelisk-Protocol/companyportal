@@ -97,8 +97,8 @@ export default function Dashboard() {
         className="space-y-6"
       >
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Dashboard</h1>
-          <p className="text-neutral-500">Company overview</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Dashboard</h1>
+          <p className="text-[var(--text-secondary)]">Company overview</p>
         </div>
 
         {/* Stats Grid */}
@@ -107,16 +107,16 @@ export default function Dashboard() {
             <Card className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-500">Total Employees</p>
-                  <p className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
+                  <p className="text-sm text-[var(--text-secondary)]">Total Employees</p>
+                  <p className="text-3xl font-bold text-[var(--text-primary)] mt-1">
                     {stats?.totalEmployees || 0}
                   </p>
-                  <p className="text-sm text-neutral-400 mt-1">
+                  <p className="text-sm text-[var(--text-muted)] mt-1">
                     {stats?.activeEmployees || 0} active
                   </p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-neutral-900 dark:text-white" />
+                  <Users className="w-6 h-6 text-[var(--text-primary)]" />
                 </div>
               </div>
             </Card>
@@ -126,18 +126,18 @@ export default function Dashboard() {
             <Card className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-500">This Month's Payroll</p>
-                  <p className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
+                  <p className="text-sm text-[var(--text-secondary)]">This Month's Payroll</p>
+                  <p className="text-3xl font-bold text-[var(--text-primary)] mt-1">
                     {stats?.currentMonthPayroll
                       ? formatRupiah(stats.currentMonthPayroll.totalNet)
                       : '-'}
                   </p>
-                  <p className="text-sm text-neutral-500 mt-1">
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">
                     {stats?.currentMonthPayroll?.status || 'Not created'}
                   </p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Wallet className="w-6 h-6 text-neutral-900 dark:text-white" />
+                  <Wallet className="w-6 h-6 text-[var(--text-primary)]" />
                 </div>
               </div>
             </Card>
@@ -147,14 +147,14 @@ export default function Dashboard() {
             <Card className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-500">Pending Expenses</p>
-                  <p className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
+                  <p className="text-sm text-[var(--text-secondary)]">Pending Expenses</p>
+                  <p className="text-3xl font-bold text-[var(--text-primary)] mt-1">
                     {stats?.pendingExpenses || 0}
                   </p>
-                  <p className="text-sm text-neutral-400 mt-1">Awaiting review</p>
+                  <p className="text-sm text-[var(--text-muted)] mt-1">Awaiting review</p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Receipt className="w-6 h-6 text-neutral-900 dark:text-white" />
+                  <Receipt className="w-6 h-6 text-[var(--text-primary)]" />
                 </div>
               </div>
             </Card>
@@ -164,16 +164,16 @@ export default function Dashboard() {
             <Card className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-500">Approved This Month</p>
-                  <p className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
+                  <p className="text-sm text-[var(--text-secondary)]">Approved This Month</p>
+                  <p className="text-3xl font-bold text-[var(--text-primary)] mt-1">
                     {formatRupiah(stats?.currentMonthApprovedAmount || 0)}
                   </p>
-                  <p className="text-sm text-neutral-400 mt-1">
+                  <p className="text-sm text-[var(--text-muted)] mt-1">
                     {stats?.currentMonthApprovedCount || 0} expenses
                   </p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Check className="w-6 h-6 text-neutral-900 dark:text-white" />
+                  <Check className="w-6 h-6 text-[var(--text-primary)]" />
                 </div>
               </div>
             </Card>
@@ -183,14 +183,14 @@ export default function Dashboard() {
             <Card className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-neutral-500">Period</p>
-                  <p className="text-3xl font-bold text-neutral-900 dark:text-white mt-1">
+                  <p className="text-sm text-[var(--text-secondary)]">Period</p>
+                  <p className="text-3xl font-bold text-[var(--text-primary)] mt-1">
                     {getIndonesianMonth(new Date().getMonth() + 1).substring(0, 3)}
                   </p>
-                  <p className="text-sm text-neutral-500 mt-1">{new Date().getFullYear()}</p>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">{new Date().getFullYear()}</p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-neutral-900 dark:text-white" />
+                  <Calendar className="w-6 h-6 text-[var(--text-primary)]" />
                 </div>
               </div>
             </Card>
@@ -200,7 +200,7 @@ export default function Dashboard() {
         {/* Chart */}
         <motion.div variants={itemVariants}>
           <Card className="p-6">
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
               Payroll Trend {new Date().getFullYear()}
             </h3>
             <div className="h-64">
@@ -277,54 +277,54 @@ export default function Dashboard() {
         className="space-y-6"
       >
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Dashboard</h1>
-          <p className="text-neutral-500">Welcome back, {user?.employee?.fullName}</p>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Dashboard</h1>
+          <p className="text-[var(--text-secondary)]">Welcome back, {user?.employee?.fullName}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <motion.div variants={itemVariants}>
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-neutral-900 dark:text-white">Pending Contracts</h3>
-                <FileSignature className="w-5 h-5 text-neutral-500" />
+                <h3 className="font-semibold text-[var(--text-primary)]">Pending Contracts</h3>
+                <FileSignature className="w-5 h-5 text-[var(--text-secondary)]" />
               </div>
-              <p className="text-3xl font-bold text-neutral-900 dark:text-white">{pendingContracts.length}</p>
-              <p className="text-sm text-neutral-500 mt-1">Awaiting signature</p>
+              <p className="text-3xl font-bold text-[var(--text-primary)]">{pendingContracts.length}</p>
+              <p className="text-sm text-[var(--text-secondary)] mt-1">Awaiting signature</p>
             </Card>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-neutral-900 dark:text-white">Active Contracts</h3>
-                <FileText className="w-5 h-5 text-neutral-500" />
+                <h3 className="font-semibold text-[var(--text-primary)]">Active Contracts</h3>
+                <FileText className="w-5 h-5 text-[var(--text-secondary)]" />
               </div>
-              <p className="text-3xl font-bold text-neutral-900 dark:text-white">{signedContracts.length}</p>
-              <p className="text-sm text-neutral-500 mt-1">Signed & active</p>
+              <p className="text-3xl font-bold text-[var(--text-primary)]">{signedContracts.length}</p>
+              <p className="text-sm text-[var(--text-secondary)] mt-1">Signed & active</p>
             </Card>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-neutral-900 dark:text-white">Pending Invoices</h3>
-                <ReceiptText className="w-5 h-5 text-neutral-500" />
+                <h3 className="font-semibold text-[var(--text-primary)]">Pending Invoices</h3>
+                <ReceiptText className="w-5 h-5 text-[var(--text-secondary)]" />
               </div>
-              <p className="text-3xl font-bold text-neutral-900 dark:text-white">{pendingInvoices.length}</p>
-              <p className="text-sm text-neutral-500 mt-1">Awaiting payment</p>
+              <p className="text-3xl font-bold text-[var(--text-primary)]">{pendingInvoices.length}</p>
+              <p className="text-sm text-[var(--text-secondary)] mt-1">Awaiting payment</p>
             </Card>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-neutral-900 dark:text-white">Total Due</h3>
-                <Wallet className="w-5 h-5 text-neutral-500" />
+                <h3 className="font-semibold text-[var(--text-primary)]">Total Due</h3>
+                <Wallet className="w-5 h-5 text-[var(--text-secondary)]" />
               </div>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">
+              <p className="text-2xl font-bold text-[var(--text-primary)]">
                 {formatRupiah(totalPendingAmount)}
               </p>
-              <p className="text-sm text-neutral-500 mt-1">Outstanding amount</p>
+              <p className="text-sm text-[var(--text-secondary)] mt-1">Outstanding amount</p>
             </Card>
           </motion.div>
         </div>
@@ -352,26 +352,26 @@ export default function Dashboard() {
       className="space-y-6"
     >
       <div>
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Dashboard</h1>
-        <p className="text-neutral-500">Welcome back, {user?.employee?.fullName}</p>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Dashboard</h1>
+        <p className="text-[var(--text-secondary)]">Welcome back, {user?.employee?.fullName}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div variants={itemVariants}>
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-neutral-900 dark:text-white">Latest Payslip</h3>
-              <FileText className="w-5 h-5 text-neutral-500" />
+              <h3 className="font-semibold text-[var(--text-primary)]">Latest Payslip</h3>
+              <FileText className="w-5 h-5 text-[var(--text-secondary)]" />
             </div>
             {latestPayslip ? (
               <div>
-                <p className="text-2xl font-bold text-neutral-900 dark:text-white">
+                <p className="text-2xl font-bold text-[var(--text-primary)]">
                   {formatRupiah(parseFloat(latestPayslip.netSalary))}
                 </p>
-                <p className="text-sm text-neutral-500 mt-1">Take home pay</p>
+                <p className="text-sm text-[var(--text-secondary)] mt-1">Take home pay</p>
               </div>
             ) : (
-              <p className="text-neutral-500">No data available</p>
+              <p className="text-[var(--text-secondary)]">No data available</p>
             )}
           </Card>
         </motion.div>
@@ -379,37 +379,37 @@ export default function Dashboard() {
         <motion.div variants={itemVariants}>
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-neutral-900 dark:text-white">Pending Contracts</h3>
-              <FileSignature className="w-5 h-5 text-neutral-500" />
+              <h3 className="font-semibold text-[var(--text-primary)]">Pending Contracts</h3>
+              <FileSignature className="w-5 h-5 text-[var(--text-secondary)]" />
             </div>
-            <p className="text-2xl font-bold text-neutral-900 dark:text-white">{pendingContracts.length}</p>
-            <p className="text-sm text-neutral-500 mt-1">Awaiting signature</p>
+            <p className="text-2xl font-bold text-[var(--text-primary)]">{pendingContracts.length}</p>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">Awaiting signature</p>
           </Card>
         </motion.div>
 
         <motion.div variants={itemVariants}>
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-neutral-900 dark:text-white">Pending Expenses</h3>
-              <Receipt className="w-5 h-5 text-neutral-500" />
+              <h3 className="font-semibold text-[var(--text-primary)]">Pending Expenses</h3>
+              <Receipt className="w-5 h-5 text-[var(--text-secondary)]" />
             </div>
-            <p className="text-2xl font-bold text-neutral-900 dark:text-white">{pendingExpenses.length}</p>
-            <p className="text-sm text-neutral-500 mt-1">Awaiting approval</p>
+            <p className="text-2xl font-bold text-[var(--text-primary)]">{pendingExpenses.length}</p>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">Awaiting approval</p>
           </Card>
         </motion.div>
 
         <motion.div variants={itemVariants}>
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-neutral-900 dark:text-white">Status</h3>
-              <TrendingUp className="w-5 h-5 text-neutral-500" />
+              <h3 className="font-semibold text-[var(--text-primary)]">Status</h3>
+              <TrendingUp className="w-5 h-5 text-[var(--text-secondary)]" />
             </div>
             <span className="badge badge-success">Active</span>
-            <p className="text-sm text-neutral-500 mt-2">
+            <p className="text-sm text-[var(--text-secondary)] mt-2">
               Employee #: {user?.employee?.employeeNumber}
             </p>
             {signedContracts.length > 0 && (
-              <p className="text-xs text-neutral-500 mt-1">
+              <p className="text-xs text-[var(--text-secondary)] mt-1">
                 {signedContracts.length} active contract{signedContracts.length !== 1 ? 's' : ''}
               </p>
             )}

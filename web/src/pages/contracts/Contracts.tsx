@@ -73,7 +73,7 @@ export default function Contracts() {
       className="space-y-6"
     >
       <div>
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">
           {isEmployee ? 'My Contracts' : isClient ? 'Contracts' : 'Contracts'}
         </h1>
         <p className="text-neutral-500">View and manage your contracts</p>
@@ -99,21 +99,21 @@ export default function Contracts() {
                 <TableRow key={contract.id}>
                   <TableCell>
                     <div>
-                      <p className="font-medium text-neutral-900 dark:text-white">{contract.title}</p>
+                      <p className="font-medium text-[var(--text-primary)]">{contract.title}</p>
                       <p className="text-sm text-neutral-500">{contract.contractNumber}</p>
                     </div>
                   </TableCell>
                   <TableCell>
                     {contract.client ? (
                       <div>
-                        <p className="text-neutral-900 dark:text-white">{contract.client.name || contract.client.fullName}</p>
+                        <p className="text-[var(--text-primary)]">{contract.client.name || contract.client.fullName}</p>
                         <p className="text-xs text-neutral-500">
                           {contract.client.type === 'company' ? 'Company' : 'Individual'}
                         </p>
                       </div>
                     ) : contract.employee ? (
                       <div>
-                        <p className="text-neutral-900 dark:text-white">{contract.employee.fullName}</p>
+                        <p className="text-[var(--text-primary)]">{contract.employee.fullName}</p>
                         <p className="text-xs text-neutral-500">
                           Employee #{contract.employee.employeeNumber}
                         </p>
@@ -129,7 +129,7 @@ export default function Contracts() {
                   </TableCell>
                   <TableCell>
                     {contract.value ? (
-                      <span className="font-medium text-neutral-900 dark:text-white">
+                      <span className="font-medium text-[var(--text-primary)]">
                         {formatRupiah(parseFloat(contract.value))}
                       </span>
                     ) : (

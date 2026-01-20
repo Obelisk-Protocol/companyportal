@@ -60,7 +60,7 @@ export default function Users() {
       case 'admin':
         return 'bg-white text-black';
       case 'hr':
-        return 'bg-neutral-700 text-neutral-900 dark:text-white';
+        return 'bg-neutral-700 text-[var(--text-primary)]';
       default:
         return 'bg-neutral-800 text-neutral-300';
     }
@@ -84,7 +84,7 @@ export default function Users() {
       className="space-y-6"
     >
       <div>
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Users</h1>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Users</h1>
         <p className="text-neutral-500">Manage user accounts</p>
       </div>
 
@@ -110,7 +110,7 @@ export default function Users() {
                   <TableRow key={user.id}>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-neutral-900 dark:text-white">
+                        <p className="font-medium text-[var(--text-primary)]">
                           {user.employeeName || user.email}
                           {isCurrentUser && (
                             <span className="ml-2 text-xs text-neutral-500">(you)</span>
@@ -185,10 +185,10 @@ export default function Users() {
             <div className="flex items-start gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
               <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-neutral-900 dark:text-white font-medium">Are you sure?</p>
+                <p className="text-[var(--text-primary)] font-medium">Are you sure?</p>
                 <p className="text-sm text-neutral-400 mt-1">
                   This will permanently delete the user account for{' '}
-                  <strong className="text-neutral-900 dark:text-white">{deleteModal.email}</strong>.
+                  <strong className="text-[var(--text-primary)]">{deleteModal.email}</strong>.
                   This action cannot be undone.
                 </p>
               </div>

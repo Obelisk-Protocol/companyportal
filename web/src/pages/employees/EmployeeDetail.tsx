@@ -74,7 +74,7 @@ export default function EmployeeDetail() {
   if (!employee) {
     return (
       <div className="text-center py-12">
-        <p className="text-neutral-500">Employee not found</p>
+        <p className="text-[var(--text-secondary)]">Employee not found</p>
         <Button onClick={() => navigate('/employees')} className="mt-4">
           Go Back
         </Button>
@@ -104,8 +104,8 @@ export default function EmployeeDetail() {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">{employee.fullName}</h1>
-            <p className="text-neutral-500">{employee.employeeNumber}</p>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">{employee.fullName}</h1>
+            <p className="text-[var(--text-secondary)]">{employee.employeeNumber}</p>
           </div>
         </div>
         <span className={cn('badge', getStatusBadgeClass(employee.status))}>
@@ -117,33 +117,33 @@ export default function EmployeeDetail() {
         {/* Personal Info */}
         <Card className="p-6 lg:col-span-2">
           <div className="flex items-center gap-2 mb-6">
-            <User className="w-5 h-5 text-neutral-900 dark:text-white" />
-            <h3 className="font-semibold text-neutral-900 dark:text-white">Personal Information</h3>
+            <User className="w-5 h-5 text-[var(--text-primary)]" />
+            <h3 className="font-semibold text-[var(--text-primary)]">Personal Information</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <p className="text-sm text-neutral-500">Email</p>
-              <p className="text-neutral-900 dark:text-white">{employee.email}</p>
+              <p className="text-sm text-[var(--text-secondary)]">Email</p>
+              <p className="text-[var(--text-primary)]">{employee.email}</p>
             </div>
             <div>
-              <p className="text-sm text-neutral-500">Phone</p>
-              <p className="text-neutral-900 dark:text-white">{employee.phone || '-'}</p>
+              <p className="text-sm text-[var(--text-secondary)]">Phone</p>
+              <p className="text-[var(--text-primary)]">{employee.phone || '-'}</p>
             </div>
             <div>
-              <p className="text-sm text-neutral-500">NIK (ID Card)</p>
-              <p className="text-neutral-900 dark:text-white font-mono">{employee.nik}</p>
+              <p className="text-sm text-[var(--text-secondary)]">NIK (ID Card)</p>
+              <p className="text-[var(--text-primary)] font-mono">{employee.nik}</p>
             </div>
             <div>
-              <p className="text-sm text-neutral-500">NPWP (Tax ID)</p>
-              <p className="text-neutral-900 dark:text-white font-mono">{employee.npwp || '-'}</p>
+              <p className="text-sm text-[var(--text-secondary)]">NPWP (Tax ID)</p>
+              <p className="text-[var(--text-primary)] font-mono">{employee.npwp || '-'}</p>
             </div>
             <div>
-              <p className="text-sm text-neutral-500">PTKP Status</p>
-              <p className="text-neutral-900 dark:text-white">{getPTKPLabel(employee.ptkpStatus)}</p>
+              <p className="text-sm text-[var(--text-secondary)]">PTKP Status</p>
+              <p className="text-[var(--text-primary)]">{getPTKPLabel(employee.ptkpStatus)}</p>
             </div>
             <div>
-              <p className="text-sm text-neutral-500">Join Date</p>
-              <p className="text-neutral-900 dark:text-white">{formatDate(employee.joinDate)}</p>
+              <p className="text-sm text-[var(--text-secondary)]">Join Date</p>
+              <p className="text-[var(--text-primary)]">{formatDate(employee.joinDate)}</p>
             </div>
           </div>
         </Card>
@@ -151,21 +151,21 @@ export default function EmployeeDetail() {
         {/* Employment Info */}
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
-            <Building className="w-5 h-5 text-neutral-900 dark:text-white" />
-            <h3 className="font-semibold text-neutral-900 dark:text-white">Employment</h3>
+            <Building className="w-5 h-5 text-[var(--text-primary)]" />
+            <h3 className="font-semibold text-[var(--text-primary)]">Employment</h3>
           </div>
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-neutral-500">Department</p>
-              <p className="text-neutral-900 dark:text-white">{employee.department || '-'}</p>
+              <p className="text-sm text-[var(--text-secondary)]">Department</p>
+              <p className="text-[var(--text-primary)]">{employee.department || '-'}</p>
             </div>
             <div>
-              <p className="text-sm text-neutral-500">Position</p>
-              <p className="text-neutral-900 dark:text-white">{employee.position || '-'}</p>
+              <p className="text-sm text-[var(--text-secondary)]">Position</p>
+              <p className="text-[var(--text-primary)]">{employee.position || '-'}</p>
             </div>
             <div>
-              <p className="text-sm text-neutral-500">Employment Type</p>
-              <p className="text-neutral-900 dark:text-white capitalize">{employee.employmentType}</p>
+              <p className="text-sm text-[var(--text-secondary)]">Employment Type</p>
+              <p className="text-[var(--text-primary)] capitalize">{employee.employmentType}</p>
             </div>
           </div>
         </Card>
@@ -173,21 +173,21 @@ export default function EmployeeDetail() {
         {/* Bank Info */}
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
-            <CreditCard className="w-5 h-5 text-neutral-900 dark:text-white" />
-            <h3 className="font-semibold text-neutral-900 dark:text-white">Bank Information</h3>
+            <CreditCard className="w-5 h-5 text-[var(--text-primary)]" />
+            <h3 className="font-semibold text-[var(--text-primary)]">Bank Information</h3>
           </div>
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-neutral-500">Bank</p>
-              <p className="text-neutral-900 dark:text-white">{employee.bankName || '-'}</p>
+              <p className="text-sm text-[var(--text-secondary)]">Bank</p>
+              <p className="text-[var(--text-primary)]">{employee.bankName || '-'}</p>
             </div>
             <div>
-              <p className="text-sm text-neutral-500">Account Number</p>
-              <p className="text-neutral-900 dark:text-white font-mono">{employee.bankAccountNumber || '-'}</p>
+              <p className="text-sm text-[var(--text-secondary)]">Account Number</p>
+              <p className="text-[var(--text-primary)] font-mono">{employee.bankAccountNumber || '-'}</p>
             </div>
             <div>
-              <p className="text-sm text-neutral-500">Account Holder</p>
-              <p className="text-neutral-900 dark:text-white">{employee.bankAccountName || '-'}</p>
+              <p className="text-sm text-[var(--text-secondary)]">Account Holder</p>
+              <p className="text-[var(--text-primary)]">{employee.bankAccountName || '-'}</p>
             </div>
           </div>
         </Card>
@@ -196,8 +196,8 @@ export default function EmployeeDetail() {
         {employee.ktpUrl && (
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-6">
-              <FileImage className="w-5 h-5 text-neutral-900 dark:text-white" />
-              <h3 className="font-semibold text-neutral-900 dark:text-white">KTP (ID Card)</h3>
+              <FileImage className="w-5 h-5 text-[var(--text-primary)]" />
+              <h3 className="font-semibold text-[var(--text-primary)]">KTP (ID Card)</h3>
             </div>
             <div className="space-y-3">
               <div className="relative aspect-[1.6/1] bg-[var(--bg-secondary)] rounded-lg overflow-hidden">
@@ -211,7 +211,7 @@ export default function EmployeeDetail() {
                 href={employee.ktpUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-neutral-400 hover:text-neutral-900 dark:text-white transition-colors"
+                className="flex items-center gap-2 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
               >
                 <ExternalLink className="w-4 h-4" />
                 View full size
@@ -224,8 +224,8 @@ export default function EmployeeDetail() {
         <Card className="p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <Wallet className="w-5 h-5 text-neutral-900 dark:text-white" />
-              <h3 className="font-semibold text-neutral-900 dark:text-white">Salary Components</h3>
+              <Wallet className="w-5 h-5 text-[var(--text-primary)]" />
+              <h3 className="font-semibold text-[var(--text-primary)]">Salary Components</h3>
             </div>
             <Button variant="outline" size="sm" onClick={openSalaryModal}>
               <Edit className="w-4 h-4 mr-2" />
@@ -236,41 +236,41 @@ export default function EmployeeDetail() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-neutral-500">Base Salary (Gaji Pokok)</p>
-                  <p className="text-neutral-900 dark:text-white font-semibold">{formatRupiah(parseFloat(salary.gajiPokok))}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Base Salary (Gaji Pokok)</p>
+                  <p className="text-[var(--text-primary)] font-semibold">{formatRupiah(parseFloat(salary.gajiPokok))}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-neutral-500">Transport Allowance</p>
-                  <p className="text-neutral-900 dark:text-white">{formatRupiah(parseFloat(salary.tunjanganTransport || 0))}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Transport Allowance</p>
+                  <p className="text-[var(--text-primary)]">{formatRupiah(parseFloat(salary.tunjanganTransport || 0))}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-neutral-500">Meal Allowance</p>
-                  <p className="text-neutral-900 dark:text-white">{formatRupiah(parseFloat(salary.tunjanganMakan || 0))}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Meal Allowance</p>
+                  <p className="text-[var(--text-primary)]">{formatRupiah(parseFloat(salary.tunjanganMakan || 0))}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-neutral-500">Communication Allowance</p>
-                  <p className="text-neutral-900 dark:text-white">{formatRupiah(parseFloat(salary.tunjanganKomunikasi || 0))}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Communication Allowance</p>
+                  <p className="text-[var(--text-primary)]">{formatRupiah(parseFloat(salary.tunjanganKomunikasi || 0))}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-neutral-500">Position Allowance</p>
-                  <p className="text-neutral-900 dark:text-white">{formatRupiah(parseFloat(salary.tunjanganJabatan || 0))}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Position Allowance</p>
+                  <p className="text-[var(--text-primary)]">{formatRupiah(parseFloat(salary.tunjanganJabatan || 0))}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-neutral-500">Other Allowances</p>
-                  <p className="text-neutral-900 dark:text-white">{formatRupiah(parseFloat(salary.tunjanganLainnya || 0))}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Other Allowances</p>
+                  <p className="text-[var(--text-primary)]">{formatRupiah(parseFloat(salary.tunjanganLainnya || 0))}</p>
                 </div>
               </div>
               <div className="pt-4 border-t border-neutral-800">
                 <div className="flex justify-between">
-                  <p className="text-neutral-400">Total Gross Salary</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">{formatRupiah(totalSalary)}</p>
+                  <p className="text-[var(--text-muted)]">Total Gross Salary</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">{formatRupiah(totalSalary)}</p>
                 </div>
               </div>
             </div>
           ) : (
             <div className="text-center py-8">
               <Wallet className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
-              <p className="text-neutral-500 mb-4">No salary data</p>
+              <p className="text-[var(--text-secondary)] mb-4">No salary data</p>
               <Button onClick={openSalaryModal}>Add Salary</Button>
             </div>
           )}

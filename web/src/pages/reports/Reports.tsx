@@ -82,8 +82,8 @@ export default function Reports() {
       className="space-y-6"
     >
       <div>
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Reports</h1>
-        <p className="text-neutral-500">Tax and BPJS reports</p>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">Reports</h1>
+        <p className="text-[var(--text-secondary)]">Tax and BPJS reports</p>
       </div>
 
       {/* Report Type Tabs */}
@@ -116,11 +116,11 @@ export default function Reports() {
         <div className="flex flex-wrap items-center gap-4">
           {reportType !== 'summary' && (
             <div>
-              <label className="block text-sm text-neutral-500 mb-1">Month</label>
+              <label className="block text-sm text-[var(--text-secondary)] mb-1">Month</label>
               <select
                 value={month}
                 onChange={(e) => setMonth(parseInt(e.target.value))}
-                className="px-4 py-2 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20"
+                className="px-4 py-2 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20"
               >
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
@@ -131,7 +131,7 @@ export default function Reports() {
             </div>
           )}
           <div>
-            <label className="block text-sm text-neutral-500 mb-1">Year</label>
+            <label className="block text-sm text-[var(--text-secondary)] mb-1">Year</label>
             <select
               value={year}
               onChange={(e) => setYear(parseInt(e.target.value))}
@@ -157,19 +157,19 @@ export default function Reports() {
               {/* Annual Totals */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">Total Gross</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">{summaryData.annualTotals.totalGrossFormatted}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Total Gross</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">{summaryData.annualTotals.totalGrossFormatted}</p>
                 </Card>
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">Total Net</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">{summaryData.annualTotals.totalNetFormatted}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Total Net</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">{summaryData.annualTotals.totalNetFormatted}</p>
                 </Card>
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">Total PPh 21</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Total PPh 21</p>
                   <p className="text-xl font-bold text-neutral-400">{summaryData.annualTotals.totalPph21Formatted}</p>
                 </Card>
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">Total BPJS</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Total BPJS</p>
                   <p className="text-xl font-bold text-neutral-300">
                     {formatRupiah(summaryData.annualTotals.totalBpjsEmployee + summaryData.annualTotals.totalBpjsEmployer)}
                   </p>
@@ -178,7 +178,7 @@ export default function Reports() {
 
               {/* Chart */}
               <Card className="p-6">
-                <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">Monthly Trend</h3>
+                <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Monthly Trend</h3>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData}>
@@ -205,7 +205,7 @@ export default function Reports() {
           ) : (
             <Card className="p-12 text-center">
               <FileText className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
-              <p className="text-neutral-500">No data available for this period</p>
+              <p className="text-[var(--text-secondary)]">No data available for this period</p>
             </Card>
           )}
         </>
@@ -233,21 +233,21 @@ export default function Reports() {
               )}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">Total Employees</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">{pph21Data.summary.totalEmployees}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Total Employees</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">{pph21Data.summary.totalEmployees}</p>
                 </Card>
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">Total Gross</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">{pph21Data.summary.totalGrossFormatted}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Total Gross</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">{pph21Data.summary.totalGrossFormatted}</p>
                 </Card>
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">Total PPh 21</p>
+                  <p className="text-sm text-[var(--text-secondary)]">Total PPh 21</p>
                   <p className="text-xl font-bold text-neutral-400">{pph21Data.summary.totalPph21Formatted}</p>
                 </Card>
               </div>
 
               <Card className="p-6">
-                <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">Employee Details</h3>
+                <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Employee Details</h3>
                 <Table>
                   <TableHeader>
                     <TableHead>Employee</TableHead>
@@ -263,8 +263,8 @@ export default function Reports() {
                       <TableRow key={emp.employeeNumber}>
                         <TableCell>
                           <div>
-                            <p className="font-medium text-neutral-900 dark:text-white">{emp.fullName}</p>
-                            <p className="text-sm text-neutral-500">{emp.employeeNumber}</p>
+                            <p className="font-medium text-[var(--text-primary)]">{emp.fullName}</p>
+                            <p className="text-sm text-[var(--text-secondary)]">{emp.employeeNumber}</p>
                           </div>
                         </TableCell>
                         <TableCell className="font-mono text-sm">{emp.nik}</TableCell>
@@ -294,7 +294,7 @@ export default function Reports() {
           ) : (
             <Card className="p-12 text-center">
               <FileText className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
-              <p className="text-neutral-500">No data available for this period</p>
+              <p className="text-[var(--text-secondary)]">No data available for this period</p>
             </Card>
           )}
         </>
@@ -311,15 +311,15 @@ export default function Reports() {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">BPJS Kesehatan</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">{bpjsData.summary.bpjsKesehatan.totalFormatted}</p>
+                  <p className="text-sm text-[var(--text-secondary)]">BPJS Kesehatan</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">{bpjsData.summary.bpjsKesehatan.totalFormatted}</p>
                   <p className="text-xs text-neutral-600">
                     Employee: {bpjsData.summary.bpjsKesehatan.employeeFormatted}
                   </p>
                 </Card>
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">JHT</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
+                  <p className="text-sm text-[var(--text-secondary)]">JHT</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">
                     {bpjsData.summary.bpjsKetenagakerjaan.jht.totalFormatted}
                   </p>
                   <p className="text-xs text-neutral-600">
@@ -327,8 +327,8 @@ export default function Reports() {
                   </p>
                 </Card>
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">JP</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
+                  <p className="text-sm text-[var(--text-secondary)]">JP</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">
                     {bpjsData.summary.bpjsKetenagakerjaan.jp.totalFormatted}
                   </p>
                   <p className="text-xs text-neutral-600">
@@ -336,8 +336,8 @@ export default function Reports() {
                   </p>
                 </Card>
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">JKK + JKM</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
+                  <p className="text-sm text-[var(--text-secondary)]">JKK + JKM</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">
                     {formatRupiah(
                       parseFloat(bpjsData.summary.bpjsKetenagakerjaan.jkk.employer || 0) +
                       parseFloat(bpjsData.summary.bpjsKetenagakerjaan.jkm.employer || 0)
@@ -349,16 +349,16 @@ export default function Reports() {
 
               <Card className="p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Total Payable</h3>
+                  <h3 className="text-lg font-semibold text-[var(--text-primary)]">Total Payable</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 bg-neutral-800/50 rounded-lg">
-                    <p className="text-sm text-neutral-500">Employee Contribution</p>
-                    <p className="text-2xl font-bold text-neutral-900 dark:text-white">{bpjsData.summary.grandTotal.employeeFormatted}</p>
+                    <p className="text-sm text-[var(--text-secondary)]">Employee Contribution</p>
+                    <p className="text-2xl font-bold text-[var(--text-primary)]">{bpjsData.summary.grandTotal.employeeFormatted}</p>
                   </div>
                   <div className="p-4 bg-neutral-800/50 rounded-lg">
-                    <p className="text-sm text-neutral-500">Employer Contribution</p>
-                    <p className="text-2xl font-bold text-neutral-900 dark:text-white">{bpjsData.summary.grandTotal.employerFormatted}</p>
+                    <p className="text-sm text-[var(--text-secondary)]">Employer Contribution</p>
+                    <p className="text-2xl font-bold text-[var(--text-primary)]">{bpjsData.summary.grandTotal.employerFormatted}</p>
                   </div>
                 </div>
               </Card>
@@ -366,7 +366,7 @@ export default function Reports() {
           ) : (
             <Card className="p-12 text-center">
               <FileText className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
-              <p className="text-neutral-500">No data available for this period</p>
+              <p className="text-[var(--text-secondary)]">No data available for this period</p>
             </Card>
           )}
         </>
@@ -384,16 +384,16 @@ export default function Reports() {
               {/* Summary Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">Total Expenses</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
+                  <p className="text-sm text-[var(--text-secondary)]">Total Expenses</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">
                     {formatRupiah(
                       expensesData.reduce((sum: number, e: any) => sum + parseFloat(e.expense.amount), 0)
                     )}
                   </p>
                 </Card>
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">Approved</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
+                  <p className="text-sm text-[var(--text-secondary)]">Approved</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">
                     {formatRupiah(
                       expensesData
                         .filter((e: any) => e.expense.status === 'approved')
@@ -402,14 +402,14 @@ export default function Reports() {
                   </p>
                 </Card>
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">Pending</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
+                  <p className="text-sm text-[var(--text-secondary)]">Pending</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">
                     {expensesData.filter((e: any) => e.expense.status === 'pending').length}
                   </p>
                 </Card>
                 <Card className="p-4">
-                  <p className="text-sm text-neutral-500">Rejected</p>
-                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
+                  <p className="text-sm text-[var(--text-secondary)]">Rejected</p>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">
                     {expensesData.filter((e: any) => e.expense.status === 'rejected').length}
                   </p>
                 </Card>
@@ -417,7 +417,7 @@ export default function Reports() {
 
               {/* Expenses Table */}
               <Card className="p-6">
-                <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">All Expenses</h3>
+                <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">All Expenses</h3>
                 <Table>
                   <TableHeader>
                     <TableHead>Employee</TableHead>
@@ -434,12 +434,12 @@ export default function Reports() {
                         <TableRow key={expense.id}>
                           <TableCell>
                             <div>
-                              <p className="font-medium text-neutral-900 dark:text-white">{employee.fullName}</p>
-                              <p className="text-sm text-neutral-500">{employee.employeeNumber}</p>
+                              <p className="font-medium text-[var(--text-primary)]">{employee.fullName}</p>
+                              <p className="text-sm text-[var(--text-secondary)]">{employee.employeeNumber}</p>
                             </div>
                           </TableCell>
                           <TableCell>
-                            <p className="text-neutral-900 dark:text-white">{expense.title}</p>
+                            <p className="text-[var(--text-primary)]">{expense.title}</p>
                           </TableCell>
                           <TableCell>
                             <span className="badge badge-info">
@@ -465,7 +465,7 @@ export default function Reports() {
           ) : (
             <Card className="p-12 text-center">
               <Receipt className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
-              <p className="text-neutral-500">No expenses found</p>
+              <p className="text-[var(--text-secondary)]">No expenses found</p>
             </Card>
           )}
         </>

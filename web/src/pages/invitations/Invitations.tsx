@@ -89,11 +89,11 @@ export default function Invitations() {
       case 'admin':
         return 'bg-white text-black';
       case 'hr':
-        return 'bg-neutral-700 text-neutral-900 dark:text-white';
+        return 'bg-neutral-700 text-[var(--text-primary)]';
       case 'accountant':
-        return 'bg-blue-600 text-neutral-900 dark:text-white';
+        return 'bg-blue-600 text-[var(--text-primary)]';
       default:
-        return 'bg-neutral-800 text-neutral-300';
+        return 'bg-neutral-800 text-[var(--text-secondary)]';
     }
   };
 
@@ -136,7 +136,7 @@ export default function Invitations() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Invitations</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Invitations</h1>
           <p className="text-neutral-500">Manage user invitations</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
@@ -153,13 +153,13 @@ export default function Invitations() {
             className={cn(
               'flex-1 px-6 py-4 text-sm font-medium transition-colors relative',
               activeTab === 'pending'
-                ? 'text-neutral-900 dark:text-white border-b-2 border-neutral-900 dark:border-white'
-                : 'text-neutral-400 hover:text-neutral-300'
+                ? 'text-[var(--text-primary)] border-b-2 border-[var(--text-primary)]'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
             )}
           >
             Pending
             {pendingCount > 0 && (
-              <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-neutral-700 text-neutral-300">
+              <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-neutral-700 text-[var(--text-secondary)]">
                 {pendingCount}
               </span>
             )}
@@ -169,13 +169,13 @@ export default function Invitations() {
             className={cn(
               'flex-1 px-6 py-4 text-sm font-medium transition-colors relative',
               activeTab === 'accepted'
-                ? 'text-neutral-900 dark:text-white border-b-2 border-neutral-900 dark:border-white'
-                : 'text-neutral-400 hover:text-neutral-300'
+                ? 'text-[var(--text-primary)] border-b-2 border-[var(--text-primary)]'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
             )}
           >
             Accepted
             {acceptedCount > 0 && (
-              <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-neutral-700 text-neutral-300">
+              <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-neutral-700 text-[var(--text-secondary)]">
                 {acceptedCount}
               </span>
             )}
@@ -185,13 +185,13 @@ export default function Invitations() {
             className={cn(
               'flex-1 px-6 py-4 text-sm font-medium transition-colors relative',
               activeTab === 'cancelled'
-                ? 'text-neutral-900 dark:text-white border-b-2 border-neutral-900 dark:border-white'
-                : 'text-neutral-400 hover:text-neutral-300'
+                ? 'text-[var(--text-primary)] border-b-2 border-[var(--text-primary)]'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
             )}
           >
             Cancelled
             {cancelledCount > 0 && (
-              <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-neutral-700 text-neutral-300">
+              <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-neutral-700 text-[var(--text-secondary)]">
                 {cancelledCount}
               </span>
             )}
@@ -201,7 +201,7 @@ export default function Invitations() {
         <div className="p-6">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[var(--text-primary)]"></div>
             </div>
           ) : filteredInvitations.length > 0 ? (
             <Table>
@@ -217,7 +217,7 @@ export default function Invitations() {
               <TableBody>
                 {filteredInvitations.map((invitation) => (
                 <TableRow key={invitation.id}>
-                  <TableCell className="font-medium text-neutral-900 dark:text-white">{invitation.name}</TableCell>
+                  <TableCell className="font-medium text-[var(--text-primary)]">{invitation.name}</TableCell>
                   <TableCell>{invitation.email}</TableCell>
                   <TableCell>
                     <span className={cn('badge', getRoleBadge(invitation.role))}>
@@ -225,13 +225,13 @@ export default function Invitations() {
                     </span>
                   </TableCell>
                   {activeTab === 'pending' && (
-                    <TableCell className="text-neutral-400">{formatDate(invitation.expiresAt)}</TableCell>
+                    <TableCell className="text-[var(--text-muted)]">{formatDate(invitation.expiresAt)}</TableCell>
                   )}
                   {activeTab === 'accepted' && (
-                    <TableCell className="text-neutral-400">{formatDate(invitation.updatedAt)}</TableCell>
+                    <TableCell className="text-[var(--text-muted)]">{formatDate(invitation.updatedAt)}</TableCell>
                   )}
                   {activeTab === 'cancelled' && (
-                    <TableCell className="text-neutral-400">{formatDate(invitation.updatedAt)}</TableCell>
+                    <TableCell className="text-[var(--text-muted)]">{formatDate(invitation.updatedAt)}</TableCell>
                   )}
                   <TableCell>
                     <div className="flex items-center gap-2">
@@ -259,7 +259,7 @@ export default function Invitations() {
                             onClick={() => cancelMutation.mutate(invitation.id)}
                             title="Cancel"
                           >
-                            <X className="w-4 h-4 text-neutral-400" />
+                            <X className="w-4 h-4 text-[var(--text-muted)]" />
                           </Button>
                         </>
                       )}
