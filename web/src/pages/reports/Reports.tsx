@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { formatRupiah, getIndonesianMonth, getStatusBadgeClass, getStatusLabel, cn } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
@@ -15,6 +16,7 @@ type ReportType = 'pph21' | 'bpjs' | 'summary' | 'expenses';
 
 export default function Reports() {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const [reportType, setReportType] = useState<ReportType>('summary');
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
@@ -80,7 +82,7 @@ export default function Reports() {
       className="space-y-6"
     >
       <div>
-        <h1 className="text-2xl font-bold text-white">Reports</h1>
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Reports</h1>
         <p className="text-neutral-500">Tax and BPJS reports</p>
       </div>
 
@@ -118,7 +120,7 @@ export default function Reports() {
               <select
                 value={month}
                 onChange={(e) => setMonth(parseInt(e.target.value))}
-                className="px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+                className="px-4 py-2 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20"
               >
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
@@ -133,7 +135,7 @@ export default function Reports() {
             <select
               value={year}
               onChange={(e) => setYear(parseInt(e.target.value))}
-              className="px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+              className="px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-white/20"
             >
               {[2023, 2024, 2025, 2026].map((y) => (
                 <option key={y} value={y}>{y}</option>
@@ -148,7 +150,7 @@ export default function Reports() {
         <>
           {summaryLoading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
             </div>
           ) : summaryData ? (
             <>
@@ -156,11 +158,11 @@ export default function Reports() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">Total Gross</p>
-                  <p className="text-xl font-bold text-white">{summaryData.annualTotals.totalGrossFormatted}</p>
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">{summaryData.annualTotals.totalGrossFormatted}</p>
                 </Card>
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">Total Net</p>
-                  <p className="text-xl font-bold text-white">{summaryData.annualTotals.totalNetFormatted}</p>
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">{summaryData.annualTotals.totalNetFormatted}</p>
                 </Card>
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">Total PPh 21</p>
@@ -176,22 +178,23 @@ export default function Reports() {
 
               {/* Chart */}
               <Card className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Monthly Trend</h3>
+                <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">Monthly Trend</h3>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData}>
-                      <XAxis dataKey="name" stroke="#525252" fontSize={12} />
-                      <YAxis stroke="#525252" fontSize={12} tickFormatter={(v) => `${v}M`} />
+                      <XAxis dataKey="name" stroke={theme === 'dark' ? '#525252' : '#a3a3a3'} fontSize={12} />
+                      <YAxis stroke={theme === 'dark' ? '#525252' : '#a3a3a3'} fontSize={12} tickFormatter={(v) => `${v}M`} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#0a0a0a',
-                          border: '1px solid #262626',
+                          backgroundColor: theme === 'dark' ? '#0a0a0a' : '#ffffff',
+                          border: theme === 'dark' ? '1px solid #262626' : '1px solid #e5e5e5',
                           borderRadius: '8px',
+                          color: theme === 'dark' ? '#ffffff' : '#0a0a0a',
                         }}
                         formatter={(value: number) => [`Rp ${value.toFixed(0)} million`, '']}
                       />
                       <Legend />
-                      <Bar dataKey="Gross" fill="#ffffff" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="Gross" fill={theme === 'dark' ? '#ffffff' : '#0a0a0a'} radius={[4, 4, 0, 0]} />
                       <Bar dataKey="Net" fill="#a3a3a3" radius={[4, 4, 0, 0]} />
                       <Bar dataKey="PPh21" fill="#525252" radius={[4, 4, 0, 0]} />
                     </BarChart>
@@ -213,7 +216,7 @@ export default function Reports() {
         <>
           {pph21Loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
             </div>
           ) : pph21Data ? (
             <>
@@ -231,11 +234,11 @@ export default function Reports() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">Total Employees</p>
-                  <p className="text-xl font-bold text-white">{pph21Data.summary.totalEmployees}</p>
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">{pph21Data.summary.totalEmployees}</p>
                 </Card>
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">Total Gross</p>
-                  <p className="text-xl font-bold text-white">{pph21Data.summary.totalGrossFormatted}</p>
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">{pph21Data.summary.totalGrossFormatted}</p>
                 </Card>
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">Total PPh 21</p>
@@ -244,7 +247,7 @@ export default function Reports() {
               </div>
 
               <Card className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Employee Details</h3>
+                <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">Employee Details</h3>
                 <Table>
                   <TableHeader>
                     <TableHead>Employee</TableHead>
@@ -260,7 +263,7 @@ export default function Reports() {
                       <TableRow key={emp.employeeNumber}>
                         <TableCell>
                           <div>
-                            <p className="font-medium text-white">{emp.fullName}</p>
+                            <p className="font-medium text-neutral-900 dark:text-white">{emp.fullName}</p>
                             <p className="text-sm text-neutral-500">{emp.employeeNumber}</p>
                           </div>
                         </TableCell>
@@ -302,21 +305,21 @@ export default function Reports() {
         <>
           {bpjsLoading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
             </div>
           ) : bpjsData ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">BPJS Kesehatan</p>
-                  <p className="text-xl font-bold text-white">{bpjsData.summary.bpjsKesehatan.totalFormatted}</p>
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">{bpjsData.summary.bpjsKesehatan.totalFormatted}</p>
                   <p className="text-xs text-neutral-600">
                     Employee: {bpjsData.summary.bpjsKesehatan.employeeFormatted}
                   </p>
                 </Card>
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">JHT</p>
-                  <p className="text-xl font-bold text-white">
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
                     {bpjsData.summary.bpjsKetenagakerjaan.jht.totalFormatted}
                   </p>
                   <p className="text-xs text-neutral-600">
@@ -325,7 +328,7 @@ export default function Reports() {
                 </Card>
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">JP</p>
-                  <p className="text-xl font-bold text-white">
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
                     {bpjsData.summary.bpjsKetenagakerjaan.jp.totalFormatted}
                   </p>
                   <p className="text-xs text-neutral-600">
@@ -334,7 +337,7 @@ export default function Reports() {
                 </Card>
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">JKK + JKM</p>
-                  <p className="text-xl font-bold text-white">
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
                     {formatRupiah(
                       parseFloat(bpjsData.summary.bpjsKetenagakerjaan.jkk.employer || 0) +
                       parseFloat(bpjsData.summary.bpjsKetenagakerjaan.jkm.employer || 0)
@@ -346,16 +349,16 @@ export default function Reports() {
 
               <Card className="p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold text-white">Total Payable</h3>
+                  <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Total Payable</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 bg-neutral-800/50 rounded-lg">
                     <p className="text-sm text-neutral-500">Employee Contribution</p>
-                    <p className="text-2xl font-bold text-white">{bpjsData.summary.grandTotal.employeeFormatted}</p>
+                    <p className="text-2xl font-bold text-neutral-900 dark:text-white">{bpjsData.summary.grandTotal.employeeFormatted}</p>
                   </div>
                   <div className="p-4 bg-neutral-800/50 rounded-lg">
                     <p className="text-sm text-neutral-500">Employer Contribution</p>
-                    <p className="text-2xl font-bold text-white">{bpjsData.summary.grandTotal.employerFormatted}</p>
+                    <p className="text-2xl font-bold text-neutral-900 dark:text-white">{bpjsData.summary.grandTotal.employerFormatted}</p>
                   </div>
                 </div>
               </Card>
@@ -374,7 +377,7 @@ export default function Reports() {
         <>
           {expensesLoading ? (
             <Card className="p-12 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white mx-auto"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-neutral-900 dark:border-white mx-auto"></div>
             </Card>
           ) : expensesData && expensesData.length > 0 ? (
             <>
@@ -382,7 +385,7 @@ export default function Reports() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">Total Expenses</p>
-                  <p className="text-xl font-bold text-white">
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
                     {formatRupiah(
                       expensesData.reduce((sum: number, e: any) => sum + parseFloat(e.expense.amount), 0)
                     )}
@@ -390,7 +393,7 @@ export default function Reports() {
                 </Card>
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">Approved</p>
-                  <p className="text-xl font-bold text-white">
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
                     {formatRupiah(
                       expensesData
                         .filter((e: any) => e.expense.status === 'approved')
@@ -400,13 +403,13 @@ export default function Reports() {
                 </Card>
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">Pending</p>
-                  <p className="text-xl font-bold text-white">
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
                     {expensesData.filter((e: any) => e.expense.status === 'pending').length}
                   </p>
                 </Card>
                 <Card className="p-4">
                   <p className="text-sm text-neutral-500">Rejected</p>
-                  <p className="text-xl font-bold text-white">
+                  <p className="text-xl font-bold text-neutral-900 dark:text-white">
                     {expensesData.filter((e: any) => e.expense.status === 'rejected').length}
                   </p>
                 </Card>
@@ -414,7 +417,7 @@ export default function Reports() {
 
               {/* Expenses Table */}
               <Card className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">All Expenses</h3>
+                <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">All Expenses</h3>
                 <Table>
                   <TableHeader>
                     <TableHead>Employee</TableHead>
@@ -431,12 +434,12 @@ export default function Reports() {
                         <TableRow key={expense.id}>
                           <TableCell>
                             <div>
-                              <p className="font-medium text-white">{employee.fullName}</p>
+                              <p className="font-medium text-neutral-900 dark:text-white">{employee.fullName}</p>
                               <p className="text-sm text-neutral-500">{employee.employeeNumber}</p>
                             </div>
                           </TableCell>
                           <TableCell>
-                            <p className="text-white">{expense.title}</p>
+                            <p className="text-neutral-900 dark:text-white">{expense.title}</p>
                           </TableCell>
                           <TableCell>
                             <span className="badge badge-info">

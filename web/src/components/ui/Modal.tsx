@@ -40,10 +40,10 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
             <div
-              className={`${sizes[size]} w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-2xl transition-colors`}
+              className={`${sizes[size]} w-full max-h-[90vh] flex flex-col bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-2xl transition-colors`}
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-color)]">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-color)] flex-shrink-0">
                 <h3 className="text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
                 <button
                   onClick={onClose}
@@ -53,8 +53,10 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
                 </button>
               </div>
 
-              {/* Content */}
-              <div className="p-6">{children}</div>
+              {/* Content - Scrollable */}
+              <div className="p-6 overflow-y-auto flex-1">
+                {children}
+              </div>
             </div>
           </motion.div>
         </Fragment>

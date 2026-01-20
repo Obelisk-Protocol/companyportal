@@ -154,7 +154,7 @@ export default function Expenses() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Expenses</h1>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Expenses</h1>
           <p className="text-neutral-500">Review and manage employee expenses</p>
         </div>
         <Button onClick={() => setIsCreateModalOpen(true)}>
@@ -184,7 +184,7 @@ export default function Expenses() {
       <Card className="p-6">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
           </div>
         ) : expenses && expenses.length > 0 ? (
           <Table>
@@ -204,13 +204,13 @@ export default function Expenses() {
                   <TableRow key={expense.id}>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-white">{employee.fullName}</p>
+                        <p className="font-medium text-neutral-900 dark:text-white">{employee.fullName}</p>
                         <p className="text-sm text-neutral-500">{employee.employeeNumber}</p>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-white">{expense.title}</p>
+                        <p className="font-medium text-neutral-900 dark:text-white">{expense.title}</p>
                         {expense.description && (
                           <p className="text-sm text-neutral-500 truncate max-w-xs">
                             {expense.description}
@@ -382,7 +382,7 @@ export default function Expenses() {
               <Check className="w-8 h-8 text-green-500" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-white mb-2">Expense Added!</h3>
+              <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">Expense Added!</h3>
               <p className="text-neutral-400">
                 The expense has been successfully added for {employees?.find((e: any) => e.id === formData.employeeId)?.fullName || 'the employee'}.
               </p>
@@ -457,18 +457,18 @@ export default function Expenses() {
                     onChange={handleFileSelect}
                     className="hidden"
                   />
-                  <div className="flex items-center justify-center gap-3 px-6 py-8 bg-neutral-900 border-2 border-dashed border-neutral-700 rounded-lg cursor-pointer hover:border-white transition-colors">
+                  <div className="flex items-center justify-center gap-3 px-6 py-8 bg-neutral-900 border-2 border-dashed border-neutral-700 rounded-lg cursor-pointer hover:border-neutral-900 dark:border-white transition-colors">
                     {receiptFile ? (
                       <div className="flex items-center gap-3">
                         <Check className="w-5 h-5 text-green-500" />
-                        <span className="text-white">{receiptFile.name}</span>
+                        <span className="text-neutral-900 dark:text-white">{receiptFile.name}</span>
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             setReceiptFile(null);
                           }}
-                          className="text-neutral-400 hover:text-white"
+                          className="text-neutral-400 hover:text-neutral-900 dark:text-white"
                         >
                           <X className="w-4 h-4" />
                         </button>

@@ -91,7 +91,7 @@ export default function GeneratedReports() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Generated Reports</h1>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Generated Reports</h1>
           <p className="text-neutral-500">Automatically generated monthly tax reports</p>
         </div>
         <div>
@@ -99,7 +99,7 @@ export default function GeneratedReports() {
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-            className="px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+            className="px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-white/20"
           >
             {[2023, 2024, 2025, 2026, 2027].map((y) => (
               <option key={y} value={y}>
@@ -112,7 +112,7 @@ export default function GeneratedReports() {
 
       <Card className="p-6">
         <div className="mb-6">
-          <h2 className="text-lg font-semibold text-white mb-2">SPT Masa PPh 21 Reports</h2>
+          <h2 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">SPT Masa PPh 21 Reports</h2>
           <p className="text-sm text-neutral-500">
             Monthly tax returns are automatically generated on the 1st of each month for the previous month.
           </p>
@@ -120,7 +120,7 @@ export default function GeneratedReports() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
           </div>
         ) : sptReports.length > 0 ? (
           <Table>
@@ -137,7 +137,7 @@ export default function GeneratedReports() {
                 <TableRow key={report.id}>
                   <TableCell>
                     <div>
-                      <p className="font-medium text-white">
+                      <p className="font-medium text-neutral-900 dark:text-white">
                         {getIndonesianMonth(report.periodMonth)} {report.periodYear}
                       </p>
                     </div>

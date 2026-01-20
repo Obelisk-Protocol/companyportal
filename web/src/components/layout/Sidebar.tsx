@@ -15,16 +15,22 @@ import {
   UserCog,
   FileCheck,
   Building2,
+  FileSignature,
+  ReceiptText,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['admin', 'hr', 'employee'] },
+  { name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['admin', 'hr', 'employee', 'client'] },
   { name: 'Employees', href: '/employees', icon: Users, roles: ['admin', 'hr'] },
   { name: 'Payroll', href: '/payroll', icon: Wallet, roles: ['admin', 'hr'] },
   { name: 'Expenses', href: '/expenses', icon: Receipt, roles: ['admin', 'hr'] },
   { name: 'My Payslips', href: '/my-payslips', icon: CreditCard, roles: ['employee'] },
   { name: 'My Expenses', href: '/my-expenses', icon: Receipt, roles: ['employee'] },
+  { name: 'My Contracts', href: '/my-contracts', icon: FileSignature, roles: ['employee'] },
+  { name: 'Contracts', href: '/contracts', icon: FileSignature, roles: ['client'] },
+  { name: 'Contracts', href: '/contracts/management', icon: FileSignature, roles: ['admin', 'hr'] },
+  { name: 'Invoices', href: '/invoices', icon: ReceiptText, roles: ['client'] },
   { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin', 'hr', 'accountant'] },
   { name: 'Generated Reports', href: '/reports/generated', icon: FileCheck, roles: ['admin', 'hr', 'accountant'] },
   { name: 'CRM', href: '/crm/clients', icon: Building2, roles: ['admin', 'hr', 'accountant'] },
@@ -88,7 +94,7 @@ export default function Sidebar() {
                 isActive
                   ? theme === 'dark' 
                     ? 'bg-white text-black' 
-                    : 'bg-black text-white'
+                    : 'bg-black text-neutral-900 dark:text-white'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-bg)]'
               )
             }

@@ -18,6 +18,8 @@ import company from './routes/company.js';
 import users from './routes/users.js';
 import me from './routes/me.js';
 import crm from './routes/crm.js';
+import contracts from './routes/contracts.js';
+import invoices from './routes/invoices.js';
 
 const app = new Hono();
 
@@ -68,6 +70,8 @@ app.route('/api/company', company);
 app.route('/api/users', users);
 app.route('/api/me', me);
 app.route('/api/crm', crm);
+app.route('/api/contracts', contracts);
+app.route('/api/invoices', invoices);
 
 // 404 handler
 app.notFound((c) => {
@@ -77,6 +81,22 @@ app.notFound((c) => {
 // Error handler
 app.onError((err, c) => {
   console.error('Error:', err);
+  
+  // Log full error in development
+  if (process.env.NODE_ENV === 'development') {
+    console.error('Error stack:', err.stack);
+  }
+  
+  // Check for database schema errors
+  const errorMessage = err.message || '';
+  if (errorMessage.includes('column') || errorMessage.includes('42703') || errorMessage.includes('does not exist')) {
+    return c.json({ 
+      error: 'Database schema error',
+      message: 'The database schema is out of date. Please run migrations to add the required columns (signatureFields, clientSignature, employeeSignature, companySignature) to the contracts table.',
+      details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+    }, 500);
+  }
+  
   return c.json({ 
     error: 'Internal server error',
     message: process.env.NODE_ENV === 'development' ? err.message : undefined,

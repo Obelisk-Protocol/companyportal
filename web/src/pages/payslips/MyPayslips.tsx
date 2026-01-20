@@ -43,14 +43,14 @@ export default function MyPayslips() {
       className="space-y-6"
     >
       <div>
-        <h1 className="text-2xl font-bold text-white">My Payslips</h1>
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">My Payslips</h1>
         <p className="text-neutral-500">Monthly payslip history</p>
       </div>
 
       <Card className="p-6">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
           </div>
         ) : payslips && payslips.length > 0 ? (
           <Table>
@@ -69,10 +69,10 @@ export default function MyPayslips() {
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                          <Calendar className="w-5 h-5 text-white" />
+                          <Calendar className="w-5 h-5 text-neutral-900 dark:text-white" />
                         </div>
                         <div>
-                          <p className="font-medium text-white">
+                          <p className="font-medium text-neutral-900 dark:text-white">
                             {getIndonesianMonth(payrollRun.periodMonth)} {payrollRun.periodYear}
                           </p>
                         </div>
@@ -82,7 +82,7 @@ export default function MyPayslips() {
                     <TableCell className="text-neutral-400">
                       -{formatRupiah(parseFloat(payslip.totalDeductions))}
                     </TableCell>
-                    <TableCell className="font-semibold text-white">
+                    <TableCell className="font-semibold text-neutral-900 dark:text-white">
                       {formatRupiah(parseFloat(payslip.netSalary))}
                     </TableCell>
                     <TableCell>
@@ -111,7 +111,7 @@ export default function MyPayslips() {
       {/* Latest Payslip Detail */}
       {payslips && payslips.length > 0 && (
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Latest Payslip Details</h3>
+          <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">Latest Payslip Details</h3>
           {(() => {
             const latest = payslips[0];
             const { payslip } = latest;
@@ -124,35 +124,35 @@ export default function MyPayslips() {
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-neutral-300">Base Salary (Gaji Pokok)</span>
-                      <span className="text-white">{formatRupiah(parseFloat(payslip.gajiPokok))}</span>
+                      <span className="text-neutral-900 dark:text-white">{formatRupiah(parseFloat(payslip.gajiPokok))}</span>
                     </div>
                     {parseFloat(payslip.tunjanganTransport || 0) > 0 && (
                       <div className="flex justify-between">
                         <span className="text-neutral-300">Transport Allowance</span>
-                        <span className="text-white">{formatRupiah(parseFloat(payslip.tunjanganTransport))}</span>
+                        <span className="text-neutral-900 dark:text-white">{formatRupiah(parseFloat(payslip.tunjanganTransport))}</span>
                       </div>
                     )}
                     {parseFloat(payslip.tunjanganMakan || 0) > 0 && (
                       <div className="flex justify-between">
                         <span className="text-neutral-300">Meal Allowance</span>
-                        <span className="text-white">{formatRupiah(parseFloat(payslip.tunjanganMakan))}</span>
+                        <span className="text-neutral-900 dark:text-white">{formatRupiah(parseFloat(payslip.tunjanganMakan))}</span>
                       </div>
                     )}
                     {parseFloat(payslip.tunjanganJabatan || 0) > 0 && (
                       <div className="flex justify-between">
                         <span className="text-neutral-300">Position Allowance</span>
-                        <span className="text-white">{formatRupiah(parseFloat(payslip.tunjanganJabatan))}</span>
+                        <span className="text-neutral-900 dark:text-white">{formatRupiah(parseFloat(payslip.tunjanganJabatan))}</span>
                       </div>
                     )}
                     {parseFloat(payslip.reimbursements || 0) > 0 && (
                       <div className="flex justify-between">
                         <span className="text-neutral-300">Reimbursements</span>
-                        <span className="text-white">{formatRupiah(parseFloat(payslip.reimbursements))}</span>
+                        <span className="text-neutral-900 dark:text-white">{formatRupiah(parseFloat(payslip.reimbursements))}</span>
                       </div>
                     )}
                     <div className="border-t border-neutral-800 pt-3 flex justify-between">
-                      <span className="font-medium text-white">Total Earnings</span>
-                      <span className="font-semibold text-white">{formatRupiah(parseFloat(payslip.grossSalary))}</span>
+                      <span className="font-medium text-neutral-900 dark:text-white">Total Earnings</span>
+                      <span className="font-semibold text-neutral-900 dark:text-white">{formatRupiah(parseFloat(payslip.grossSalary))}</span>
                     </div>
                   </div>
                 </div>
@@ -178,17 +178,17 @@ export default function MyPayslips() {
                       <span className="text-neutral-400">-{formatRupiah(parseFloat(payslip.pph21))}</span>
                     </div>
                     <div className="border-t border-neutral-800 pt-3 flex justify-between">
-                      <span className="font-medium text-white">Total Deductions</span>
+                      <span className="font-medium text-neutral-900 dark:text-white">Total Deductions</span>
                       <span className="font-semibold text-neutral-400">-{formatRupiah(parseFloat(payslip.totalDeductions))}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Take Home Pay */}
-                <div className="md:col-span-2 p-4 bg-white/5 border border-white/20 rounded-lg">
+                <div className="md:col-span-2 p-4 bg-white/5 border border-neutral-900 dark:border-white/20 rounded-lg">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-medium text-white">Take Home Pay</span>
-                    <span className="text-2xl font-bold text-white">
+                    <span className="text-lg font-medium text-neutral-900 dark:text-white">Take Home Pay</span>
+                    <span className="text-2xl font-bold text-neutral-900 dark:text-white">
                       {formatRupiah(parseFloat(payslip.netSalary))}
                     </span>
                   </div>

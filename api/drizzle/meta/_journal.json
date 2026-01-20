@@ -15,6 +15,13 @@
       "when": 1768819946067,
       "tag": "0001_add-ktp-url",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768866000000,
+      "tag": "0002_add_contract_signature_fields",
+      "breakpoints": true
     }
   ]
 }

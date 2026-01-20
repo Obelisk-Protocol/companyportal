@@ -272,7 +272,7 @@ export default function AcceptInvitation() {
                           onClick={() => setFormData({ ...formData, ktpUrl: '' })}
                           className="absolute top-2 right-2 p-1.5 bg-black/70 rounded-full hover:bg-black transition-colors"
                         >
-                          <X className="w-4 h-4 text-white" />
+                          <X className="w-4 h-4 text-neutral-900 dark:text-white" />
                         </button>
                       </div>
                       <a

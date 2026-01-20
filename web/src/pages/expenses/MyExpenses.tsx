@@ -103,7 +103,7 @@ export default function MyExpenses() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">My Expenses</h1>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">My Expenses</h1>
           <p className="text-neutral-500">Submit reimbursement requests</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
@@ -115,7 +115,7 @@ export default function MyExpenses() {
       <Card className="p-6">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
           </div>
         ) : expenses && expenses.length > 0 ? (
           <Table>
@@ -134,7 +134,7 @@ export default function MyExpenses() {
                   <TableRow key={expense.id}>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-white">{expense.title}</p>
+                        <p className="font-medium text-neutral-900 dark:text-white">{expense.title}</p>
                         {expense.description && (
                           <p className="text-sm text-neutral-500 truncate max-w-xs">
                             {expense.description}
@@ -256,7 +256,7 @@ export default function MyExpenses() {
                   onChange={handleFileUpload}
                   className="hidden"
                 />
-                <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-neutral-900 border border-neutral-700 border-dashed rounded-lg cursor-pointer hover:border-white transition-colors">
+                <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-neutral-900 border border-neutral-700 border-dashed rounded-lg cursor-pointer hover:border-neutral-900 dark:border-white transition-colors">
                   <Upload className="w-5 h-5 text-neutral-500" />
                   <span className="text-neutral-500">
                     {isUploading ? 'Uploading...' : 'Upload receipt'}
@@ -268,7 +268,7 @@ export default function MyExpenses() {
                   href={formData.receiptUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white hover:text-neutral-300"
+                  className="text-neutral-900 dark:text-white hover:text-neutral-300"
                 >
                   <ExternalLink className="w-5 h-5" />
                 </a>

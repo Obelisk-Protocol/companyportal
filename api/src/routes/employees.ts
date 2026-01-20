@@ -90,10 +90,24 @@ employees.post('/', requireRole('admin', 'hr'), zValidator('json', employeeSchem
     return c.json({ error: 'Employee with this email already exists' }, 409);
   }
   
-  // Generate employee number
-  const allEmployees = await db.select().from(schema.employees);
-  const employeeNumber = `EMP${String(allEmployees.length + 1).padStart(4, '0')}`;
+  // Generate employee number - find the highest number and increment
+  const allEmployees = await db
+    .select({ employeeNumber: schema.employees.employeeNumber })
+    .from(schema.employees);
   
+  let maxNumber = 0;
+  for (const emp of allEmployees) {
+    const match = emp.employeeNumber.match(/^EMP(\d+)$/);
+    if (match) {
+      const num = parseInt(match[1], 10);
+      if (num > maxNumber) {
+        maxNumber = num;
+      }
+    }
+  }
+  
+  const employeeNumber = `EMP${String(maxNumber + 1).padStart(4, '0')}`;
+
   const [employee] = await db
     .insert(schema.employees)
     .values({

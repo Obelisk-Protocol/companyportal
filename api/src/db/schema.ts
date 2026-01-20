@@ -384,3 +384,128 @@ export const companyContacts = pgTable('company_contacts', {
 }, (table) => [
   index('idx_company_contacts_company').on(table.companyId),
 ]);
+
+// Contracts - Agreements between company and clients/employees
+export const contracts = pgTable('contracts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  
+  // Reference to either client (company/individual) or employee
+  companyId: uuid('company_id').references(() => crmCompanies.id, { onDelete: 'cascade' }),
+  individualClientId: uuid('individual_client_id').references(() => individualClients.id, { onDelete: 'cascade' }),
+  employeeId: uuid('employee_id').references(() => employees.id, { onDelete: 'cascade' }),
+  
+  // Contract type indicator
+  contractCategory: text('contract_category').default('client').$type<'client' | 'employee'>(),
+  
+  // Contract details
+  title: text('title').notNull(),
+  contractNumber: text('contract_number').unique().notNull(), // e.g., CONTRACT-2024-001
+  description: text('description'),
+  contractType: text('contract_type').$type<'service' | 'consulting' | 'maintenance' | 'retainer' | 'project' | 'employment' | 'nda' | 'confidentiality' | 'other'>(),
+  
+  // Terms
+  startDate: date('start_date').notNull(),
+  endDate: date('end_date'), // null for open-ended contracts
+  value: decimal('value', { precision: 15, scale: 2 }), // Total contract value (optional for employee contracts)
+  currency: text('currency').default('IDR'),
+  paymentTerms: text('payment_terms'), // e.g., "Net 30", "50% upfront, 50% on completion"
+  
+  // Status and signing
+  status: text('status').default('draft').$type<'draft' | 'sent' | 'signed' | 'active' | 'expired' | 'terminated' | 'cancelled'>(),
+  
+  // Document
+  documentUrl: text('document_url'), // PDF of the contract
+  signedDocumentUrl: text('signed_document_url'), // PDF with signatures
+  
+  // Signing information (for clients)
+  signedByClientAt: timestamp('signed_by_client_at', { withTimezone: true }),
+  signedByClientUserId: uuid('signed_by_client_user_id').references(() => users.id),
+  
+  // Signing information (for employees)
+  signedByEmployeeAt: timestamp('signed_by_employee_at', { withTimezone: true }),
+  signedByEmployeeUserId: uuid('signed_by_employee_user_id').references(() => users.id),
+  
+  // Company signing
+  signedByCompanyAt: timestamp('signed_by_company_at', { withTimezone: true }),
+  signedByCompanyUserId: uuid('signed_by_company_user_id').references(() => users.id),
+  
+  // Signature fields (DocuSign-style) - designated positions for signatures
+  signatureFields: jsonb('signature_fields'), // { clientSignatureField?: { pageIndex, x, y, width, height, label }, companySignatureField?: { pageIndex, x, y, width, height, label } }
+  
+  // Signature data (stored as JSON) - can be from client or employee
+  clientSignature: jsonb('client_signature'), // { name, signature (base64), signedAt, ipAddress }
+  employeeSignature: jsonb('employee_signature'), // { name, signature (base64), signedAt, ipAddress }
+  companySignature: jsonb('company_signature'), // { name, signature (base64), signedAt, ipAddress, signedByUserId }
+  
+  // Notes and metadata
+  notes: text('notes'),
+  createdBy: uuid('created_by').notNull().references(() => users.id),
+  
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_contracts_company').on(table.companyId),
+  index('idx_contracts_individual').on(table.individualClientId),
+  index('idx_contracts_employee').on(table.employeeId),
+  index('idx_contracts_status').on(table.status),
+  index('idx_contracts_number').on(table.contractNumber),
+  index('idx_contracts_category').on(table.contractCategory),
+]);
+
+// Invoices - Bills sent to clients
+export const invoices = pgTable('invoices', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  
+  // Client reference (either company or individual)
+  companyId: uuid('company_id').references(() => crmCompanies.id, { onDelete: 'cascade' }),
+  individualClientId: uuid('individual_client_id').references(() => individualClients.id, { onDelete: 'cascade' }),
+  
+  // Invoice details
+  invoiceNumber: text('invoice_number').unique().notNull(), // e.g., INV-2024-001
+  invoiceDate: date('invoice_date').notNull(),
+  dueDate: date('due_date').notNull(),
+  
+  // Reference to contract (optional)
+  contractId: uuid('contract_id').references(() => contracts.id),
+  
+  // Line items stored as JSON
+  lineItems: jsonb('line_items').notNull(), // Array of { description, quantity, unitPrice, amount }
+  
+  // Totals
+  subtotal: decimal('subtotal', { precision: 15, scale: 2 }).notNull(),
+  taxRate: decimal('tax_rate', { precision: 5, scale: 2 }).default('0'), // e.g., 11 for 11%
+  taxAmount: decimal('tax_amount', { precision: 15, scale: 2 }).default('0'),
+  discount: decimal('discount', { precision: 15, scale: 2 }).default('0'),
+  total: decimal('total', { precision: 15, scale: 2 }).notNull(),
+  currency: text('currency').default('IDR'),
+  
+  // Payment information
+  paymentTerms: text('payment_terms'), // e.g., "Net 30", "Due on receipt"
+  paymentStatus: text('payment_status').default('pending').$type<'pending' | 'partial' | 'paid' | 'overdue' | 'cancelled'>(),
+  paidAmount: decimal('paid_amount', { precision: 15, scale: 2 }).default('0'),
+  paidAt: timestamp('paid_at', { withTimezone: true }),
+  
+  // Payment method (if paid)
+  paymentMethod: text('payment_method').$type<'bank_transfer' | 'cash' | 'crypto' | 'other'>(),
+  paymentReference: text('payment_reference'), // Transaction ID, reference number, etc.
+  
+  // Document
+  pdfUrl: text('pdf_url'), // Generated PDF invoice
+  
+  // Notes
+  notes: text('notes'),
+  internalNotes: text('internal_notes'), // Only visible to admin/HR
+  
+  // Metadata
+  createdBy: uuid('created_by').notNull().references(() => users.id),
+  
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_invoices_company').on(table.companyId),
+  index('idx_invoices_individual').on(table.individualClientId),
+  index('idx_invoices_contract').on(table.contractId),
+  index('idx_invoices_status').on(table.paymentStatus),
+  index('idx_invoices_number').on(table.invoiceNumber),
+  index('idx_invoices_date').on(table.invoiceDate),
+]);

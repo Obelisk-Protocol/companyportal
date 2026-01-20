@@ -68,7 +68,7 @@ export default function ClientDetail() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
       </div>
     );
   }
@@ -123,11 +123,11 @@ export default function ClientDetail() {
             <div className="flex items-center gap-3 mb-6">
               {isCompany ? (
                 <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
-                  <Building2 className="w-6 h-6 text-white" />
+                  <Building2 className="w-6 h-6 text-neutral-900 dark:text-white" />
                 </div>
               ) : (
                 <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
-                  <User className="w-6 h-6 text-white" />
+                  <User className="w-6 h-6 text-neutral-900 dark:text-white" />
                 </div>
               )}
               <div>

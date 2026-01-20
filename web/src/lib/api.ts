@@ -100,11 +100,33 @@ export const api = {
     const formData = new FormData();
     formData.append(fieldName, file);
 
-    const response = await fetch(`${API_URL}/api${endpoint}`, {
+    let headers: Record<string, string> = {};
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+
+    let response = await fetch(`${API_URL}/api${endpoint}`, {
       method: 'POST',
-      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+      headers,
       body: formData,
     });
+
+    // If unauthorized, try to refresh token
+    if (response.status === 401 && accessToken) {
+      const newToken = await refreshAccessToken();
+      if (newToken) {
+        headers['Authorization'] = `Bearer ${newToken}`;
+        response = await fetch(`${API_URL}/api${endpoint}`, {
+          method: 'POST',
+          headers,
+          body: formData,
+        });
+      } else {
+        // Redirect to login
+        window.location.href = '/login';
+        throw new ApiError(401, 'Session expired');
+      }
+    }
 
     const data = await response.json();
 

@@ -89,9 +89,9 @@ export default function Invitations() {
       case 'admin':
         return 'bg-white text-black';
       case 'hr':
-        return 'bg-neutral-700 text-white';
+        return 'bg-neutral-700 text-neutral-900 dark:text-white';
       case 'accountant':
-        return 'bg-blue-600 text-white';
+        return 'bg-blue-600 text-neutral-900 dark:text-white';
       default:
         return 'bg-neutral-800 text-neutral-300';
     }
@@ -136,7 +136,7 @@ export default function Invitations() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Invitations</h1>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Invitations</h1>
           <p className="text-neutral-500">Manage user invitations</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
@@ -153,7 +153,7 @@ export default function Invitations() {
             className={cn(
               'flex-1 px-6 py-4 text-sm font-medium transition-colors relative',
               activeTab === 'pending'
-                ? 'text-white border-b-2 border-white'
+                ? 'text-neutral-900 dark:text-white border-b-2 border-neutral-900 dark:border-white'
                 : 'text-neutral-400 hover:text-neutral-300'
             )}
           >
@@ -169,7 +169,7 @@ export default function Invitations() {
             className={cn(
               'flex-1 px-6 py-4 text-sm font-medium transition-colors relative',
               activeTab === 'accepted'
-                ? 'text-white border-b-2 border-white'
+                ? 'text-neutral-900 dark:text-white border-b-2 border-neutral-900 dark:border-white'
                 : 'text-neutral-400 hover:text-neutral-300'
             )}
           >
@@ -185,7 +185,7 @@ export default function Invitations() {
             className={cn(
               'flex-1 px-6 py-4 text-sm font-medium transition-colors relative',
               activeTab === 'cancelled'
-                ? 'text-white border-b-2 border-white'
+                ? 'text-neutral-900 dark:text-white border-b-2 border-neutral-900 dark:border-white'
                 : 'text-neutral-400 hover:text-neutral-300'
             )}
           >
@@ -201,7 +201,7 @@ export default function Invitations() {
         <div className="p-6">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
             </div>
           ) : filteredInvitations.length > 0 ? (
             <Table>
@@ -217,7 +217,7 @@ export default function Invitations() {
               <TableBody>
                 {filteredInvitations.map((invitation) => (
                 <TableRow key={invitation.id}>
-                  <TableCell className="font-medium text-white">{invitation.name}</TableCell>
+                  <TableCell className="font-medium text-neutral-900 dark:text-white">{invitation.name}</TableCell>
                   <TableCell>{invitation.email}</TableCell>
                   <TableCell>
                     <span className={cn('badge', getRoleBadge(invitation.role))}>

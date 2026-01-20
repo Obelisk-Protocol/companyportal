@@ -88,7 +88,7 @@ export default function Settings() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
       </div>
     );
   }
@@ -100,15 +100,15 @@ export default function Settings() {
       className="space-y-6"
     >
       <div>
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Settings</h1>
         <p className="text-neutral-500">Company configuration</p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
-            <Building className="w-5 h-5 text-white" />
-            <h3 className="font-semibold text-white">Company Information</h3>
+            <Building className="w-5 h-5 text-neutral-900 dark:text-white" />
+            <h3 className="font-semibold text-neutral-900 dark:text-white">Company Information</h3>
           </div>
 
           {/* Logo Upload Section */}
@@ -245,7 +245,7 @@ export default function Settings() {
               <select
                 value={formData.jkkRiskLevel}
                 onChange={(e) => setFormData({ ...formData, jkkRiskLevel: parseFloat(e.target.value) })}
-                className="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+                className="w-full px-4 py-2.5 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20"
               >
                 <option value={0.24}>0.24% - Group I (Very Low Risk)</option>
                 <option value={0.54}>0.54% - Group II (Low Risk)</option>

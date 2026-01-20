@@ -688,3 +688,272 @@ export async function generateBuktiPotong1721A1Pdf(data: BuktiPotong1721A1Data):
   
   return pdfDoc.save();
 }
+
+// Invoice PDF Generation
+export interface InvoicePdfData {
+  company: {
+    name: string;
+    npwp: string;
+    address?: string | null;
+    city?: string | null;
+    province?: string | null;
+    phone?: string | null;
+    email?: string | null;
+    logoUrl?: string | null;
+    solanaWallet?: string | null;
+  };
+  client: {
+    name: string;
+    address?: string | null;
+    city?: string | null;
+    province?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    npwp?: string | null;
+    solanaWallet?: string | null;
+  };
+  invoice: {
+    invoiceNumber: string;
+    invoiceDate: string;
+    dueDate: string;
+    lineItems: Array<{
+      description: string;
+      quantity: number;
+      unitPrice: number;
+      amount: number;
+    }>;
+    subtotal: string;
+    taxRate: string;
+    taxAmount: string;
+    discount: string;
+    total: string;
+    currency: string;
+    paymentTerms?: string | null;
+    notes?: string | null;
+    paymentStatus: string;
+    paidAmount?: string | null;
+  };
+}
+
+export async function generateInvoicePdf(data: InvoicePdfData): Promise<Uint8Array> {
+  const { company, client, invoice } = data;
+  
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([595.28, 841.89]); // A4 size
+  
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  
+  const { width, height } = page.getSize();
+  const margin = 50;
+  let y = height - margin;
+  
+  const drawText = (text: string, x: number, yPos: number, options: { font?: typeof font; size?: number; color?: ReturnType<typeof rgb>; maxWidth?: number } = {}) => {
+    page.drawText(text, {
+      x,
+      y: yPos,
+      font: options.font || font,
+      size: options.size || 10,
+      color: options.color || rgb(0, 0, 0),
+      maxWidth: options.maxWidth,
+    });
+  };
+  
+  const drawLine = (x1: number, y1: number, x2: number, y2: number, thickness = 1) => {
+    page.drawLine({
+      start: { x: x1, y: y1 },
+      end: { x: x2, y: y2 },
+      thickness,
+      color: rgb(0, 0, 0),
+    });
+  };
+  
+  // Header - Invoice Title
+  drawText('INVOICE', margin, y, { font: fontBold, size: 24 });
+  y -= 35;
+  
+  // Company Info (Left)
+  drawText(company.name, margin, y, { font: fontBold, size: 12 });
+  y -= 15;
+  if (company.address) {
+    drawText(company.address, margin, y, { size: 9 });
+    y -= 12;
+  }
+  if (company.city || company.province) {
+    drawText(`${company.city || ''} ${company.province || ''}`.trim(), margin, y, { size: 9 });
+    y -= 12;
+  }
+  if (company.phone) {
+    drawText(`Phone: ${company.phone}`, margin, y, { size: 9 });
+    y -= 12;
+  }
+  if (company.email) {
+    drawText(`Email: ${company.email}`, margin, y, { size: 9 });
+    y -= 12;
+  }
+  drawText(`NPWP: ${company.npwp}`, margin, y, { size: 9 });
+  y -= 20;
+  
+  // Client Info (Right)
+  const clientX = width - margin - 150;
+  y = height - margin;
+  drawText('Bill To:', clientX, y, { font: fontBold, size: 10 });
+  y -= 15;
+  drawText(client.name, clientX, y, { font: fontBold, size: 11 });
+  y -= 15;
+  if (client.address) {
+    drawText(client.address, clientX, y, { size: 9 });
+    y -= 12;
+  }
+  if (client.city || client.province) {
+    drawText(`${client.city || ''} ${client.province || ''}`.trim(), clientX, y, { size: 9 });
+    y -= 12;
+  }
+  if (client.email) {
+    drawText(`Email: ${client.email}`, clientX, y, { size: 9 });
+    y -= 12;
+  }
+  if (client.phone) {
+    drawText(`Phone: ${client.phone}`, clientX, y, { size: 9 });
+    y -= 12;
+  }
+  if (client.npwp) {
+    drawText(`NPWP: ${client.npwp}`, clientX, y, { size: 9 });
+  }
+  
+  y = height - margin - 120;
+  drawLine(margin, y, width - margin, y);
+  y -= 25;
+  
+  // Invoice Details
+  const detailX = margin;
+  drawText(`Invoice Number: ${invoice.invoiceNumber}`, detailX, y, { font: fontBold, size: 10 });
+  y -= 15;
+  drawText(`Invoice Date: ${new Date(invoice.invoiceDate).toLocaleDateString('id-ID')}`, detailX, y, { size: 9 });
+  y -= 12;
+  drawText(`Due Date: ${new Date(invoice.dueDate).toLocaleDateString('id-ID')}`, detailX, y, { size: 9 });
+  if (invoice.paymentTerms) {
+    y -= 12;
+    drawText(`Payment Terms: ${invoice.paymentTerms}`, detailX, y, { size: 9 });
+  }
+  
+  y -= 20;
+  drawLine(margin, y, width - margin, y);
+  y -= 25;
+  
+  // Line Items Table
+  const tableY = y;
+  const col1 = margin;
+  const col2 = margin + 200;
+  const col3 = width - margin - 150;
+  const col4 = width - margin;
+  
+  // Table Header
+  drawText('Description', col1, tableY, { font: fontBold, size: 10 });
+  drawText('Qty', col2, tableY, { font: fontBold, size: 10 });
+  drawText('Unit Price', col3, tableY, { font: fontBold, size: 10 });
+  drawText('Amount', col4 - 60, tableY, { font: fontBold, size: 10 });
+  
+  y = tableY - 15;
+  drawLine(margin, y, width - margin, y);
+  y -= 20;
+  
+  // Line Items
+  for (const item of invoice.lineItems) {
+    if (y < 200) {
+      // New page if needed
+      const newPage = pdfDoc.addPage([595.28, 841.89]);
+      y = height - margin - 30;
+    }
+    
+    drawText(item.description, col1, y, { size: 9, maxWidth: 180 });
+    drawText(String(item.quantity), col2, y, { size: 9 });
+    drawText(formatRupiah(item.unitPrice), col3, y, { size: 9 });
+    drawText(formatRupiah(item.amount), col4 - 60, y, { size: 9 });
+    y -= 18;
+  }
+  
+  y -= 10;
+  drawLine(margin, y, width - margin, y);
+  y -= 20;
+  
+  // Totals
+  const totalsX = width - margin - 150;
+  drawText('Subtotal:', totalsX, y, { size: 10 });
+  drawText(formatRupiah(parseFloat(invoice.subtotal)), col4 - 60, y, { size: 10 });
+  y -= 15;
+  
+  if (parseFloat(invoice.taxRate) > 0) {
+    drawText(`Tax (${invoice.taxRate}%):`, totalsX, y, { size: 10 });
+    drawText(formatRupiah(parseFloat(invoice.taxAmount)), col4 - 60, y, { size: 10 });
+    y -= 15;
+  }
+  
+  if (parseFloat(invoice.discount) > 0) {
+    drawText('Discount:', totalsX, y, { size: 10 });
+    drawText(`-${formatRupiah(parseFloat(invoice.discount))}`, col4 - 60, y, { size: 10 });
+    y -= 15;
+  }
+  
+  y -= 5;
+  drawLine(totalsX, y, width - margin, y, 2);
+  y -= 15;
+  
+  drawText('TOTAL:', totalsX, y, { font: fontBold, size: 12 });
+  drawText(formatRupiah(parseFloat(invoice.total)), col4 - 60, y, { font: fontBold, size: 12 });
+  
+  y -= 30;
+  drawLine(margin, y, width - margin, y);
+  y -= 20;
+  
+  // Payment Status
+  if (invoice.paymentStatus === 'paid') {
+    drawText('PAID', margin, y, { font: fontBold, size: 12, color: rgb(0, 0.6, 0) });
+    if (invoice.paidAmount) {
+      y -= 15;
+      drawText(`Paid Amount: ${formatRupiah(parseFloat(invoice.paidAmount))}`, margin, y, { size: 9 });
+    }
+  } else if (invoice.paymentStatus === 'partial') {
+    drawText('PARTIALLY PAID', margin, y, { font: fontBold, size: 12, color: rgb(1, 0.65, 0) });
+    if (invoice.paidAmount) {
+      y -= 15;
+      drawText(`Paid Amount: ${formatRupiah(parseFloat(invoice.paidAmount))}`, margin, y, { size: 9 });
+      y -= 12;
+      drawText(`Remaining: ${formatRupiah(parseFloat(invoice.total) - parseFloat(invoice.paidAmount))}`, margin, y, { size: 9 });
+    }
+  } else {
+    drawText('PENDING PAYMENT', margin, y, { font: fontBold, size: 12, color: rgb(0.8, 0, 0) });
+  }
+  
+  y -= 30;
+  
+  // Notes
+  if (invoice.notes) {
+    drawText('Notes:', margin, y, { font: fontBold, size: 10 });
+    y -= 15;
+    drawText(invoice.notes, margin, y, { size: 9, maxWidth: width - 2 * margin });
+    y -= 20;
+  }
+  
+  // Payment Information
+  y -= 20;
+  drawText('Payment Information:', margin, y, { font: fontBold, size: 10 });
+  y -= 15;
+  
+  if (company.solanaWallet) {
+    drawText(`Solana Wallet: ${company.solanaWallet}`, margin, y, { size: 9, color: rgb(0.2, 0.4, 0.8) });
+    y -= 12;
+  }
+  if (client.solanaWallet) {
+    drawText(`Client Solana Wallet: ${client.solanaWallet}`, margin, y, { size: 9, color: rgb(0.2, 0.4, 0.8) });
+  }
+  
+  y -= 40;
+  
+  // Footer
+  drawText('Thank you for your business!', margin, y, { size: 9, color: rgb(0.5, 0.5, 0.5) });
+  y -= 15;
+  drawText('This invoice is electronically generated and valid without signature.', margin, y, { size: 8, color: rgb(0.5, 0.5, 0.5) });
+  
+  return pdfDoc.save();
+}

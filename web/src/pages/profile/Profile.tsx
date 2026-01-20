@@ -163,7 +163,7 @@ export default function Profile() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
       </div>
     );
   }
@@ -176,7 +176,7 @@ export default function Profile() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">My Profile</h1>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">My Profile</h1>
           <p className="text-neutral-500">Manage your account settings</p>
         </div>
         <Button variant="outline" onClick={() => setIsPasswordModalOpen(true)}>
@@ -188,48 +188,48 @@ export default function Profile() {
       {/* Account Info */}
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-6">
-          <User className="w-5 h-5 text-white" />
-          <h3 className="font-semibold text-white">Account Information</h3>
+          <User className="w-5 h-5 text-neutral-900 dark:text-white" />
+          <h3 className="font-semibold text-neutral-900 dark:text-white">Account Information</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <p className="text-sm text-neutral-500">Email</p>
-            <p className="text-white">{profile?.user.email}</p>
+            <p className="text-neutral-900 dark:text-white">{profile?.user.email}</p>
           </div>
           <div>
             <p className="text-sm text-neutral-500">Role</p>
-            <p className="text-white">{getRoleLabel(profile?.user.role || '')}</p>
+            <p className="text-neutral-900 dark:text-white">{getRoleLabel(profile?.user.role || '')}</p>
           </div>
           <div>
             <p className="text-sm text-neutral-500">Member Since</p>
-            <p className="text-white">{profile?.user.createdAt ? formatDate(profile.user.createdAt) : '-'}</p>
+            <p className="text-neutral-900 dark:text-white">{profile?.user.createdAt ? formatDate(profile.user.createdAt) : '-'}</p>
           </div>
         </div>
         {profile?.employee && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-neutral-800">
             <div>
               <p className="text-sm text-neutral-500">Employee #</p>
-              <p className="text-white font-mono">{profile.employee.employeeNumber}</p>
+              <p className="text-neutral-900 dark:text-white font-mono">{profile.employee.employeeNumber}</p>
             </div>
             <div>
               <p className="text-sm text-neutral-500">Department</p>
-              <p className="text-white">{profile.employee.department || '-'}</p>
+              <p className="text-neutral-900 dark:text-white">{profile.employee.department || '-'}</p>
             </div>
             <div>
               <p className="text-sm text-neutral-500">Position</p>
-              <p className="text-white">{profile.employee.position || '-'}</p>
+              <p className="text-neutral-900 dark:text-white">{profile.employee.position || '-'}</p>
             </div>
             <div>
               <p className="text-sm text-neutral-500">NIK</p>
-              <p className="text-white font-mono">{profile.employee.nik}</p>
+              <p className="text-neutral-900 dark:text-white font-mono">{profile.employee.nik}</p>
             </div>
             <div>
               <p className="text-sm text-neutral-500">NPWP</p>
-              <p className="text-white font-mono">{profile.employee.npwp || '-'}</p>
+              <p className="text-neutral-900 dark:text-white font-mono">{profile.employee.npwp || '-'}</p>
             </div>
             <div>
               <p className="text-sm text-neutral-500">Join Date</p>
-              <p className="text-white">{formatDate(profile.employee.joinDate)}</p>
+              <p className="text-neutral-900 dark:text-white">{formatDate(profile.employee.joinDate)}</p>
             </div>
           </div>
         )}
@@ -242,8 +242,8 @@ export default function Profile() {
             {/* Personal Info */}
             <Card className="p-6">
               <div className="flex items-center gap-2 mb-6">
-                <User className="w-5 h-5 text-white" />
-                <h3 className="font-semibold text-white">Personal Information</h3>
+                <User className="w-5 h-5 text-neutral-900 dark:text-white" />
+                <h3 className="font-semibold text-neutral-900 dark:text-white">Personal Information</h3>
               </div>
               <div className="space-y-4">
                 <Input
@@ -265,8 +265,8 @@ export default function Profile() {
             {/* KTP Upload */}
             <Card className="p-6">
               <div className="flex items-center gap-2 mb-6">
-                <FileImage className="w-5 h-5 text-white" />
-                <h3 className="font-semibold text-white">KTP (ID Card)</h3>
+                <FileImage className="w-5 h-5 text-neutral-900 dark:text-white" />
+                <h3 className="font-semibold text-neutral-900 dark:text-white">KTP (ID Card)</h3>
               </div>
               <div className="space-y-4">
                 {formData.ktpUrl ? (
@@ -282,7 +282,7 @@ export default function Profile() {
                         onClick={() => setFormData({ ...formData, ktpUrl: '' })}
                         className="absolute top-2 right-2 p-1.5 bg-black/70 rounded-full hover:bg-black transition-colors"
                       >
-                        <X className="w-4 h-4 text-white" />
+                        <X className="w-4 h-4 text-neutral-900 dark:text-white" />
                       </button>
                     </div>
                     <div className="flex gap-2">
@@ -290,7 +290,7 @@ export default function Profile() {
                         href={formData.ktpUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-sm text-neutral-400 hover:text-white transition-colors"
+                        className="flex items-center gap-2 text-sm text-neutral-400 hover:text-neutral-900 dark:text-white transition-colors"
                       >
                         <ExternalLink className="w-4 h-4" />
                         View full size
@@ -309,7 +309,7 @@ export default function Profile() {
                     <div className="flex flex-col items-center justify-center gap-3 p-8 bg-neutral-800/50 border-2 border-dashed border-neutral-700 rounded-lg cursor-pointer hover:border-neutral-500 transition-colors">
                       <Upload className="w-8 h-8 text-neutral-500" />
                       <div className="text-center">
-                        <p className="text-white font-medium">
+                        <p className="text-neutral-900 dark:text-white font-medium">
                           {isUploading ? 'Uploading...' : 'Upload KTP Image'}
                         </p>
                         <p className="text-sm text-neutral-500 mt-1">
@@ -325,8 +325,8 @@ export default function Profile() {
             {/* Address */}
             <Card className="p-6">
               <div className="flex items-center gap-2 mb-6">
-                <MapPin className="w-5 h-5 text-white" />
-                <h3 className="font-semibold text-white">Address</h3>
+                <MapPin className="w-5 h-5 text-neutral-900 dark:text-white" />
+                <h3 className="font-semibold text-neutral-900 dark:text-white">Address</h3>
               </div>
               <div className="space-y-4">
                 <Input
@@ -358,8 +358,8 @@ export default function Profile() {
             {/* Bank Info */}
             <Card className="p-6">
               <div className="flex items-center gap-2 mb-6">
-                <CreditCard className="w-5 h-5 text-white" />
-                <h3 className="font-semibold text-white">Bank Information</h3>
+                <CreditCard className="w-5 h-5 text-neutral-900 dark:text-white" />
+                <h3 className="font-semibold text-neutral-900 dark:text-white">Bank Information</h3>
               </div>
               <div className="space-y-4">
                 <Input

@@ -294,9 +294,23 @@ auth.post('/register', zValidator('json', registerSchema), async (c) => {
       return c.json({ error: 'NIK is required and must be 16 digits' }, 400);
     }
 
-    // Generate employee number
-    const employeeCount = await db.select().from(schema.employees);
-    const employeeNumber = `EMP${String(employeeCount.length + 1).padStart(4, '0')}`;
+    // Generate employee number - find the highest number and increment
+    const allEmployees = await db
+      .select({ employeeNumber: schema.employees.employeeNumber })
+      .from(schema.employees);
+    
+    let maxNumber = 0;
+    for (const emp of allEmployees) {
+      const match = emp.employeeNumber.match(/^EMP(\d+)$/);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (num > maxNumber) {
+          maxNumber = num;
+        }
+      }
+    }
+    
+    const employeeNumber = `EMP${String(maxNumber + 1).padStart(4, '0')}`;
 
     // Create employee
     const [employee] = await db

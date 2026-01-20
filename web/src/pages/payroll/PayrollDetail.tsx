@@ -70,7 +70,7 @@ export default function PayrollDetail() {
   if (runLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
       </div>
     );
   }
@@ -99,7 +99,7 @@ export default function PayrollDetail() {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">
               Payroll {getIndonesianMonth(payrollRun.periodMonth)} {payrollRun.periodYear}
             </h1>
             <p className="text-neutral-500">{payrollRun.notes || 'Monthly payroll'}</p>
@@ -114,13 +114,13 @@ export default function PayrollDetail() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-4">
           <p className="text-sm text-neutral-500">Total Gross</p>
-          <p className="text-xl font-bold text-white">
+          <p className="text-xl font-bold text-neutral-900 dark:text-white">
             {payrollRun.totalGross ? formatRupiah(parseFloat(payrollRun.totalGross)) : '-'}
           </p>
         </Card>
         <Card className="p-4">
           <p className="text-sm text-neutral-500">Total Net</p>
-          <p className="text-xl font-bold text-white">
+          <p className="text-xl font-bold text-neutral-900 dark:text-white">
             {payrollRun.totalNet ? formatRupiah(parseFloat(payrollRun.totalNet)) : '-'}
           </p>
         </Card>
@@ -166,10 +166,10 @@ export default function PayrollDetail() {
 
       {/* Payslips Table */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Employee Payslips</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">Employee Payslips</h3>
         {payslipsLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
           </div>
         ) : payslips && payslips.length > 0 ? (
           <Table>
@@ -200,7 +200,7 @@ export default function PayrollDetail() {
                   <TableRow key={payslip.id}>
                     <TableCell>
                       <div>
-                        <p className="font-medium text-white">{employee.fullName}</p>
+                        <p className="font-medium text-neutral-900 dark:text-white">{employee.fullName}</p>
                         <p className="text-sm text-neutral-500">{employee.employeeNumber}</p>
                       </div>
                     </TableCell>
@@ -208,7 +208,7 @@ export default function PayrollDetail() {
                     <TableCell>{formatRupiah(tunjangan)}</TableCell>
                     <TableCell className="text-neutral-400">-{formatRupiah(bpjsEmployee)}</TableCell>
                     <TableCell className="text-neutral-400">-{formatRupiah(parseFloat(payslip.pph21))}</TableCell>
-                    <TableCell className="font-semibold text-white">
+                    <TableCell className="font-semibold text-neutral-900 dark:text-white">
                       {formatRupiah(parseFloat(payslip.netSalary))}
                     </TableCell>
                     <TableCell>

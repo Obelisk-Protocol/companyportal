@@ -47,7 +47,7 @@ export default function PayrollRuns() {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Payroll</h1>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Payroll</h1>
           <p className="text-neutral-500">Manage monthly payroll runs</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
@@ -59,7 +59,7 @@ export default function PayrollRuns() {
       <Card className="p-6">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
           </div>
         ) : (
           <Table>
@@ -80,10 +80,10 @@ export default function PayrollRuns() {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                        <Calendar className="w-5 h-5 text-white" />
+                        <Calendar className="w-5 h-5 text-neutral-900 dark:text-white" />
                       </div>
                       <div>
-                        <p className="font-medium text-white">
+                        <p className="font-medium text-neutral-900 dark:text-white">
                           {getIndonesianMonth(run.periodMonth)} {run.periodYear}
                         </p>
                         <p className="text-sm text-neutral-500">
@@ -144,7 +144,7 @@ export default function PayrollRuns() {
               <select
                 value={newRun.periodMonth}
                 onChange={(e) => setNewRun({ ...newRun, periodMonth: parseInt(e.target.value) })}
-                className="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+                className="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-white/20"
               >
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>

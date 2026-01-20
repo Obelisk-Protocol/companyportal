@@ -4,7 +4,38 @@ import { uploadToR2, generateFileKey, getUploadPresignedUrl } from '../utils/r2.
 
 const upload = new Hono();
 
-// Apply auth middleware to all routes
+// POST /upload/ktp - Upload KTP image (public, for registration)
+upload.post('/ktp', async (c) => {
+  const formData = await c.req.formData();
+  const file = formData.get('file') as File;
+  
+  if (!file) {
+    return c.json({ error: 'No file provided' }, 400);
+  }
+  
+  // Validate file type
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+  if (!allowedTypes.includes(file.type)) {
+    return c.json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, PDF' }, 400);
+  }
+  
+  // Validate file size (max 5MB)
+  const maxSize = 5 * 1024 * 1024;
+  if (file.size > maxSize) {
+    return c.json({ error: 'File too large. Maximum size is 5MB' }, 400);
+  }
+  
+  // Read file
+  const buffer = await file.arrayBuffer();
+  
+  // Generate key and upload
+  const key = generateFileKey('ktp', file.name);
+  const result = await uploadToR2(new Uint8Array(buffer), key, file.type);
+  
+  return c.json(result);
+});
+
+// Apply auth middleware to all other routes
 upload.use('*', authMiddleware);
 
 // POST /upload/receipt - Upload receipt image
@@ -73,37 +104,6 @@ upload.post('/avatar', async (c) => {
   return c.json(result);
 });
 
-// POST /upload/ktp - Upload KTP image
-upload.post('/ktp', async (c) => {
-  const formData = await c.req.formData();
-  const file = formData.get('file') as File;
-  
-  if (!file) {
-    return c.json({ error: 'No file provided' }, 400);
-  }
-  
-  // Validate file type
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
-  if (!allowedTypes.includes(file.type)) {
-    return c.json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, PDF' }, 400);
-  }
-  
-  // Validate file size (max 5MB)
-  const maxSize = 5 * 1024 * 1024;
-  if (file.size > maxSize) {
-    return c.json({ error: 'File too large. Maximum size is 5MB' }, 400);
-  }
-  
-  // Read file
-  const buffer = await file.arrayBuffer();
-  
-  // Generate key and upload
-  const key = generateFileKey('ktp', file.name);
-  const result = await uploadToR2(new Uint8Array(buffer), key, file.type);
-  
-  return c.json(result);
-});
-
 // POST /upload/logo - Upload company logo
 upload.post('/logo', async (c) => {
   const user = c.get('user');
@@ -138,6 +138,43 @@ upload.post('/logo', async (c) => {
   // Generate key and upload
   const key = generateFileKey('logos', file.name);
   const result = await uploadToR2(new Uint8Array(buffer), key, file.type);
+  
+  return c.json(result);
+});
+
+// POST /upload/contract - Upload contract PDF (Admin/HR only)
+upload.post('/contract', async (c) => {
+  const user = c.get('user');
+  
+  // Only admin/HR can upload contracts
+  if (user.role !== 'admin' && user.role !== 'hr') {
+    return c.json({ error: 'Forbidden' }, 403);
+  }
+  
+  const formData = await c.req.formData();
+  const file = formData.get('file') as File;
+  
+  if (!file) {
+    return c.json({ error: 'No file provided' }, 400);
+  }
+  
+  // Validate file type (PDF only for contracts)
+  if (file.type !== 'application/pdf') {
+    return c.json({ error: 'Invalid file type. Only PDF files are allowed for contracts' }, 400);
+  }
+  
+  // Validate file size (max 10MB)
+  const maxSize = 10 * 1024 * 1024;
+  if (file.size > maxSize) {
+    return c.json({ error: 'File too large. Maximum size is 10MB' }, 400);
+  }
+  
+  // Read file
+  const buffer = await file.arrayBuffer();
+  
+  // Generate key and upload
+  const key = generateFileKey('contracts', file.name);
+  const result = await uploadToR2(new Uint8Array(buffer), key, 'application/pdf');
   
   return c.json(result);
 });

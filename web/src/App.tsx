@@ -21,6 +21,11 @@ import Clients from './pages/crm/Clients';
 import CreateCompany from './pages/crm/CreateCompany';
 import CreateIndividual from './pages/crm/CreateIndividual';
 import ClientDetail from './pages/crm/ClientDetail';
+import Contracts from './pages/contracts/Contracts';
+import ContractDetail from './pages/contracts/ContractDetail';
+import ContractManagement from './pages/contracts/ContractManagement';
+import Invoices from './pages/invoices/Invoices';
+import InvoiceDetail from './pages/invoices/InvoiceDetail';
 
 function PrivateRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { user, isLoading } = useAuth();
@@ -28,7 +33,7 @@ function PrivateRoute({ children, allowedRoles }: { children: React.ReactNode; a
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
       </div>
     );
   }
@@ -111,6 +116,24 @@ export default function App() {
 
         {/* Payslip route for employees */}
         <Route path="my-payslips" element={<MyPayslips />} />
+        
+        {/* Employee contracts */}
+        <Route
+          path="my-contracts"
+          element={
+            <PrivateRoute allowedRoles={['employee']}>
+              <Contracts />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="my-contracts/:id"
+          element={
+            <PrivateRoute allowedRoles={['employee']}>
+              <ContractDetail />
+            </PrivateRoute>
+          }
+        />
 
         {/* Reports - Admin/HR/Accountant */}
         <Route
@@ -193,6 +216,50 @@ export default function App() {
           element={
             <PrivateRoute allowedRoles={['admin', 'hr', 'accountant']}>
               <ClientDetail />
+            </PrivateRoute>
+          }
+        />
+        
+        {/* Contract Management - Admin/HR */}
+        <Route
+          path="contracts/management"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr']}>
+              <ContractManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        {/* Client routes */}
+        <Route
+          path="contracts"
+          element={
+            <PrivateRoute allowedRoles={['client']}>
+              <Contracts />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="contracts/:id"
+          element={
+            <PrivateRoute allowedRoles={['client', 'admin', 'hr']}>
+              <ContractDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="invoices"
+          element={
+            <PrivateRoute allowedRoles={['client']}>
+              <Invoices />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="invoices/:id"
+          element={
+            <PrivateRoute allowedRoles={['client']}>
+              <InvoiceDetail />
             </PrivateRoute>
           }
         />
