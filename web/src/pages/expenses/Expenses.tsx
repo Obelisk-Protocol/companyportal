@@ -457,7 +457,7 @@ export default function Expenses() {
                     onChange={handleFileSelect}
                     className="hidden"
                   />
-                  <div className="flex items-center justify-center gap-3 px-6 py-8 bg-neutral-900 border-2 border-dashed border-neutral-700 rounded-lg cursor-pointer hover:border-neutral-900 dark:border-white transition-colors">
+                  <div className="flex items-center justify-center gap-3 px-6 py-8 bg-[var(--bg-input)] border-2 border-dashed border-[var(--border-color)] rounded-lg cursor-pointer hover:border-[var(--accent-primary)] transition-colors">
                     {receiptFile ? (
                       <div className="flex items-center gap-3">
                         <Check className="w-5 h-5 text-green-500" />

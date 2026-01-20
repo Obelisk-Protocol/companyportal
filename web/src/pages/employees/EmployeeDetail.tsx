@@ -200,7 +200,7 @@ export default function EmployeeDetail() {
               <h3 className="font-semibold text-neutral-900 dark:text-white">KTP (ID Card)</h3>
             </div>
             <div className="space-y-3">
-              <div className="relative aspect-[1.6/1] bg-neutral-800 rounded-lg overflow-hidden">
+              <div className="relative aspect-[1.6/1] bg-[var(--bg-secondary)] rounded-lg overflow-hidden">
                 <img
                   src={employee.ktpUrl}
                   alt="KTP"

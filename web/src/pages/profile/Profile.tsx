@@ -271,7 +271,7 @@ export default function Profile() {
               <div className="space-y-4">
                 {formData.ktpUrl ? (
                   <div className="space-y-3">
-                    <div className="relative aspect-[1.6/1] bg-neutral-800 rounded-lg overflow-hidden">
+                    <div className="relative aspect-[1.6/1] bg-[var(--bg-secondary)] rounded-lg overflow-hidden">
                       <img
                         src={formData.ktpUrl}
                         alt="KTP"
@@ -306,7 +306,7 @@ export default function Profile() {
                       className="hidden"
                       disabled={isUploading}
                     />
-                    <div className="flex flex-col items-center justify-center gap-3 p-8 bg-neutral-800/50 border-2 border-dashed border-neutral-700 rounded-lg cursor-pointer hover:border-neutral-500 transition-colors">
+                    <div className="flex flex-col items-center justify-center gap-3 p-8 bg-[var(--bg-input)] border-2 border-dashed border-[var(--border-color)] rounded-lg cursor-pointer hover:border-[var(--text-secondary)] transition-colors">
                       <Upload className="w-8 h-8 text-neutral-500" />
                       <div className="text-center">
                         <p className="text-neutral-900 dark:text-white font-medium">

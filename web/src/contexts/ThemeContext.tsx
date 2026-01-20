@@ -18,11 +18,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem('theme', theme);
     
+    // Tailwind's dark mode uses class-based strategy - only add/remove 'dark' class
+    // Light mode is the default (when 'dark' class is absent)
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
     } else {
-      document.documentElement.classList.add('light');
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);

@@ -135,7 +135,7 @@ export default function Reports() {
             <select
               value={year}
               onChange={(e) => setYear(parseInt(e.target.value))}
-              className="px-4 py-2 bg-neutral-900 border border-neutral-700 rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+              className="px-4 py-2 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20"
             >
               {[2023, 2024, 2025, 2026].map((y) => (
                 <option key={y} value={y}>{y}</option>

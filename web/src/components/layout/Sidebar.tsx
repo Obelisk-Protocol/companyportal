@@ -94,7 +94,7 @@ export default function Sidebar() {
                 isActive
                   ? theme === 'dark' 
                     ? 'bg-white text-black' 
-                    : 'bg-black text-neutral-900 dark:text-white'
+                    : 'bg-black text-white'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-bg)]'
               )
             }

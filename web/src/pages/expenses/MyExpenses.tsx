@@ -256,7 +256,7 @@ export default function MyExpenses() {
                   onChange={handleFileUpload}
                   className="hidden"
                 />
-                <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-neutral-900 border border-neutral-700 border-dashed rounded-lg cursor-pointer hover:border-neutral-900 dark:border-white transition-colors">
+                <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[var(--bg-input)] border border-[var(--border-color)] border-dashed rounded-lg cursor-pointer hover:border-[var(--accent-primary)] transition-colors">
                   <Upload className="w-5 h-5 text-neutral-500" />
                   <span className="text-neutral-500">
                     {isUploading ? 'Uploading...' : 'Upload receipt'}

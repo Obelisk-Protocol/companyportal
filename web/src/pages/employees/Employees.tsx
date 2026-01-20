@@ -84,7 +84,7 @@ export default function Employees() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search employees..."
-              className="w-full pl-10 pr-4 py-2.5 bg-neutral-900 border border-neutral-700 rounded-lg text-neutral-900 dark:text-white placeholder-neutral-600 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-900 dark:border-white/50"
+              className="w-full pl-10 pr-4 py-2.5 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20 focus:border-[var(--accent-primary)]/50"
             />
           </div>
         </div>

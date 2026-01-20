@@ -122,7 +122,7 @@ export default function Settings() {
                   <img
                     src={formData.logoUrl}
                     alt="Company logo"
-                    className="h-20 w-20 object-contain bg-neutral-800 rounded-lg p-2 border border-neutral-700"
+                    className="h-20 w-20 object-contain bg-[var(--bg-secondary)] rounded-lg p-2 border border-[var(--border-color)]"
                   />
                 </div>
                 <div className="flex-1">
@@ -169,7 +169,7 @@ export default function Settings() {
                   className="hidden"
                   disabled={isUploadingLogo}
                 />
-                <div className="flex flex-col items-center justify-center gap-3 p-8 bg-neutral-900 border-2 border-dashed border-neutral-700 rounded-lg hover:border-neutral-600 transition-colors">
+                <div className="flex flex-col items-center justify-center gap-3 p-8 bg-[var(--bg-input)] border-2 border-dashed border-[var(--border-color)] rounded-lg hover:border-[var(--text-secondary)] transition-colors">
                   <ImageIcon className="w-8 h-8 text-neutral-600" />
                   <div className="text-center">
                     <p className="text-neutral-300 font-medium">
@@ -245,7 +245,7 @@ export default function Settings() {
               <select
                 value={formData.jkkRiskLevel}
                 onChange={(e) => setFormData({ ...formData, jkkRiskLevel: parseFloat(e.target.value) })}
-                className="w-full px-4 py-2.5 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20"
+                className="w-full px-4 py-2.5 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20"
               >
                 <option value={0.24}>0.24% - Group I (Very Low Risk)</option>
                 <option value={0.54}>0.54% - Group II (Low Risk)</option>
