@@ -187,19 +187,21 @@ export default function CreateIndividual() {
       </form>
 
       {/* Success Modal with Invite Option */}
-      {createMutation.isSuccess && createMutation.data && (
-        <Modal
-          isOpen={true}
-          onClose={() => {
-            createMutation.reset();
-            navigate('/crm/clients');
-          }}
-          title="Client Created Successfully"
-        >
-          <div className="space-y-4">
-            <p className="text-[var(--text-primary)]">
-              Client <strong>{createMutation.data.fullName}</strong> has been created.
-            </p>
+      {createMutation.isSuccess && createMutation.data ? (() => {
+        const data = createMutation.data as any;
+        return (
+          <Modal
+            isOpen={true}
+            onClose={() => {
+              createMutation.reset();
+              navigate('/crm/clients');
+            }}
+            title="Client Created Successfully"
+          >
+            <div className="space-y-4">
+              <p className="text-[var(--text-primary)]">
+                Client <strong>{data?.fullName}</strong> has been created.
+              </p>
             <p className="text-sm text-[var(--text-muted)]">
               Would you like to send an invitation to this client?
             </p>
@@ -215,7 +217,7 @@ export default function CreateIndividual() {
               </Button>
               <Button
                 onClick={() => {
-                  navigate(`/crm/clients/individual/${createMutation.data.id}`);
+                  navigate(`/crm/clients/individual/${data?.id}`);
                 }}
               >
                 Send Invitation
@@ -223,7 +225,8 @@ export default function CreateIndividual() {
             </div>
           </div>
         </Modal>
-      )}
+        );
+      })() : null}
     </div>
   );
 }

@@ -19,7 +19,6 @@ import {
   FileSignature,
   ReceiptText,
   Briefcase,
-  ArrowLeftRight,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 

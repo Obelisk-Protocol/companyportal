@@ -252,19 +252,21 @@ export default function CreateCompany() {
       </form>
 
       {/* Success Modal with Invite Option */}
-      {createMutation.isSuccess && createMutation.data && (
-        <Modal
-          isOpen={true}
-          onClose={() => {
-            createMutation.reset();
-            navigate('/crm/clients');
-          }}
-          title="Company Created Successfully"
-        >
-          <div className="space-y-4">
-            <p className="text-[var(--text-primary)]">
-              Company <strong>{createMutation.data.name}</strong> has been created.
-            </p>
+      {createMutation.isSuccess && createMutation.data ? (() => {
+        const data = createMutation.data as any;
+        return (
+          <Modal
+            isOpen={true}
+            onClose={() => {
+              createMutation.reset();
+              navigate('/crm/clients');
+            }}
+            title="Company Created Successfully"
+          >
+            <div className="space-y-4">
+              <p className="text-[var(--text-primary)]">
+                Company <strong>{data?.name}</strong> has been created.
+              </p>
             <p className="text-sm text-[var(--text-muted)]">
               Would you like to send an invitation to a contact at this company?
             </p>
@@ -280,7 +282,7 @@ export default function CreateCompany() {
               </Button>
               <Button
                 onClick={() => {
-                  navigate(`/crm/clients/company/${createMutation.data.id}`);
+                  navigate(`/crm/clients/company/${data?.id}`);
                 }}
               >
                 Send Invitation
@@ -288,7 +290,8 @@ export default function CreateCompany() {
             </div>
           </div>
         </Modal>
-      )}
+        );
+      })() : null}
     </div>
   );
 }

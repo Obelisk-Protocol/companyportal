@@ -84,15 +84,13 @@ export default function Invoices() {
         {invoices && invoices.length > 0 ? (
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Invoice</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Due Date</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
+              <TableHead>Invoice</TableHead>
+              <TableHead>Client</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Due Date</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
             </TableHeader>
             <TableBody>
               {invoices.map((invoice: any) => (

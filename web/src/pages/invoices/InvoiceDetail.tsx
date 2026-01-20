@@ -1,19 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
 import { api } from '../../lib/api';
 import { formatRupiah } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '../../components/ui/Table';
-import { ReceiptText, Download, Calendar, DollarSign, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { ReceiptText, Download, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
 export default function InvoiceDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const { data: invoice, isLoading } = useQuery({
     queryKey: ['invoice', id],
@@ -205,12 +203,10 @@ export default function InvoiceDetail() {
         <h3 className="font-semibold text-[var(--text-primary)] mb-4">Line Items</h3>
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Description</TableHead>
-              <TableHead className="text-right">Quantity</TableHead>
-              <TableHead className="text-right">Unit Price</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-            </TableRow>
+            <TableHead>Description</TableHead>
+            <TableHead className="text-right">Quantity</TableHead>
+            <TableHead className="text-right">Unit Price</TableHead>
+            <TableHead className="text-right">Amount</TableHead>
           </TableHeader>
           <TableBody>
             {lineItems.map((item: any, index: number) => (

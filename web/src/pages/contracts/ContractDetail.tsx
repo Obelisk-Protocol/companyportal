@@ -8,7 +8,7 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Modal from '../../components/ui/Modal';
-import { FileSignature, Download, PenTool, CheckCircle, XCircle, Calendar, DollarSign, Send } from 'lucide-react';
+import { FileSignature, Download, PenTool, CheckCircle, Calendar, DollarSign, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
@@ -138,7 +138,6 @@ export default function ContractDetail() {
   }
 
   const canSign = (user?.role === 'client' || user?.role === 'employee') && contract.status === 'sent';
-  const isSigned = contract.status === 'signed' || contract.status === 'active';
   const canSend = (user?.role === 'admin' || user?.role === 'hr') && contract.status === 'draft';
   
   const sendMutation = useMutation({

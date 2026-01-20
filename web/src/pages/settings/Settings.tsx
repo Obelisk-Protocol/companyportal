@@ -136,16 +136,17 @@ export default function Settings() {
                         className="hidden"
                         disabled={isUploadingLogo}
                       />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        disabled={isUploadingLogo}
-                        as="span"
-                      >
-                        <Upload className="w-4 h-4 mr-2" />
-                        {isUploadingLogo ? 'Uploading...' : 'Replace'}
-                      </Button>
+                      <span className="inline-block">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          disabled={isUploadingLogo}
+                        >
+                          <Upload className="w-4 h-4 mr-2" />
+                          {isUploadingLogo ? 'Uploading...' : 'Replace'}
+                        </Button>
+                      </span>
                     </label>
                     <Button
                       type="button"

@@ -8,7 +8,6 @@ import Button from '../../components/ui/Button';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '../../components/ui/Table';
 import { FileSignature, Eye, Calendar, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { toast } from 'react-hot-toast';
 
 export default function Contracts() {
   const { user } = useAuth();

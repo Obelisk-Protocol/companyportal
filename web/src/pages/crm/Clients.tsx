@@ -6,7 +6,7 @@ import { formatDate, getStatusBadgeClass, getStatusLabel } from '../../lib/utils
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
-import { Plus, Building2, User, Search, Filter } from 'lucide-react';
+import { Plus, Building2, User, Search } from 'lucide-react';
 
 export default function Clients() {
   const navigate = useNavigate();

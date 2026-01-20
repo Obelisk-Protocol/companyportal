@@ -37,7 +37,7 @@ export default function ClientDetail() {
         return api.post(`/crm/clients/individuals/${id}/invite`, { email: data.email });
       }
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success('Invitation sent successfully!');
       setShowInviteModal(false);
       setInviteEmail('');

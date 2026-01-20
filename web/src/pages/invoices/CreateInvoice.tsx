@@ -8,7 +8,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 import Modal from '../../components/ui/Modal';
-import { Plus, Trash2, Send, X, FileText, Mail, ArrowLeft } from 'lucide-react';
+import { Plus, Trash2, Send, FileText, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
@@ -57,9 +57,6 @@ export default function CreateInvoice() {
     queryKey: ['crm-clients'],
     queryFn: () => api.get<any[]>('/crm/clients'),
     retry: 1,
-    onError: (error: any) => {
-      console.error('Error loading clients:', error);
-    },
   });
 
   const { data: contracts } = useQuery({
@@ -69,7 +66,7 @@ export default function CreateInvoice() {
     retry: 1,
   });
 
-  const { data: company, isLoading: companyLoading } = useQuery({
+  const { data: company } = useQuery({
     queryKey: ['company'],
     queryFn: () => api.get<any>('/company'),
     retry: 1,
@@ -77,25 +74,27 @@ export default function CreateInvoice() {
 
   const createMutation = useMutation({
     mutationFn: (data: any) => api.post('/invoices', data),
-    onSuccess: (invoice) => {
+    onSuccess: (invoice: any) => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] });
       toast.success('Invoice created successfully');
       setCreatedInvoiceId(invoice.id);
       setCreatedInvoice(invoice);
       
       // Auto-fill email with client email if available
-      const selectedClient = clients?.find(
-        (c: any) => c.id === formData.companyId || c.id === formData.individualClientId
-      );
-      if (selectedClient) {
-        setEmailData({
-          to: selectedClient.email || '',
-          message: `Please find attached invoice ${invoice.invoiceNumber} for your records.\n\nPayment is due by ${new Date(invoice.dueDate).toLocaleDateString()}.\n\nIf you have any questions, please don't hesitate to contact us.`,
-        });
-        setShowEmailModal(true);
-      } else {
-        navigate(`/invoices/${invoice.id}`);
+      if (Array.isArray(clients)) {
+        const selectedClient = clients.find(
+          (c: any) => c.id === formData.companyId || c.id === formData.individualClientId
+        );
+        if (selectedClient) {
+          setEmailData({
+            to: selectedClient.email || '',
+            message: `Please find attached invoice ${invoice.invoiceNumber} for your records.\n\nPayment is due by ${new Date(invoice.dueDate).toLocaleDateString()}.\n\nIf you have any questions, please don't hesitate to contact us.`,
+          });
+          setShowEmailModal(true);
+          return;
+        }
       }
+      navigate(`/invoices/${invoice.id}`);
     },
     onError: (error: any) => {
       toast.error(error?.response?.json?.error || 'Failed to create invoice');
@@ -156,8 +155,6 @@ export default function CreateInvoice() {
       return;
     }
 
-    const { subtotal, taxAmount, total } = calculateTotals();
-    
     // Validate payment method fields
     if (formData.paymentMethod === 'bank_transfer') {
       if (!formData.bankName || !formData.bankAccountNumber || !formData.bankAccountName) {
@@ -217,14 +214,10 @@ export default function CreateInvoice() {
     });
   };
 
-  const selectedClient = clients?.find(
-    (c: any) => c.id === formData.companyId || c.id === formData.individualClientId
-  );
-
   const { subtotal, taxAmount, total } = calculateTotals();
 
-  const companyClients = (clients || []).filter((c: any) => c.type === 'company' || c.id && !c.fullName);
-  const individualClients = (clients || []).filter((c: any) => c.type === 'individual' || c.fullName);
+  const companyClients = Array.isArray(clients) ? clients.filter((c: any) => c.type === 'company' || (c.id && !c.fullName)) : [];
+  const individualClients = Array.isArray(clients) ? clients.filter((c: any) => c.type === 'individual' || c.fullName) : [];
   const clientContracts = contracts?.filter((c: any) => {
     if (formData.companyId) return c.companyId === formData.companyId;
     if (formData.individualClientId) return c.individualClientId === formData.individualClientId;
@@ -616,9 +609,9 @@ export default function CreateInvoice() {
             <div className="bg-[var(--bg-secondary)] p-4 rounded-lg">
               <p className="text-sm text-[var(--text-secondary)] mb-2">Invoice will include:</p>
               <ul className="text-sm text-[var(--text-secondary)] space-y-1 list-disc list-inside">
-                <li>Invoice number: {createdInvoice.invoiceNumber}</li>
-                <li>Total amount: {formatRupiah(parseFloat(createdInvoice.total))}</li>
-                <li>Due date: {new Date(createdInvoice.dueDate).toLocaleDateString()}</li>
+                <li>Invoice number: {createdInvoice?.invoiceNumber}</li>
+                <li>Total amount: {createdInvoice?.total ? formatRupiah(parseFloat(createdInvoice.total)) : 'N/A'}</li>
+                <li>Due date: {createdInvoice?.dueDate ? new Date(createdInvoice.dueDate).toLocaleDateString() : 'N/A'}</li>
                 <li>PDF attachment</li>
               </ul>
             </div>

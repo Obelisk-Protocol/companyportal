@@ -34,7 +34,6 @@ interface PdfSignaturePlacementProps {
 export default function PdfSignaturePlacement({
   isOpen,
   onClose,
-  contractId,
   documentUrl,
   onSave,
   existingFields,
@@ -48,9 +47,9 @@ export default function PdfSignaturePlacement({
     employeeSignatureField?: SignatureField;
     companySignatureField?: SignatureField;
   }>(existingFields || {});
-  const [dragging, setDragging] = useState<{ type: string; offsetX: number; offsetY: number } | null>(null);
+  const [_dragging, setDragging] = useState<{ type: string; offsetX: number; offsetY: number } | null>(null);
   const [pdfScale, setPdfScale] = useState(1);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage] = useState(0);
 
   useEffect(() => {
     if (existingFields) {
