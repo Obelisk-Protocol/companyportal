@@ -278,21 +278,6 @@ invoices.post('/', requireRole('admin', 'hr'), zValidator('json', createInvoiceS
       throw new Error('Client information not found');
     }
     
-    const pdfBytes = await generateInvoicePdf({
-      company: {
-        name: company.name,
-        npwp: company.npwp,
-        address: company.address,
-        city: company.city,
-        province: company.province,
-        phone: company.phone,
-        email: company.email,
-        logoUrl: company.logoUrl,
-        solanaWallet: company.solanaWallet,
-      },
-      client,
-    };
-    
     // Extract payment instructions from internalNotes if present
     let paymentInstructions: string | null = data.paymentInstructions || null;
     if (!paymentInstructions && invoice.internalNotes) {

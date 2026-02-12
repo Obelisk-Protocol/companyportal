@@ -732,6 +732,8 @@ export interface InvoicePdfData {
     notes?: string | null;
     paymentStatus: string;
     paidAmount?: string | null;
+    paymentMethod?: string | null;
+    paymentInstructions?: string | null;
   };
 }
 

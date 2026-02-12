@@ -509,3 +509,81 @@ export const invoices = pgTable('invoices', {
   index('idx_invoices_number').on(table.invoiceNumber),
   index('idx_invoices_date').on(table.invoiceDate),
 ]);
+
+// --- Grants (transparency for Superteam / grantors) ---
+
+// Grant - one per funding round/project
+export const grants = pgTable('grants', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  description: text('description'),
+  status: text('status').default('draft').$type<'draft' | 'active' | 'closed' | 'archived'>(),
+  currency: text('currency').default('SOL'),
+  expectedAmount: decimal('expected_amount', { precision: 20, scale: 9 }),
+  startDate: date('start_date'),
+  endDate: date('end_date'),
+  createdBy: uuid('created_by').notNull().references(() => users.id),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_grants_status').on(table.status),
+  index('idx_grants_created_by').on(table.createdBy),
+]);
+
+// Grant wallet - the wallet that received funds (one per grant for v1)
+export const grantWallets = pgTable('grant_wallets', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  grantId: uuid('grant_id').notNull().references(() => grants.id, { onDelete: 'cascade' }),
+  walletAddress: text('wallet_address').notNull(),
+  label: text('label'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_grant_wallets_grant').on(table.grantId),
+]);
+
+// Wallet audit - on-chain snapshot per audit run
+export const walletAudits = pgTable('wallet_audits', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  grantId: uuid('grant_id').notNull().references(() => grants.id, { onDelete: 'cascade' }),
+  walletAddress: text('wallet_address').notNull(),
+  auditRunAt: timestamp('audit_run_at', { withTimezone: true }).notNull(),
+  totalInbound: decimal('total_inbound', { precision: 20, scale: 9 }).default('0'),
+  totalOutbound: decimal('total_outbound', { precision: 20, scale: 9 }).default('0'),
+  balanceAtAudit: decimal('balance_at_audit', { precision: 20, scale: 9 }),
+  transactionCount: integer('transaction_count').default(0),
+  rawData: jsonb('raw_data'),
+  createdBy: uuid('created_by').references(() => users.id),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_wallet_audits_grant').on(table.grantId),
+  index('idx_wallet_audits_run_at').on(table.auditRunAt),
+]);
+
+// Grant deduction - fees, tax, operational
+export const grantDeductions = pgTable('grant_deductions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  grantId: uuid('grant_id').notNull().references(() => grants.id, { onDelete: 'cascade' }),
+  amount: decimal('amount', { precision: 20, scale: 9 }).notNull(),
+  currency: text('currency').default('SOL'),
+  category: text('category').notNull().$type<'platform_fee' | 'tax' | 'operational' | 'other'>(),
+  description: text('description'),
+  deductedAt: date('deducted_at').notNull(),
+  createdBy: uuid('created_by').notNull().references(() => users.id),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_grant_deductions_grant').on(table.grantId),
+]);
+
+// Grant member - founders/owners (existing users)
+export const grantMembers = pgTable('grant_members', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  grantId: uuid('grant_id').notNull().references(() => grants.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  role: text('role').notNull().$type<'owner' | 'founder' | 'viewer'>(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_grant_members_grant').on(table.grantId),
+  index('idx_grant_members_user').on(table.userId),
+]);

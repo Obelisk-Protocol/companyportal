@@ -20,6 +20,7 @@ import me from './routes/me.js';
 import crm from './routes/crm.js';
 import contracts from './routes/contracts.js';
 import invoices from './routes/invoices.js';
+import grants from './routes/grants.js';
 
 const app = new Hono();
 
@@ -72,6 +73,7 @@ app.route('/api/me', me);
 app.route('/api/crm', crm);
 app.route('/api/contracts', contracts);
 app.route('/api/invoices', invoices);
+app.route('/api/grants', grants);
 
 // 404 handler
 app.notFound((c) => {
