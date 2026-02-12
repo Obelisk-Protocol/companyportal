@@ -27,6 +27,9 @@ import ContractManagement from './pages/contracts/ContractManagement';
 import Invoices from './pages/invoices/Invoices';
 import InvoiceDetail from './pages/invoices/InvoiceDetail';
 import CreateInvoice from './pages/invoices/CreateInvoice';
+import Grants from './pages/grants/Grants';
+import CreateGrant from './pages/grants/CreateGrant';
+import GrantDetail from './pages/grants/GrantDetail';
 
 function PrivateRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { user, isLoading } = useAuth();
@@ -270,6 +273,32 @@ export default function App() {
           element={
             <PrivateRoute allowedRoles={['client', 'admin', 'hr', 'accountant']}>
               <InvoiceDetail />
+            </PrivateRoute>
+          }
+        />
+
+        {/* Grants - Admin / HR */}
+        <Route
+          path="grants"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr']}>
+              <Grants />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="grants/new"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr']}>
+              <CreateGrant />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="grants/:id"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr']}>
+              <GrantDetail />
             </PrivateRoute>
           }
         />

@@ -19,6 +19,7 @@ import {
   FileSignature,
   ReceiptText,
   Briefcase,
+  Gift,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -28,6 +29,7 @@ const hrNavigation = [
   { name: 'Employees', href: '/employees', icon: Users, roles: ['admin', 'hr'] },
   { name: 'Payroll', href: '/payroll', icon: Wallet, roles: ['admin', 'hr'] },
   { name: 'Expenses', href: '/expenses', icon: Receipt, roles: ['admin', 'hr'] },
+  { name: 'Grants', href: '/grants', icon: Gift, roles: ['admin', 'hr'] },
   { name: 'Contracts', href: '/contracts/management', icon: FileSignature, roles: ['admin', 'hr'] },
   { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin', 'hr', 'accountant'] },
   { name: 'Generated Reports', href: '/reports/generated', icon: FileCheck, roles: ['admin', 'hr', 'accountant'] },
@@ -38,6 +40,7 @@ const hrNavigation = [
 const crmNavigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['admin', 'hr', 'employee', 'client'] },
   { name: 'Clients', href: '/crm/clients', icon: Building2, roles: ['admin', 'hr', 'accountant'] },
+  { name: 'Grants', href: '/grants', icon: Gift, roles: ['admin', 'hr'] },
   { name: 'Contracts', href: '/contracts/management', icon: FileSignature, roles: ['admin', 'hr'] },
   { name: 'Invoices', href: '/invoices', icon: ReceiptText, roles: ['admin', 'hr', 'accountant'] },
   { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin', 'hr', 'accountant'] },

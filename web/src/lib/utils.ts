@@ -13,6 +13,21 @@ export function formatRupiah(amount: number): string {
   }).format(amount);
 }
 
+/** Format amount for grants (SOL, USDC, etc.) */
+export function formatAmount(amount: number | string, currency = 'SOL'): string {
+  const n = typeof amount === 'string' ? parseFloat(amount) : amount;
+  if (currency === 'SOL' || currency === 'USDC') {
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 6,
+    }).format(n) + ` ${currency}`;
+  }
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(n) + ` ${currency}`;
+}
+
 export function formatDate(date: string | Date): string {
   return new Intl.DateTimeFormat('en-US', {
     day: 'numeric',
