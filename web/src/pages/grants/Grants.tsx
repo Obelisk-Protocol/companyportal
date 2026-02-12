@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { api } from '../../lib/api';
 import { formatAmount } from '../../lib/utils';
 import Card from '../../components/ui/Card';
@@ -10,6 +11,8 @@ import { motion } from 'framer-motion';
 
 export default function Grants() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const canManage = user && (user.role === 'admin' || user.role === 'hr');
 
   const { data: grants, isLoading } = useQuery({
     queryKey: ['grants'],
@@ -50,10 +53,12 @@ export default function Grants() {
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Grants</h1>
           <p className="text-[var(--text-secondary)]">Transparency for grant funds: wallet audit, deductions, and owners</p>
         </div>
-        <Button onClick={() => navigate('/grants/new')}>
-          <Plus className="w-4 h-4 mr-2" />
-          Create Grant
-        </Button>
+        {canManage && (
+          <Button onClick={() => navigate('/grants/new')}>
+            <Plus className="w-4 h-4 mr-2" />
+            Create Grant
+          </Button>
+        )}
       </div>
 
       <Card>
@@ -120,12 +125,14 @@ export default function Grants() {
             <Gift className="w-12 h-12 text-[var(--text-muted)] mx-auto mb-4" />
             <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">No grants yet</h3>
             <p className="text-[var(--text-secondary)] mb-6 max-w-sm mx-auto">
-              Create a grant to track funding, run on-chain wallet audits, add deductions, and assign founders/owners for full transparency.
+              {canManage ? 'Create a grant to track funding, run on-chain wallet audits, add deductions, and assign founders/owners for full transparency.' : 'No grants have been published yet.'}
             </p>
-            <Button onClick={() => navigate('/grants/new')}>
-              <Plus className="w-4 h-4 mr-2" />
-              Create your first grant
-            </Button>
+            {canManage && (
+              <Button onClick={() => navigate('/grants/new')}>
+                <Plus className="w-4 h-4 mr-2" />
+                Create your first grant
+              </Button>
+            )}
           </div>
         )}
       </Card>

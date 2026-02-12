@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '../../contexts/AuthContext';
 import { api } from '../../lib/api';
 import { formatAmount, formatShortDate } from '../../lib/utils';
 import Card from '../../components/ui/Card';
@@ -26,6 +27,8 @@ export default function GrantDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const canManage = user && (user.role === 'admin' || user.role === 'hr');
   const [walletInput, setWalletInput] = useState('');
   const [walletLabel, setWalletLabel] = useState('');
   const [showDeductionModal, setShowDeductionModal] = useState(false);
@@ -47,7 +50,7 @@ export default function GrantDetail() {
   const { data: users } = useQuery({
     queryKey: ['grants-users-for-members'],
     queryFn: () => api.get<any[]>('/grants/users-for-members'),
-    enabled: showMemberModal,
+    enabled: canManage && showMemberModal,
   });
 
   const setWalletMutation = useMutation({
@@ -280,14 +283,16 @@ export default function GrantDetail() {
                 </div>
               </div>
             )}
-            <Button
-              onClick={() => runAuditMutation.mutate()}
-              disabled={runAuditMutation.isPending}
-              isLoading={runAuditMutation.isPending}
-            >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Run on-chain audit
-            </Button>
+            {canManage && (
+              <Button
+                onClick={() => runAuditMutation.mutate()}
+                disabled={runAuditMutation.isPending}
+                isLoading={runAuditMutation.isPending}
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Run on-chain audit
+              </Button>
+            )}
             {grant.audits?.length > 1 && (
               <div className="pt-4 border-t border-[var(--border-color)]">
                 <p className="text-sm text-[var(--text-muted)] mb-2">Audit history</p>
@@ -301,7 +306,7 @@ export default function GrantDetail() {
               </div>
             )}
           </div>
-        ) : (
+        ) : canManage ? (
           <div className="space-y-4">
             <p className="text-[var(--text-secondary)]">Set the Solana wallet that received the grant funds.</p>
             <Input
@@ -324,6 +329,8 @@ export default function GrantDetail() {
               Save wallet
             </Button>
           </div>
+        ) : (
+          <p className="text-[var(--text-secondary)]">No wallet set for this grant.</p>
         )}
       </Card>
 
@@ -340,7 +347,7 @@ export default function GrantDetail() {
               <TableHead>Amount</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Description</TableHead>
-              <TableHead>Actions</TableHead>
+              {canManage && <TableHead>Actions</TableHead>}
             </TableHeader>
             <TableBody>
               {grant.deductions.map((d: any) => (
@@ -349,16 +356,18 @@ export default function GrantDetail() {
                   <TableCell>{formatAmount(d.amount, d.currency || currency)}</TableCell>
                   <TableCell className="capitalize">{d.category.replace('_', ' ')}</TableCell>
                   <TableCell>{d.description || '—'}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => deleteDeductionMutation.mutate(d.id)}
-                      disabled={deleteDeductionMutation.isPending}
-                    >
-                      <Trash2 className="w-4 h-4 text-red-500" />
-                    </Button>
-                  </TableCell>
+                  {canManage && (
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteDeductionMutation.mutate(d.id)}
+                        disabled={deleteDeductionMutation.isPending}
+                      >
+                        <Trash2 className="w-4 h-4 text-red-500" />
+                      </Button>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
@@ -366,10 +375,12 @@ export default function GrantDetail() {
         ) : (
           <p className="text-[var(--text-muted)] mb-4">No deductions yet.</p>
         )}
-        <Button variant="outline" size="sm" onClick={() => setShowDeductionModal(true)} className="mt-4">
-          <Plus className="w-4 h-4 mr-2" />
-          Add deduction
-        </Button>
+        {canManage && (
+          <Button variant="outline" size="sm" onClick={() => setShowDeductionModal(true)} className="mt-4">
+            <Plus className="w-4 h-4 mr-2" />
+            Add deduction
+          </Button>
+        )}
       </Card>
 
       {/* Members */}
@@ -383,23 +394,25 @@ export default function GrantDetail() {
             <TableHeader>
               <TableHead>User</TableHead>
               <TableHead>Role</TableHead>
-              <TableHead>Actions</TableHead>
+              {canManage && <TableHead>Actions</TableHead>}
             </TableHeader>
             <TableBody>
               {grant.members.map((m: any) => (
                 <TableRow key={m.id}>
                   <TableCell>{m.user?.email ?? m.userId}</TableCell>
                   <TableCell className="capitalize">{m.role}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeMemberMutation.mutate(m.userId)}
-                      disabled={removeMemberMutation.isPending}
-                    >
-                      Remove
-                    </Button>
-                  </TableCell>
+                  {canManage && (
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeMemberMutation.mutate(m.userId)}
+                        disabled={removeMemberMutation.isPending}
+                      >
+                        Remove
+                      </Button>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
@@ -407,10 +420,12 @@ export default function GrantDetail() {
         ) : (
           <p className="text-[var(--text-muted)] mb-4">No members assigned yet.</p>
         )}
-        <Button variant="outline" size="sm" onClick={() => setShowMemberModal(true)} className="mt-4">
-          <Plus className="w-4 h-4 mr-2" />
-          Add member
-        </Button>
+        {canManage && (
+          <Button variant="outline" size="sm" onClick={() => setShowMemberModal(true)} className="mt-4">
+            <Plus className="w-4 h-4 mr-2" />
+            Add member
+          </Button>
+        )}
       </Card>
 
       {/* Add deduction modal */}

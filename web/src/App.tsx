@@ -60,6 +60,10 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/accept-invitation/:token" element={<AcceptInvitation />} />
 
+      {/* Grants - list and detail are public */}
+      <Route path="/grants" element={<Layout><Grants /></Layout>} />
+      <Route path="/grants/:slug" element={<Layout><GrantDetail /></Layout>} />
+
       {/* Protected routes */}
       <Route
         path="/"
@@ -277,28 +281,12 @@ export default function App() {
           }
         />
 
-        {/* Grants - Admin / HR */}
-        <Route
-          path="grants"
-          element={
-            <PrivateRoute allowedRoles={['admin', 'hr']}>
-              <Grants />
-            </PrivateRoute>
-          }
-        />
+        {/* Create Grant - Admin / HR only */}
         <Route
           path="grants/new"
           element={
             <PrivateRoute allowedRoles={['admin', 'hr']}>
               <CreateGrant />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="grants/:slug"
-          element={
-            <PrivateRoute allowedRoles={['admin', 'hr']}>
-              <GrantDetail />
             </PrivateRoute>
           }
         />
