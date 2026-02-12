@@ -50,7 +50,7 @@ export default function GrantDetail() {
   const { data: users } = useQuery({
     queryKey: ['grants-users-for-members'],
     queryFn: () => api.get<any[]>('/grants/users-for-members'),
-    enabled: canManage && showMemberModal,
+    enabled: Boolean(canManage && showMemberModal),
   });
 
   const setWalletMutation = useMutation({
@@ -494,7 +494,7 @@ export default function GrantDetail() {
             onChange={(e) => setMemberForm({ ...memberForm, userId: e.target.value })}
             options={[
               { value: '', label: 'Select user…' },
-              ...(users || [])
+              ...(Array.isArray(users) ? users : [])
                 .filter((u: any) => !grant.members?.some((m: any) => m.userId === u.id))
                 .map((u: any) => ({ value: u.id, label: u.email })),
             ]}

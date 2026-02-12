@@ -61,8 +61,10 @@ export default function App() {
       <Route path="/accept-invitation/:token" element={<AcceptInvitation />} />
 
       {/* Grants - list and detail are public */}
-      <Route path="/grants" element={<Layout><Grants /></Layout>} />
-      <Route path="/grants/:slug" element={<Layout><GrantDetail /></Layout>} />
+      <Route path="/grants" element={<Layout />}>
+        <Route index element={<Grants />} />
+        <Route path=":slug" element={<GrantDetail />} />
+      </Route>
 
       {/* Protected routes */}
       <Route
