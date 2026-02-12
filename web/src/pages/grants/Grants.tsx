@@ -91,7 +91,10 @@ export default function Grants() {
                   <TableCell>
                     {grant.latestAudit ? (
                       <span className="text-[var(--text-primary)]">
-                        {formatAmount(grant.latestAudit.totalInbound, grant.currency)}
+                        {formatAmount(grant.latestAudit.totalInbound ?? 0, 'SOL')}
+                        {grant.latestAudit.balanceUsdc != null && Number(grant.latestAudit.balanceUsdc) > 0 && (
+                          <span className="ml-1">{formatAmount(grant.latestAudit.balanceUsdc, 'USDC')}</span>
+                        )}
                       </span>
                     ) : (
                       <span className="text-[var(--text-muted)]">No audit</span>
