@@ -516,6 +516,7 @@ export const invoices = pgTable('invoices', {
 export const grants = pgTable('grants', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull(),
+  slug: text('slug').unique().notNull(), // URL-friendly: creatix-events-grant
   description: text('description'),
   status: text('status').default('draft').$type<'draft' | 'active' | 'closed' | 'archived'>(),
   currency: text('currency').default('SOL'),
@@ -528,6 +529,7 @@ export const grants = pgTable('grants', {
 }, (table) => [
   index('idx_grants_status').on(table.status),
   index('idx_grants_created_by').on(table.createdBy),
+  index('idx_grants_slug').on(table.slug),
 ]);
 
 // Grant wallet - the wallet that received funds (one per grant for v1)

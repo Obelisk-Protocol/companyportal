@@ -28,7 +28,7 @@ export default function CreateGrant() {
     onSuccess: (grant: any) => {
       queryClient.invalidateQueries({ queryKey: ['grants'] });
       toast.success('Grant created');
-      navigate(`/grants/${grant.id}`);
+      navigate(`/grants/${grant.slug || grant.id}`);
     },
     onError: (err: any) => {
       toast.error(err?.message || 'Failed to create grant');

@@ -295,7 +295,7 @@ export default function App() {
           }
         />
         <Route
-          path="grants/:id"
+          path="grants/:slug"
           element={
             <PrivateRoute allowedRoles={['admin', 'hr']}>
               <GrantDetail />

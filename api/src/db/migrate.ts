@@ -43,6 +43,7 @@ async function main() {
         `CREATE TABLE IF NOT EXISTS "grants" (
           "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
           "name" text NOT NULL,
+          "slug" text NOT NULL UNIQUE,
           "description" text,
           "status" text DEFAULT 'draft' NOT NULL,
           "currency" text DEFAULT 'SOL',
@@ -55,6 +56,7 @@ async function main() {
         )`,
         `CREATE INDEX IF NOT EXISTS "idx_grants_status" ON "grants" ("status")`,
         `CREATE INDEX IF NOT EXISTS "idx_grants_created_by" ON "grants" ("created_by")`,
+        `CREATE INDEX IF NOT EXISTS "idx_grants_slug" ON "grants" ("slug")`,
         `CREATE TABLE IF NOT EXISTS "grant_wallets" (
           "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
           "grant_id" uuid NOT NULL REFERENCES "grants"("id") ON DELETE CASCADE,
@@ -109,8 +111,32 @@ async function main() {
       console.log('✅ Grants tables created.');
     } else {
       console.log('✓ Grants table already exists.');
-      // Ensure wallet_audits has balance_usdc (added later)
       await pool.query(`ALTER TABLE "wallet_audits" ADD COLUMN IF NOT EXISTS "balance_usdc" numeric(20, 6);`);
+      // Add slug column if missing (for URL-friendly grant links)
+      const slugCol = await pool.query(`
+        SELECT column_name FROM information_schema.columns
+        WHERE table_name = 'grants' AND column_name = 'slug'
+      `);
+      if (slugCol.rows.length === 0) {
+        await pool.query(`ALTER TABLE "grants" ADD COLUMN "slug" text;`);
+        const grantsRows = await pool.query(`SELECT id, name FROM "grants"`);
+        for (const row of grantsRows.rows) {
+          const base = (row.name || 'grant').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'grant';
+          let slug = base;
+          let n = 2;
+          while (true) {
+            const exists = await pool.query(`SELECT 1 FROM "grants" WHERE slug = $1`, [slug]);
+            if (exists.rows.length === 0) break;
+            slug = `${base}-${n}`;
+            n++;
+          }
+          await pool.query(`UPDATE "grants" SET slug = $1 WHERE id = $2`, [slug, row.id]);
+        }
+        await pool.query(`ALTER TABLE "grants" ALTER COLUMN "slug" SET NOT NULL`);
+        await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS "grants_slug_unique" ON "grants" ("slug")`);
+        await pool.query(`CREATE INDEX IF NOT EXISTS "idx_grants_slug" ON "grants" ("slug")`);
+        console.log('✅ Added slug column to grants.');
+      }
     }
   }
   

@@ -103,7 +103,7 @@ export default function Grants() {
                       : '—'}
                   </TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm" onClick={() => navigate(`/grants/${grant.id}`)}>
+                    <Button variant="ghost" size="sm" onClick={() => navigate(`/grants/${grant.slug || grant.id}`)}>
                       <Eye className="w-4 h-4 mr-1" />
                       View
                     </Button>

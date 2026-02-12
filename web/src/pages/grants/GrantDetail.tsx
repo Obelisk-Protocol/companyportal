@@ -23,7 +23,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
 export default function GrantDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [walletInput, setWalletInput] = useState('');
@@ -39,9 +39,9 @@ export default function GrantDetail() {
   const [memberForm, setMemberForm] = useState({ userId: '', role: 'founder' as 'owner' | 'founder' | 'viewer' });
 
   const { data: grant, isLoading, error } = useQuery({
-    queryKey: ['grant', id],
-    queryFn: () => api.get<any>(`/grants/${id}`),
-    enabled: !!id,
+    queryKey: ['grant', slug],
+    queryFn: () => api.get<any>(`/grants/${slug}`),
+    enabled: !!slug,
   });
 
   const { data: users } = useQuery({
@@ -51,9 +51,9 @@ export default function GrantDetail() {
   });
 
   const setWalletMutation = useMutation({
-    mutationFn: (body: { walletAddress: string; label?: string }) => api.post(`/grants/${id}/wallet`, body),
+    mutationFn: (body: { walletAddress: string; label?: string }) => api.post(`/grants/${slug}/wallet`, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['grant', id] });
+      queryClient.invalidateQueries({ queryKey: ['grant', slug] });
       setWalletInput('');
       setWalletLabel('');
       toast.success('Wallet updated');
@@ -185,15 +185,30 @@ export default function GrantDetail() {
             <>
               <div>
                 <p className="text-[var(--text-muted)]">Funds received (audit)</p>
-                <p className="font-medium text-[var(--text-primary)]">{formatAmount(grant.summary.fundsReceived, currency)}</p>
+                <p className="font-medium text-[var(--text-primary)]">
+                  {formatAmount(grant.summary.fundsReceivedSol, 'SOL')}
+                  {grant.summary.fundsReceivedUsdc != null && (
+                    <span className="ml-2">{formatAmount(grant.summary.fundsReceivedUsdc, 'USDC')}</span>
+                  )}
+                </p>
               </div>
               <div>
                 <p className="text-[var(--text-muted)]">Total deductions</p>
-                <p className="font-medium text-[var(--text-primary)]">{formatAmount(grant.summary.totalDeductions, currency)}</p>
+                <p className="font-medium text-[var(--text-primary)]">
+                  {Number(grant.summary.totalDeductionsSol) > 0 && formatAmount(grant.summary.totalDeductionsSol, 'SOL')}
+                  {Number(grant.summary.totalDeductionsSol) > 0 && Number(grant.summary.totalDeductionsUsdc) > 0 && ' · '}
+                  {Number(grant.summary.totalDeductionsUsdc) > 0 && formatAmount(grant.summary.totalDeductionsUsdc, 'USDC')}
+                  {Number(grant.summary.totalDeductionsSol) === 0 && Number(grant.summary.totalDeductionsUsdc) === 0 && '—'}
+                </p>
               </div>
               <div>
                 <p className="text-[var(--text-muted)]">Net for project</p>
-                <p className="font-medium text-[var(--text-primary)]">{formatAmount(grant.summary.netForProject, currency)}</p>
+                <p className="font-medium text-[var(--text-primary)]">
+                  {formatAmount(grant.summary.netSol, 'SOL')}
+                  {grant.summary.netUsdc != null && (
+                    <span className="ml-2">{formatAmount(grant.summary.netUsdc, 'USDC')}</span>
+                  )}
+                </p>
               </div>
             </>
           )}

@@ -4,9 +4,15 @@
  */
 
 const SOLANA_RPC = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
-const MAX_SIGNATURES = 500; // Limit per audit to avoid timeouts
+// Fewer tx fetches = less chance of RPC 429. Use SOLANA_RPC_URL with a dedicated RPC (Helius, QuickNode) for full history.
+const MAX_SIGNATURES = 50;
+const DELAY_MS = 150; // Delay between getTransaction calls to avoid rate limits on public RPC
 // USDC mint on Solana mainnet (Circle)
 const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
+}
 
 export interface AuditResult {
   totalInbound: number;
@@ -35,8 +41,10 @@ export async function runWalletAudit(walletAddress: string): Promise<AuditResult
     let totalOutbound = 0;
     const lamportsPerSol = 1e9;
 
-    // Fetch transactions to compute inbound/outbound from balance deltas
-    for (const sig of signatures) {
+    // Fetch transactions with delay to avoid RPC 429 (public RPC rate limits)
+    for (let i = 0; i < signatures.length; i++) {
+      if (i > 0) await sleep(DELAY_MS);
+      const sig = signatures[i];
       try {
         const tx = await connection.getTransaction(sig.signature, {
           maxSupportedTransactionVersion: 0,
@@ -57,7 +65,7 @@ export async function runWalletAudit(walletAddress: string): Promise<AuditResult
         if (delta > 0) totalInbound += delta;
         else totalOutbound += Math.abs(delta);
       } catch {
-        // Skip failed tx fetch/parse
+        // Skip failed tx fetch/parse (e.g. 429, timeout)
       }
     }
 
@@ -83,22 +91,22 @@ export async function runWalletAudit(walletAddress: string): Promise<AuditResult
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     if (message.includes('Cannot find module') || message.includes('@solana/web3.js')) {
+      return {
+        totalInbound: 0,
+        totalOutbound: 0,
+        balanceAtAudit: null,
+        balanceUsdc: null,
+        transactionCount: 0,
+        error: 'Solana RPC not configured. Install @solana/web3.js and set SOLANA_RPC_URL if needed.',
+      };
+    }
     return {
       totalInbound: 0,
       totalOutbound: 0,
       balanceAtAudit: null,
       balanceUsdc: null,
       transactionCount: 0,
-      error: 'Solana RPC not configured. Install @solana/web3.js and set SOLANA_RPC_URL if needed.',
+      error: message,
     };
   }
-  return {
-    totalInbound: 0,
-    totalOutbound: 0,
-    balanceAtAudit: null,
-    balanceUsdc: null,
-    transactionCount: 0,
-    error: message,
-  };
-}
 }

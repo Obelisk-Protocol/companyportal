@@ -43,6 +43,24 @@ const memberSchema = z.object({
   role: z.enum(['owner', 'founder', 'viewer']),
 });
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function slugFromName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'grant';
+}
+
+async function resolveGrantId(idOrSlug: string): Promise<string | null> {
+  if (UUID_REGEX.test(idOrSlug)) {
+    const [g] = await db.select({ id: schema.grants.id }).from(schema.grants).where(eq(schema.grants.id, idOrSlug)).limit(1);
+    return g?.id ?? null;
+  }
+  const [g] = await db.select({ id: schema.grants.id }).from(schema.grants).where(eq(schema.grants.slug, idOrSlug)).limit(1);
+  return g?.id ?? null;
+}
+
 // GET /grants/users-for-members - List users (id, email) for adding grant members (admin/hr)
 grants.get('/users-for-members', grantAdmin, async (c) => {
   const users = await db
@@ -99,10 +117,19 @@ async function enrichGrantsList(rows: typeof schema.grants.$inferSelect[]) {
 grants.post('/', grantAdmin, zValidator('json', createGrantSchema), async (c) => {
   const data = c.req.valid('json');
   const user = c.get('user');
+  let slug = slugFromName(data.name);
+  let n = 2;
+  while (true) {
+    const [existing] = await db.select({ id: schema.grants.id }).from(schema.grants).where(eq(schema.grants.slug, slug)).limit(1);
+    if (!existing) break;
+    slug = `${slugFromName(data.name)}-${n}`;
+    n++;
+  }
   const [grant] = await db
     .insert(schema.grants)
     .values({
       name: data.name,
+      slug,
       description: data.description ?? null,
       status: data.status,
       currency: data.currency,
@@ -115,19 +142,22 @@ grants.post('/', grantAdmin, zValidator('json', createGrantSchema), async (c) =>
   return c.json(grant, 201);
 });
 
-// GET /grants/:id - Get grant with wallet, audits, deductions, members
-grants.get('/:id', grantAdmin, async (c) => {
-  const { id } = c.req.param();
-  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, id)).limit(1);
+// GET /grants/:idOrSlug - Get grant with wallet, audits, deductions, members (id or slug)
+grants.get('/:idOrSlug', grantAdmin, async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
+
+  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, grantId)).limit(1);
   if (!grant) return c.json({ error: 'Grant not found' }, 404);
 
-  const [wallet] = await db.select().from(schema.grantWallets).where(eq(schema.grantWallets.grantId, id)).limit(1);
+  const [wallet] = await db.select().from(schema.grantWallets).where(eq(schema.grantWallets.grantId, grantId)).limit(1);
   const audits = await db
     .select()
     .from(schema.walletAudits)
-    .where(eq(schema.walletAudits.grantId, id))
+    .where(eq(schema.walletAudits.grantId, grantId))
     .orderBy(desc(schema.walletAudits.auditRunAt));
-  const deductions = await db.select().from(schema.grantDeductions).where(eq(schema.grantDeductions.grantId, id));
+  const deductions = await db.select().from(schema.grantDeductions).where(eq(schema.grantDeductions.grantId, grantId));
   const members = await db
     .select({
       id: schema.grantMembers.id,
@@ -141,12 +171,20 @@ grants.get('/:id', grantAdmin, async (c) => {
     })
     .from(schema.grantMembers)
     .innerJoin(schema.users, eq(schema.grantMembers.userId, schema.users.id))
-    .where(eq(schema.grantMembers.grantId, id));
+    .where(eq(schema.grantMembers.grantId, grantId));
 
-  const totalDeductions = deductions.reduce((s, d) => s + parseFloat(String(d.amount)), 0);
   const latestAudit = audits[0] ?? null;
-  const fundsReceived = latestAudit ? parseFloat(String(latestAudit.totalInbound ?? 0)) : 0;
-  const netForProject = fundsReceived - totalDeductions;
+  // Per-currency so we don't mix SOL and USDC
+  const totalDeductionsSol = deductions
+    .filter((d) => (d.currency || 'SOL') === 'SOL')
+    .reduce((s, d) => s + parseFloat(String(d.amount)), 0);
+  const totalDeductionsUsdc = deductions
+    .filter((d) => (d.currency || '') === 'USDC')
+    .reduce((s, d) => s + parseFloat(String(d.amount)), 0);
+  const fundsReceivedSol = latestAudit ? parseFloat(String(latestAudit.totalInbound ?? 0)) : 0;
+  const fundsReceivedUsdc = latestAudit && latestAudit.balanceUsdc != null ? parseFloat(String(latestAudit.balanceUsdc)) : null;
+  const netSol = fundsReceivedSol - totalDeductionsSol;
+  const netUsdc = fundsReceivedUsdc != null ? fundsReceivedUsdc - totalDeductionsUsdc : null;
 
   return c.json({
     ...grant,
@@ -156,18 +194,24 @@ grants.get('/:id', grantAdmin, async (c) => {
     deductions,
     members: members.map((m) => ({ id: m.id, userId: m.userId, role: m.role, createdAt: m.createdAt, user: m.user })),
     summary: {
-      totalDeductions,
-      fundsReceived,
-      netForProject,
+      fundsReceivedSol,
+      fundsReceivedUsdc,
+      totalDeductionsSol,
+      totalDeductionsUsdc,
+      netSol,
+      netUsdc,
     },
   });
 });
 
-// PUT /grants/:id - Update grant
-grants.put('/:id', grantAdmin, zValidator('json', updateGrantSchema), async (c) => {
-  const { id } = c.req.param();
+// PUT /grants/:idOrSlug - Update grant
+grants.put('/:idOrSlug', grantAdmin, zValidator('json', updateGrantSchema), async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
+
   const data = c.req.valid('json');
-  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, id)).limit(1);
+  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, grantId)).limit(1);
   if (!grant) return c.json({ error: 'Grant not found' }, 404);
 
   const update: Record<string, unknown> = { updatedAt: new Date() };
@@ -179,18 +223,33 @@ grants.put('/:id', grantAdmin, zValidator('json', updateGrantSchema), async (c) 
   if (data.startDate !== undefined) update.startDate = data.startDate ?? null;
   if (data.endDate !== undefined) update.endDate = data.endDate ?? null;
 
-  const [updated] = await db.update(schema.grants).set(update as any).where(eq(schema.grants.id, id)).returning();
+  if (data.name != null && data.name !== grant.name) {
+    let slug = slugFromName(data.name);
+    let n = 2;
+    while (true) {
+      const [existing] = await db.select({ id: schema.grants.id }).from(schema.grants).where(eq(schema.grants.slug, slug)).limit(1);
+      if (!existing || existing.id === grantId) break;
+      slug = `${slugFromName(data.name)}-${n}`;
+      n++;
+    }
+    update.slug = slug;
+  }
+
+  const [updated] = await db.update(schema.grants).set(update as any).where(eq(schema.grants.id, grantId)).returning();
   return c.json(updated);
 });
 
-// POST /grants/:id/wallet - Set or update grant wallet
-grants.post('/:id/wallet', grantAdmin, zValidator('json', walletSchema), async (c) => {
-  const { id } = c.req.param();
+// POST /grants/:idOrSlug/wallet - Set or update grant wallet
+grants.post('/:idOrSlug/wallet', grantAdmin, zValidator('json', walletSchema), async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
+
   const data = c.req.valid('json');
-  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, id)).limit(1);
+  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, grantId)).limit(1);
   if (!grant) return c.json({ error: 'Grant not found' }, 404);
 
-  const [existing] = await db.select().from(schema.grantWallets).where(eq(schema.grantWallets.grantId, id)).limit(1);
+  const [existing] = await db.select().from(schema.grantWallets).where(eq(schema.grantWallets.grantId, grantId)).limit(1);
   if (existing) {
     const [updated] = await db
       .update(schema.grantWallets)
@@ -206,7 +265,7 @@ grants.post('/:id/wallet', grantAdmin, zValidator('json', walletSchema), async (
   const [created] = await db
     .insert(schema.grantWallets)
     .values({
-      grantId: id,
+      grantId,
       walletAddress: data.walletAddress,
       label: data.label ?? null,
     })
@@ -214,14 +273,17 @@ grants.post('/:id/wallet', grantAdmin, zValidator('json', walletSchema), async (
   return c.json(created, 201);
 });
 
-// POST /grants/:id/audit - Run on-chain audit
-grants.post('/:id/audit', grantAdmin, async (c) => {
-  const { id } = c.req.param();
+// POST /grants/:idOrSlug/audit - Run on-chain audit
+grants.post('/:idOrSlug/audit', grantAdmin, async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
+
   const user = c.get('user');
-  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, id)).limit(1);
+  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, grantId)).limit(1);
   if (!grant) return c.json({ error: 'Grant not found' }, 404);
 
-  const [wallet] = await db.select().from(schema.grantWallets).where(eq(schema.grantWallets.grantId, id)).limit(1);
+  const [wallet] = await db.select().from(schema.grantWallets).where(eq(schema.grantWallets.grantId, grantId)).limit(1);
   if (!wallet) return c.json({ error: 'Grant has no wallet. Set wallet first.' }, 400);
 
   const result = await runWalletAudit(wallet.walletAddress);
@@ -232,7 +294,7 @@ grants.post('/:id/audit', grantAdmin, async (c) => {
   const [audit] = await db
     .insert(schema.walletAudits)
     .values({
-      grantId: id,
+      grantId,
       walletAddress: wallet.walletAddress,
       auditRunAt: new Date(),
       totalInbound: String(result.totalInbound),
@@ -247,39 +309,44 @@ grants.post('/:id/audit', grantAdmin, async (c) => {
   return c.json(audit, 201);
 });
 
-// GET /grants/:id/audits - List audit history
-grants.get('/:id/audits', grantAdmin, async (c) => {
-  const { id } = c.req.param();
-  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, id)).limit(1);
-  if (!grant) return c.json({ error: 'Grant not found' }, 404);
+// GET /grants/:idOrSlug/audits - List audit history
+grants.get('/:idOrSlug/audits', grantAdmin, async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
   const audits = await db
     .select()
     .from(schema.walletAudits)
-    .where(eq(schema.walletAudits.grantId, id))
+    .where(eq(schema.walletAudits.grantId, grantId))
     .orderBy(desc(schema.walletAudits.auditRunAt));
   return c.json(audits);
 });
 
-// GET /grants/:id/deductions - List deductions
-grants.get('/:id/deductions', grantAdmin, async (c) => {
-  const { id } = c.req.param();
-  const deductions = await db.select().from(schema.grantDeductions).where(eq(schema.grantDeductions.grantId, id));
+// GET /grants/:idOrSlug/deductions - List deductions
+grants.get('/:idOrSlug/deductions', grantAdmin, async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
+  const deductions = await db.select().from(schema.grantDeductions).where(eq(schema.grantDeductions.grantId, grantId));
   return c.json(deductions);
 });
 
-// POST /grants/:id/deductions - Add deduction
-grants.post('/:id/deductions', grantAdmin, zValidator('json', deductionSchema), async (c) => {
-  const { id } = c.req.param();
+// POST /grants/:idOrSlug/deductions - Add deduction
+grants.post('/:idOrSlug/deductions', grantAdmin, zValidator('json', deductionSchema), async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
+
   const data = c.req.valid('json');
   const user = c.get('user');
-  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, id)).limit(1);
+  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, grantId)).limit(1);
   if (!grant) return c.json({ error: 'Grant not found' }, 404);
 
   const amount = typeof data.amount === 'number' ? String(data.amount) : data.amount;
   const [deduction] = await db
     .insert(schema.grantDeductions)
     .values({
-      grantId: id,
+      grantId,
       amount,
       currency: data.currency,
       category: data.category,
@@ -291,14 +358,18 @@ grants.post('/:id/deductions', grantAdmin, zValidator('json', deductionSchema), 
   return c.json(deduction, 201);
 });
 
-// PUT /grants/:id/deductions/:deductionId - Update deduction
-grants.put('/:id/deductions/:deductionId', grantAdmin, zValidator('json', deductionSchema.partial()), async (c) => {
-  const { id, deductionId } = c.req.param();
+// PUT /grants/:idOrSlug/deductions/:deductionId - Update deduction
+grants.put('/:idOrSlug/deductions/:deductionId', grantAdmin, zValidator('json', deductionSchema.partial()), async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const deductionId = c.req.param('deductionId');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
+
   const data = c.req.valid('json');
   const [existing] = await db
     .select()
     .from(schema.grantDeductions)
-    .where(and(eq(schema.grantDeductions.grantId, id), eq(schema.grantDeductions.id, deductionId)))
+    .where(and(eq(schema.grantDeductions.grantId, grantId), eq(schema.grantDeductions.id, deductionId)))
     .limit(1);
   if (!existing) return c.json({ error: 'Deduction not found' }, 404);
 
@@ -317,22 +388,28 @@ grants.put('/:id/deductions/:deductionId', grantAdmin, zValidator('json', deduct
   return c.json(updated);
 });
 
-// DELETE /grants/:id/deductions/:deductionId
-grants.delete('/:id/deductions/:deductionId', grantAdmin, async (c) => {
-  const { id, deductionId } = c.req.param();
+// DELETE /grants/:idOrSlug/deductions/:deductionId
+grants.delete('/:idOrSlug/deductions/:deductionId', grantAdmin, async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const deductionId = c.req.param('deductionId');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
+
   const [existing] = await db
     .select()
     .from(schema.grantDeductions)
-    .where(and(eq(schema.grantDeductions.grantId, id), eq(schema.grantDeductions.id, deductionId)))
+    .where(and(eq(schema.grantDeductions.grantId, grantId), eq(schema.grantDeductions.id, deductionId)))
     .limit(1);
   if (!existing) return c.json({ error: 'Deduction not found' }, 404);
   await db.delete(schema.grantDeductions).where(eq(schema.grantDeductions.id, deductionId));
   return c.json({ ok: true });
 });
 
-// GET /grants/:id/members - List members
-grants.get('/:id/members', grantAdmin, async (c) => {
-  const { id } = c.req.param();
+// GET /grants/:idOrSlug/members - List members
+grants.get('/:idOrSlug/members', grantAdmin, async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
   const members = await db
     .select({
       id: schema.grantMembers.id,
@@ -343,28 +420,31 @@ grants.get('/:id/members', grantAdmin, async (c) => {
     })
     .from(schema.grantMembers)
     .innerJoin(schema.users, eq(schema.grantMembers.userId, schema.users.id))
-    .where(eq(schema.grantMembers.grantId, id));
+    .where(eq(schema.grantMembers.grantId, grantId));
   return c.json(members);
 });
 
-// POST /grants/:id/members - Add member
-grants.post('/:id/members', grantAdmin, zValidator('json', memberSchema), async (c) => {
-  const { id } = c.req.param();
+// POST /grants/:idOrSlug/members - Add member
+grants.post('/:idOrSlug/members', grantAdmin, zValidator('json', memberSchema), async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
+
   const data = c.req.valid('json');
-  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, id)).limit(1);
+  const [grant] = await db.select().from(schema.grants).where(eq(schema.grants.id, grantId)).limit(1);
   if (!grant) return c.json({ error: 'Grant not found' }, 404);
 
   const [existing] = await db
     .select()
     .from(schema.grantMembers)
-    .where(and(eq(schema.grantMembers.grantId, id), eq(schema.grantMembers.userId, data.userId)))
+    .where(and(eq(schema.grantMembers.grantId, grantId), eq(schema.grantMembers.userId, data.userId)))
     .limit(1);
   if (existing) return c.json({ error: 'User already a member' }, 400);
 
   const [member] = await db
     .insert(schema.grantMembers)
     .values({
-      grantId: id,
+      grantId,
       userId: data.userId,
       role: data.role,
     })
@@ -372,13 +452,17 @@ grants.post('/:id/members', grantAdmin, zValidator('json', memberSchema), async 
   return c.json(member, 201);
 });
 
-// DELETE /grants/:id/members/:userId
-grants.delete('/:id/members/:userId', grantAdmin, async (c) => {
-  const { id, userId } = c.req.param();
+// DELETE /grants/:idOrSlug/members/:userId
+grants.delete('/:idOrSlug/members/:userId', grantAdmin, async (c) => {
+  const idOrSlug = c.req.param('idOrSlug');
+  const userId = c.req.param('userId');
+  const grantId = await resolveGrantId(idOrSlug);
+  if (!grantId) return c.json({ error: 'Grant not found' }, 404);
+
   const [existing] = await db
     .select()
     .from(schema.grantMembers)
-    .where(and(eq(schema.grantMembers.grantId, id), eq(schema.grantMembers.userId, userId)))
+    .where(and(eq(schema.grantMembers.grantId, grantId), eq(schema.grantMembers.userId, userId)))
     .limit(1);
   if (!existing) return c.json({ error: 'Member not found' }, 404);
   await db.delete(schema.grantMembers).where(eq(schema.grantMembers.id, existing.id));
