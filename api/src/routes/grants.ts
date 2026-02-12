@@ -238,6 +238,7 @@ grants.post('/:id/audit', grantAdmin, async (c) => {
       totalInbound: String(result.totalInbound),
       totalOutbound: String(result.totalOutbound),
       balanceAtAudit: result.balanceAtAudit != null ? String(result.balanceAtAudit) : null,
+      balanceUsdc: result.balanceUsdc != null ? String(result.balanceUsdc) : null,
       transactionCount: result.transactionCount,
       rawData: result.rawData ?? null,
       createdBy: user.userId,

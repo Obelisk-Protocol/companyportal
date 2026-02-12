@@ -551,6 +551,7 @@ export const walletAudits = pgTable('wallet_audits', {
   totalInbound: decimal('total_inbound', { precision: 20, scale: 9 }).default('0'),
   totalOutbound: decimal('total_outbound', { precision: 20, scale: 9 }).default('0'),
   balanceAtAudit: decimal('balance_at_audit', { precision: 20, scale: 9 }),
+  balanceUsdc: decimal('balance_usdc', { precision: 20, scale: 6 }),
   transactionCount: integer('transaction_count').default(0),
   rawData: jsonb('raw_data'),
   createdBy: uuid('created_by').references(() => users.id),

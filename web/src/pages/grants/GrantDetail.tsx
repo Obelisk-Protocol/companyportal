@@ -219,20 +219,44 @@ export default function GrantDetail() {
                 Explorer <ExternalLink className="w-3 h-3" />
               </a>
             </div>
+
+            {/* SOL & USDC balance - prominent */}
+            <div className="p-4 rounded-xl border-2 border-[var(--border-color)] bg-[var(--bg-secondary)]">
+              <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-3">Wallet balance</p>
+              {grant.latestAudit ? (
+                <div className="flex flex-wrap gap-8">
+                  <div>
+                    <p className="text-2xl font-bold text-[var(--text-primary)]">
+                      {grant.latestAudit.balanceAtAudit != null ? formatAmount(grant.latestAudit.balanceAtAudit, 'SOL') : '—'}
+                    </p>
+                    <p className="text-xs text-[var(--text-muted)]">SOL</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-[var(--text-primary)]">
+                      {grant.latestAudit.balanceUsdc != null ? formatAmount(grant.latestAudit.balanceUsdc, 'USDC') : '—'}
+                    </p>
+                    <p className="text-xs text-[var(--text-muted)]">USDC</p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-[var(--text-secondary)]">Run on-chain audit below to see SOL and USDC balance.</p>
+              )}
+            </div>
+
             {grant.latestAudit && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-lg bg-[var(--bg-secondary)]">
                 <div>
                   <p className="text-xs text-[var(--text-muted)]">Inbound</p>
-                  <p className="font-medium text-[var(--text-primary)]">{formatAmount(grant.latestAudit.totalInbound, currency)}</p>
+                  <p className="font-medium text-[var(--text-primary)]">{formatAmount(grant.latestAudit.totalInbound, 'SOL')}</p>
                 </div>
                 <div>
                   <p className="text-xs text-[var(--text-muted)]">Outbound</p>
-                  <p className="font-medium text-[var(--text-primary)]">{formatAmount(grant.latestAudit.totalOutbound, currency)}</p>
+                  <p className="font-medium text-[var(--text-primary)]">{formatAmount(grant.latestAudit.totalOutbound, 'SOL')}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-[var(--text-muted)]">Balance at audit</p>
+                  <p className="text-xs text-[var(--text-muted)]">Balance at audit (SOL)</p>
                   <p className="font-medium text-[var(--text-primary)]">
-                    {grant.latestAudit.balanceAtAudit != null ? formatAmount(grant.latestAudit.balanceAtAudit, currency) : '—'}
+                    {grant.latestAudit.balanceAtAudit != null ? formatAmount(grant.latestAudit.balanceAtAudit, 'SOL') : '—'}
                   </p>
                 </div>
                 <div>

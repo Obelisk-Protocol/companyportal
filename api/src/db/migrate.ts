@@ -72,6 +72,7 @@ async function main() {
           "total_inbound" numeric(20, 9) DEFAULT '0',
           "total_outbound" numeric(20, 9) DEFAULT '0',
           "balance_at_audit" numeric(20, 9),
+          "balance_usdc" numeric(20, 6),
           "transaction_count" integer DEFAULT 0,
           "raw_data" jsonb,
           "created_by" uuid REFERENCES "users"("id"),
@@ -108,6 +109,8 @@ async function main() {
       console.log('✅ Grants tables created.');
     } else {
       console.log('✓ Grants table already exists.');
+      // Ensure wallet_audits has balance_usdc (added later)
+      await pool.query(`ALTER TABLE "wallet_audits" ADD COLUMN IF NOT EXISTS "balance_usdc" numeric(20, 6);`);
     }
   }
   
