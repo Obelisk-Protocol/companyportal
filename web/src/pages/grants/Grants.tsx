@@ -5,7 +5,7 @@ import { formatAmount } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '../../components/ui/Table';
-import { Gift, Eye, Plus, Wallet, FileCheck } from 'lucide-react';
+import { Gift, Eye, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Grants() {

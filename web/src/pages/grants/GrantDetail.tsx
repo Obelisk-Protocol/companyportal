@@ -12,7 +12,6 @@ import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '.
 import {
   ArrowLeft,
   Wallet,
-  FileCheck,
   Plus,
   Trash2,
   RefreshCw,
