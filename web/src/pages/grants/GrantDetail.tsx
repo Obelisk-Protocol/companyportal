@@ -62,18 +62,18 @@ export default function GrantDetail() {
   });
 
   const runAuditMutation = useMutation({
-    mutationFn: () => api.post(`/grants/${id}/audit`),
+    mutationFn: () => api.post(`/grants/${slug}/audit`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['grant', id] });
+      queryClient.invalidateQueries({ queryKey: ['grant', slug] });
       toast.success('Audit complete');
     },
     onError: (err: any) => toast.error(err?.message || 'Audit failed'),
   });
 
   const addDeductionMutation = useMutation({
-    mutationFn: (body: any) => api.post(`/grants/${id}/deductions`, body),
+    mutationFn: (body: any) => api.post(`/grants/${slug}/deductions`, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['grant', id] });
+      queryClient.invalidateQueries({ queryKey: ['grant', slug] });
       setShowDeductionModal(false);
       setDeductionForm({
         amount: '',
@@ -87,18 +87,18 @@ export default function GrantDetail() {
   });
 
   const deleteDeductionMutation = useMutation({
-    mutationFn: (deductionId: string) => api.delete(`/grants/${id}/deductions/${deductionId}`),
+    mutationFn: (deductionId: string) => api.delete(`/grants/${slug}/deductions/${deductionId}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['grant', id] });
+      queryClient.invalidateQueries({ queryKey: ['grant', slug] });
       toast.success('Deduction removed');
     },
     onError: (err: any) => toast.error(err?.message || 'Failed to remove'),
   });
 
   const addMemberMutation = useMutation({
-    mutationFn: (body: { userId: string; role: string }) => api.post(`/grants/${id}/members`, body),
+    mutationFn: (body: { userId: string; role: string }) => api.post(`/grants/${slug}/members`, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['grant', id] });
+      queryClient.invalidateQueries({ queryKey: ['grant', slug] });
       setShowMemberModal(false);
       setMemberForm({ userId: '', role: 'founder' });
       toast.success('Member added');
@@ -107,9 +107,9 @@ export default function GrantDetail() {
   });
 
   const removeMemberMutation = useMutation({
-    mutationFn: (userId: string) => api.delete(`/grants/${id}/members/${userId}`),
+    mutationFn: (userId: string) => api.delete(`/grants/${slug}/members/${userId}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['grant', id] });
+      queryClient.invalidateQueries({ queryKey: ['grant', slug] });
       toast.success('Member removed');
     },
     onError: (err: any) => toast.error(err?.message || 'Failed to remove'),
