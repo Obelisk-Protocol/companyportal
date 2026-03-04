@@ -30,8 +30,9 @@ import CreateInvoice from './pages/invoices/CreateInvoice';
 import Grants from './pages/grants/Grants';
 import CreateGrant from './pages/grants/CreateGrant';
 import GrantDetail from './pages/grants/GrantDetail';
-import CreateEventReport from './pages/grants/CreateEventReport';
-import GrantEventDetail from './pages/grants/GrantEventDetail';
+import EventGrants from './pages/eventGrants/EventGrants';
+import CreateEventGrant from './pages/eventGrants/CreateEventGrant';
+import EventGrantDetail from './pages/eventGrants/EventGrantDetail';
 
 function PrivateRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { user, isLoading } = useAuth();
@@ -66,15 +67,6 @@ export default function App() {
       <Route path="/grants" element={<Layout />}>
         <Route index element={<Grants />} />
         <Route path=":slug" element={<GrantDetail />} />
-        <Route
-          path=":slug/events/new"
-          element={
-            <PrivateRoute>
-              <CreateEventReport />
-            </PrivateRoute>
-          }
-        />
-        <Route path=":slug/events/:eventId" element={<GrantEventDetail />} />
       </Route>
 
       {/* Protected routes */}
@@ -300,6 +292,32 @@ export default function App() {
           element={
             <PrivateRoute allowedRoles={['admin', 'hr']}>
               <CreateGrant />
+            </PrivateRoute>
+          }
+        />
+
+        {/* Event Grants - standalone event grant tracking (Admin/HR) */}
+        <Route
+          path="event-grants"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr']}>
+              <EventGrants />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="event-grants/new"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr']}>
+              <CreateEventGrant />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="event-grants/:id"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr']}>
+              <EventGrantDetail />
             </PrivateRoute>
           }
         />

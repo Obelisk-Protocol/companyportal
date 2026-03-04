@@ -32,8 +32,8 @@ const SPENDING_CATEGORIES = [
   { value: 'other', label: 'Other' },
 ];
 
-export default function GrantEventDetail() {
-  const { slug, eventId } = useParams<{ slug: string; eventId: string }>();
+export default function EventGrantDetail() {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showSpendingModal, setShowSpendingModal] = useState(false);
@@ -60,21 +60,21 @@ export default function GrantEventDetail() {
   const [isUploading, setIsUploading] = useState(false);
 
   const { data: event, isLoading, error } = useQuery({
-    queryKey: ['grant-event', slug, eventId],
-    queryFn: () => api.get<any>(`/grants/${slug}/events/${eventId}`),
-    enabled: !!slug && !!eventId,
+    queryKey: ['event-grant', id],
+    queryFn: () => api.get<any>(`/event-grants/${id}`),
+    enabled: !!id,
   });
 
   const canManage = event?.canManage ?? false;
 
   const addSpendingMutation = useMutation({
     mutationFn: (body: any) =>
-      api.post(`/grants/${slug}/events/${eventId}/spendings`, {
+      api.post(`/event-grants/${id}/spendings`, {
         ...body,
         amount: parseFloat(body.amount),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['grant-event', slug, eventId] });
+      queryClient.invalidateQueries({ queryKey: ['event-grant', id] });
       setShowSpendingModal(false);
       resetSpendingForm();
       toast.success('Spending added');
@@ -83,13 +83,13 @@ export default function GrantEventDetail() {
   });
 
   const updateSpendingMutation = useMutation({
-    mutationFn: ({ id, body }: { id: string; body: any }) =>
-      api.put(`/grants/${slug}/events/${eventId}/spendings/${id}`, {
+    mutationFn: ({ spendingId, body }: { spendingId: string; body: any }) =>
+      api.put(`/event-grants/${id}/spendings/${spendingId}`, {
         ...body,
         amount: body.amount != null ? parseFloat(String(body.amount)) : undefined,
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['grant-event', slug, eventId] });
+      queryClient.invalidateQueries({ queryKey: ['event-grant', id] });
       setShowSpendingModal(false);
       setEditingSpendingId(null);
       resetSpendingForm();
@@ -99,20 +99,20 @@ export default function GrantEventDetail() {
   });
 
   const deleteSpendingMutation = useMutation({
-    mutationFn: (id: string) => api.delete(`/grants/${slug}/events/${eventId}/spendings/${id}`),
+    mutationFn: (spendingId: string) => api.delete(`/event-grants/${id}/spendings/${spendingId}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['grant-event', slug, eventId] });
+      queryClient.invalidateQueries({ queryKey: ['event-grant', id] });
       toast.success('Spending removed');
     },
     onError: (err: any) => toast.error(err?.message || 'Failed to remove'),
   });
 
   const updateEventMutation = useMutation({
-    mutationFn: (body: any) => api.put(`/grants/${slug}/events/${eventId}`, body),
+    mutationFn: (body: any) => api.put(`/event-grants/${id}`, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['grant-event', slug, eventId] });
+      queryClient.invalidateQueries({ queryKey: ['event-grant', id] });
       setShowEventEditModal(false);
-      toast.success('Event updated');
+      toast.success('Event grant updated');
     },
     onError: (err: any) => toast.error(err?.message || 'Failed to update'),
   });
@@ -164,9 +164,9 @@ export default function GrantEventDetail() {
   if (error) {
     return (
       <div className="text-center py-12">
-        <p className="text-[var(--text-secondary)]">Event not found.</p>
-        <Button className="mt-4" onClick={() => navigate(`/grants/${slug}`)}>
-          Back to Grant
+        <p className="text-[var(--text-secondary)]">Event grant not found.</p>
+        <Button className="mt-4" onClick={() => navigate('/event-grants')}>
+          Back to Event grants
         </Button>
       </div>
     );
@@ -185,7 +185,7 @@ export default function GrantEventDetail() {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={() => navigate(`/grants/${slug}`)}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/event-grants')}>
             <ArrowLeft className="w-4 h-4 mr-1" />
             Back
           </Button>
@@ -211,7 +211,7 @@ export default function GrantEventDetail() {
             });
             setShowEventEditModal(true);
           }}>
-            Edit event
+            Edit event grant
           </Button>
         )}
       </div>
@@ -240,30 +240,18 @@ export default function GrantEventDetail() {
         {(event.lumaUrl || event.creatixUrl) && (
           <div className="mt-4 flex flex-wrap gap-3">
             {event.lumaUrl && (
-              <a
-                href={event.lumaUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-[var(--accent-primary)] hover:underline"
-              >
+              <a href={event.lumaUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-[var(--accent-primary)] hover:underline">
                 <Link2 className="w-4 h-4" /> Luma event
               </a>
             )}
             {event.creatixUrl && (
-              <a
-                href={event.creatixUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-[var(--accent-primary)] hover:underline"
-              >
+              <a href={event.creatixUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-[var(--accent-primary)] hover:underline">
                 <Link2 className="w-4 h-4" /> Creatix event
               </a>
             )}
           </div>
         )}
-        {event.description && (
-          <p className="mt-4 text-[var(--text-secondary)]">{event.description}</p>
-        )}
+        {event.description && <p className="mt-4 text-[var(--text-secondary)]">{event.description}</p>}
       </Card>
 
       {/* Spendings */}
@@ -301,28 +289,16 @@ export default function GrantEventDetail() {
                     <TableCell>{formatAmount(s.amount, s.currency || currency)}</TableCell>
                     <TableCell>
                       {s.receiptUrl ? (
-                        <a
-                          href={s.receiptUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-sm text-[var(--accent-primary)] hover:underline"
-                        >
+                        <a href={s.receiptUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-[var(--accent-primary)] hover:underline">
                           View <ExternalLink className="w-3 h-3" />
                         </a>
-                      ) : (
-                        '—'
-                      )}
+                      ) : '—'}
                     </TableCell>
                     {canManage && (
                       <TableCell>
                         <div className="flex gap-2">
                           <Button variant="ghost" size="sm" onClick={() => openEditSpending(s)}>Edit</Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => deleteSpendingMutation.mutate(s.id)}
-                            disabled={deleteSpendingMutation.isPending}
-                          >
+                          <Button variant="ghost" size="sm" onClick={() => deleteSpendingMutation.mutate(s.id)} disabled={deleteSpendingMutation.isPending}>
                             <Trash2 className="w-4 h-4 text-red-500" />
                           </Button>
                         </div>
@@ -364,81 +340,29 @@ export default function GrantEventDetail() {
       </Card>
 
       {/* Add/Edit spending modal */}
-      <Modal
-        isOpen={showSpendingModal}
-        onClose={() => { setShowSpendingModal(false); setEditingSpendingId(null); resetSpendingForm(); }}
-        title={editingSpendingId ? 'Edit spending' : 'Add spending'}
-        size="md"
-      >
+      <Modal isOpen={showSpendingModal} onClose={() => { setShowSpendingModal(false); setEditingSpendingId(null); resetSpendingForm(); }} title={editingSpendingId ? 'Edit spending' : 'Add spending'} size="md">
         <div className="space-y-4">
-          <Select
-            label="Category"
-            value={spendingForm.category}
-            onChange={(e) => setSpendingForm({ ...spendingForm, category: e.target.value as any })}
-            options={SPENDING_CATEGORIES}
-          />
-          <Input
-            label="Amount"
-            type="number"
-            step="0.01"
-            min="0"
-            value={spendingForm.amount}
-            onChange={(e) => setSpendingForm({ ...spendingForm, amount: e.target.value })}
-            placeholder="0"
-            required
-          />
-          <Input
-            label="Date"
-            type="date"
-            value={spendingForm.spentAt}
-            onChange={(e) => setSpendingForm({ ...spendingForm, spentAt: e.target.value })}
-          />
+          <Select label="Category" value={spendingForm.category} onChange={(e) => setSpendingForm({ ...spendingForm, category: e.target.value as any })} options={SPENDING_CATEGORIES} />
+          <Input label="Amount" type="number" step="0.01" min="0" value={spendingForm.amount} onChange={(e) => setSpendingForm({ ...spendingForm, amount: e.target.value })} placeholder="0" required />
+          <Input label="Date" type="date" value={spendingForm.spentAt} onChange={(e) => setSpendingForm({ ...spendingForm, spentAt: e.target.value })} />
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Description</label>
-            <textarea
-              className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[60px]"
-              value={spendingForm.description}
-              onChange={(e) => setSpendingForm({ ...spendingForm, description: e.target.value })}
-              placeholder="Optional notes"
-            />
+            <textarea className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[60px]" value={spendingForm.description} onChange={(e) => setSpendingForm({ ...spendingForm, description: e.target.value })} placeholder="Optional notes" />
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Receipt (optional)</label>
             <div className="flex gap-2 items-center">
-              <input
-                type="file"
-                accept="image/*,.pdf"
-                onChange={handleFileUpload}
-                disabled={isUploading}
-                className="text-sm text-[var(--text-secondary)]"
-              />
-              {spendingForm.receiptUrl && (
-                <a
-                  href={spendingForm.receiptUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-[var(--accent-primary)] hover:underline"
-                >
-                  View
-                </a>
-              )}
+              <input type="file" accept="image/*,.pdf" onChange={handleFileUpload} disabled={isUploading} className="text-sm text-[var(--text-secondary)]" />
+              {spendingForm.receiptUrl && <a href={spendingForm.receiptUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--accent-primary)] hover:underline">View</a>}
             </div>
             {isUploading && <p className="text-sm text-[var(--text-muted)] mt-1">Uploading…</p>}
           </div>
           <div className="flex justify-end gap-2 pt-4">
-            <Button variant="ghost" onClick={() => { setShowSpendingModal(false); setEditingSpendingId(null); resetSpendingForm(); }}>
-              Cancel
-            </Button>
+            <Button variant="ghost" onClick={() => { setShowSpendingModal(false); setEditingSpendingId(null); resetSpendingForm(); }}>Cancel</Button>
             <Button
               onClick={() => {
-                if (editingSpendingId) {
-                  updateSpendingMutation.mutate({
-                    id: editingSpendingId,
-                    body: spendingForm,
-                  });
-                } else {
-                  addSpendingMutation.mutate(spendingForm);
-                }
+                if (editingSpendingId) updateSpendingMutation.mutate({ spendingId: editingSpendingId, body: spendingForm });
+                else addSpendingMutation.mutate(spendingForm);
               }}
               disabled={!spendingForm.amount || addSpendingMutation.isPending || updateSpendingMutation.isPending}
               isLoading={addSpendingMutation.isPending || updateSpendingMutation.isPending}
@@ -450,67 +374,20 @@ export default function GrantEventDetail() {
       </Modal>
 
       {/* Edit event modal */}
-      <Modal isOpen={showEventEditModal} onClose={() => setShowEventEditModal(false)} title="Edit event" size="md">
+      <Modal isOpen={showEventEditModal} onClose={() => setShowEventEditModal(false)} title="Edit event grant" size="md">
         <div className="space-y-4 max-h-[70vh] overflow-y-auto">
-          <Input
-            label="Event title"
-            value={eventEditForm.title}
-            onChange={(e) => setEventEditForm({ ...eventEditForm, title: e.target.value })}
-          />
-          <Input
-            label="Amount received"
-            type="number"
-            step="0.01"
-            value={eventEditForm.amountReceived}
-            onChange={(e) => setEventEditForm({ ...eventEditForm, amountReceived: e.target.value })}
-          />
-          <Input
-            label="Event date"
-            type="date"
-            value={eventEditForm.eventDate}
-            onChange={(e) => setEventEditForm({ ...eventEditForm, eventDate: e.target.value })}
-          />
-          <Input
-            label="Location"
-            value={eventEditForm.location}
-            onChange={(e) => setEventEditForm({ ...eventEditForm, location: e.target.value })}
-          />
-          <Input
-            label="Luma URL"
-            type="url"
-            value={eventEditForm.lumaUrl}
-            onChange={(e) => setEventEditForm({ ...eventEditForm, lumaUrl: e.target.value })}
-          />
-          <Input
-            label="Creatix URL"
-            type="url"
-            value={eventEditForm.creatixUrl}
-            onChange={(e) => setEventEditForm({ ...eventEditForm, creatixUrl: e.target.value })}
-          />
-          <Input
-            label="Attendees count"
-            type="number"
-            min="0"
-            value={eventEditForm.attendeesCount}
-            onChange={(e) => setEventEditForm({ ...eventEditForm, attendeesCount: e.target.value })}
-          />
+          <Input label="Event title" value={eventEditForm.title} onChange={(e) => setEventEditForm({ ...eventEditForm, title: e.target.value })} />
+          <Input label="Amount received" type="number" step="0.01" value={eventEditForm.amountReceived} onChange={(e) => setEventEditForm({ ...eventEditForm, amountReceived: e.target.value })} />
+          <Input label="Event date" type="date" value={eventEditForm.eventDate} onChange={(e) => setEventEditForm({ ...eventEditForm, eventDate: e.target.value })} />
+          <Input label="Location" value={eventEditForm.location} onChange={(e) => setEventEditForm({ ...eventEditForm, location: e.target.value })} />
+          <Input label="Luma URL" type="url" value={eventEditForm.lumaUrl} onChange={(e) => setEventEditForm({ ...eventEditForm, lumaUrl: e.target.value })} />
+          <Input label="Creatix URL" type="url" value={eventEditForm.creatixUrl} onChange={(e) => setEventEditForm({ ...eventEditForm, creatixUrl: e.target.value })} />
+          <Input label="Attendees count" type="number" min="0" value={eventEditForm.attendeesCount} onChange={(e) => setEventEditForm({ ...eventEditForm, attendeesCount: e.target.value })} />
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Description</label>
-            <textarea
-              className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[80px]"
-              value={eventEditForm.description}
-              onChange={(e) => setEventEditForm({ ...eventEditForm, description: e.target.value })}
-            />
+            <textarea className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[80px]" value={eventEditForm.description} onChange={(e) => setEventEditForm({ ...eventEditForm, description: e.target.value })} />
           </div>
-          <Select
-            label="Status"
-            value={eventEditForm.status}
-            onChange={(e) => setEventEditForm({ ...eventEditForm, status: e.target.value as any })}
-            options={[
-              { value: 'draft', label: 'Draft' },
-              { value: 'submitted', label: 'Submitted' },
-            ]}
-          />
+          <Select label="Status" value={eventEditForm.status} onChange={(e) => setEventEditForm({ ...eventEditForm, status: e.target.value as any })} options={[{ value: 'draft', label: 'Draft' }, { value: 'submitted', label: 'Submitted' }]} />
           <div className="flex justify-end gap-2 pt-4">
             <Button variant="ghost" onClick={() => setShowEventEditModal(false)}>Cancel</Button>
             <Button

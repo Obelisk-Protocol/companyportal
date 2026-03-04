@@ -19,8 +19,6 @@ import {
   Users,
   Receipt,
   ExternalLink,
-  Calendar,
-  ChevronRight,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -48,21 +46,12 @@ export default function GrantDetail() {
     enabled: !!slug,
   });
 
-  const isEventManager = grant?.members?.some(
-    (m: any) => m.userId === user?.id && (m.role === 'owner' || m.role === 'founder')
-  );
-  const canManage = user && (user.role === 'admin' || user.role === 'hr' || isEventManager);
+  const canManage = user && (user.role === 'admin' || user.role === 'hr');
 
   const { data: users } = useQuery({
     queryKey: ['grants-users-for-members'],
     queryFn: () => api.get<any[]>('/grants/users-for-members'),
     enabled: Boolean(canManage && showMemberModal),
-  });
-
-  const { data: events = [] } = useQuery({
-    queryKey: ['grant-events', slug],
-    queryFn: () => api.get<any[]>(`/grants/${slug}/events`),
-    enabled: !!slug,
   });
 
   const setWalletMutation = useMutation({
@@ -343,69 +332,6 @@ export default function GrantDetail() {
           </div>
         ) : (
           <p className="text-[var(--text-secondary)]">No wallet set for this grant.</p>
-        )}
-      </Card>
-
-      {/* Event reports */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
-            <Calendar className="w-5 h-5" />
-            Event reports
-          </h2>
-          {canManage && (
-            <Button variant="outline" size="sm" onClick={() => navigate(`/grants/${slug}/events/new`)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add event report
-            </Button>
-          )}
-        </div>
-        <p className="text-sm text-[var(--text-muted)] mb-4">
-          Track events funded by this grant: amount received from Superteam, spendings, and proof (location, Luma/Creatix links, attendees).
-        </p>
-        {events.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableHead>Event</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Amount received</TableHead>
-              <TableHead></TableHead>
-            </TableHeader>
-            <TableBody>
-              {events.map((ev: any) => (
-                <TableRow key={ev.id}>
-                  <TableCell>
-                    <p className="font-medium text-[var(--text-primary)]">{ev.title}</p>
-                    {ev.location && (
-                      <p className="text-sm text-[var(--text-muted)]">{ev.location}</p>
-                    )}
-                  </TableCell>
-                  <TableCell>{formatShortDate(ev.eventDate)}</TableCell>
-                  <TableCell>{formatAmount(ev.amountReceived, ev.currency || 'USDC')}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => navigate(`/grants/${slug}/events/${ev.id}`)}
-                    >
-                      View <ChevronRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        ) : (
-          <div className="text-center py-8 text-[var(--text-muted)]">
-            <Calendar className="w-12 h-12 mx-auto mb-2 opacity-50" />
-            <p>No event reports yet.</p>
-            {canManage && (
-              <Button variant="outline" className="mt-4" onClick={() => navigate(`/grants/${slug}/events/new`)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add first event report
-              </Button>
-            )}
-          </div>
         )}
       </Card>
 

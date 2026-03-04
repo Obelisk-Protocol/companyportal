@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import Card from '../../components/ui/Card';
@@ -10,8 +10,7 @@ import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
-export default function CreateEventReport() {
-  const { slug } = useParams<{ slug: string }>();
+export default function CreateEventGrant() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
@@ -28,7 +27,7 @@ export default function CreateEventReport() {
 
   const createMutation = useMutation({
     mutationFn: (data: any) =>
-      api.post(`/grants/${slug}/events`, {
+      api.post('/event-grants', {
         ...data,
         amountReceived: parseFloat(data.amountReceived),
         attendeesCount: data.attendeesCount ? parseInt(data.attendeesCount, 10) : undefined,
@@ -36,12 +35,11 @@ export default function CreateEventReport() {
         creatixUrl: data.creatixUrl || undefined,
       }),
     onSuccess: (event: any) => {
-      queryClient.invalidateQueries({ queryKey: ['grant', slug] });
-      queryClient.invalidateQueries({ queryKey: ['grant-events', slug] });
-      toast.success('Event report created');
-      navigate(`/grants/${slug}/events/${event.id}`);
+      queryClient.invalidateQueries({ queryKey: ['event-grants'] });
+      toast.success('Event grant created');
+      navigate(`/event-grants/${event.id}`);
     },
-    onError: (err: any) => toast.error(err?.message || 'Failed to create event report'),
+    onError: (err: any) => toast.error(err?.message || 'Failed to create event grant'),
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -64,13 +62,13 @@ export default function CreateEventReport() {
       className="space-y-6"
     >
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate(`/grants/${slug}`)}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/event-grants')}>
           <ArrowLeft className="w-4 h-4 mr-1" />
           Back
         </Button>
       </div>
       <div>
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">New Event Report</h1>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">New event grant</h1>
         <p className="text-[var(--text-secondary)]">
           Submit the amount received from Superteam and event details for accountability.
         </p>
@@ -160,9 +158,9 @@ export default function CreateEventReport() {
 
           <div className="flex gap-3 pt-4">
             <Button type="submit" disabled={createMutation.isPending}>
-              {createMutation.isPending ? 'Creating…' : 'Create & Add Spendings'}
+              {createMutation.isPending ? 'Creating…' : 'Create & Add spendings'}
             </Button>
-            <Button type="button" variant="ghost" onClick={() => navigate(`/grants/${slug}`)}>
+            <Button type="button" variant="ghost" onClick={() => navigate('/event-grants')}>
               Cancel
             </Button>
           </div>
