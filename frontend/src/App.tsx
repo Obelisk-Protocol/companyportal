@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import Layout from './components/layout/Layout';
 import Login from './pages/auth/Login';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
 import AcceptInvitation from './pages/auth/AcceptInvitation';
 import Dashboard from './pages/dashboard/Dashboard';
 import Employees from './pages/employees/Employees';
@@ -61,6 +63,8 @@ export default function App() {
     <Routes>
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/accept-invitation/:token" element={<AcceptInvitation />} />
 
       {/* Grants - list and detail are public */}
