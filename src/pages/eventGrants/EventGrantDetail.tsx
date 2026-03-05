@@ -55,6 +55,9 @@ export default function EventGrantDetail() {
     creatixUrl: '',
     attendeesCount: '',
     description: '',
+    theme: '',
+    purpose: '',
+    afterEventReport: '',
     status: 'draft' as 'draft' | 'submitted',
   });
   const [isUploading, setIsUploading] = useState(false);
@@ -207,6 +210,9 @@ export default function EventGrantDetail() {
               creatixUrl: event.creatixUrl || '',
               attendeesCount: event.attendeesCount != null ? String(event.attendeesCount) : '',
               description: event.description || '',
+              theme: event.theme || '',
+              purpose: event.purpose || '',
+              afterEventReport: event.afterEventReport || '',
               status: event.status || 'draft',
             });
             setShowEventEditModal(true);
@@ -230,12 +236,6 @@ export default function EventGrantDetail() {
               <p className="text-[var(--text-primary)]">{event.location}</p>
             </div>
           )}
-          {event.attendeesCount != null && (
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-[var(--text-muted)]" />
-              <p className="font-medium text-[var(--text-primary)]">{event.attendeesCount} attendees</p>
-            </div>
-          )}
         </div>
         {(event.lumaUrl || event.creatixUrl) && (
           <div className="mt-4 flex flex-wrap gap-3">
@@ -252,6 +252,46 @@ export default function EventGrantDetail() {
           </div>
         )}
         {event.description && <p className="mt-4 text-[var(--text-secondary)]">{event.description}</p>}
+      </Card>
+
+      {/* After event report */}
+      <Card className="p-6">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">After event report</h2>
+        <p className="text-sm text-[var(--text-muted)] mb-4">
+          Purpose, value, and outcomes — helps identify the impact for Superteam.
+        </p>
+        <div className="space-y-4">
+          {(event.theme || event.purpose || event.attendeesCount != null || event.afterEventReport) ? (
+            <>
+              {event.theme && (
+                <div>
+                  <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">Theme</p>
+                  <p className="text-[var(--text-primary)]">{event.theme}</p>
+                </div>
+              )}
+              {event.purpose && (
+                <div>
+                  <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">Purpose</p>
+                  <p className="text-[var(--text-primary)]">{event.purpose}</p>
+                </div>
+              )}
+              {event.attendeesCount != null && (
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-[var(--text-muted)]" />
+                  <p className="font-medium text-[var(--text-primary)]">{event.attendeesCount} attendees</p>
+                </div>
+              )}
+              {event.afterEventReport && (
+                <div>
+                  <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">Event report (value & outcomes)</p>
+                  <p className="text-[var(--text-primary)] whitespace-pre-wrap">{event.afterEventReport}</p>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="text-[var(--text-muted)] italic">No after-event report added yet. Edit the event grant to add theme, purpose, attendees, and value narrative.</p>
+          )}
+        </div>
       </Card>
 
       {/* Spendings */}
@@ -382,10 +422,24 @@ export default function EventGrantDetail() {
           <Input label="Location" value={eventEditForm.location} onChange={(e) => setEventEditForm({ ...eventEditForm, location: e.target.value })} />
           <Input label="Luma URL" type="url" value={eventEditForm.lumaUrl} onChange={(e) => setEventEditForm({ ...eventEditForm, lumaUrl: e.target.value })} />
           <Input label="Creatix URL" type="url" value={eventEditForm.creatixUrl} onChange={(e) => setEventEditForm({ ...eventEditForm, creatixUrl: e.target.value })} />
-          <Input label="Attendees count" type="number" min="0" value={eventEditForm.attendeesCount} onChange={(e) => setEventEditForm({ ...eventEditForm, attendeesCount: e.target.value })} />
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Description</label>
             <textarea className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[80px]" value={eventEditForm.description} onChange={(e) => setEventEditForm({ ...eventEditForm, description: e.target.value })} />
+          </div>
+          <div className="pt-4 border-t border-[var(--border-color)]">
+            <p className="text-sm font-medium text-[var(--text-primary)] mb-3">After event report</p>
+            <Input label="Theme" value={eventEditForm.theme} onChange={(e) => setEventEditForm({ ...eventEditForm, theme: e.target.value })} placeholder="e.g. Solana developer onboarding" />
+            <div className="mt-3">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Purpose</label>
+              <textarea className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[60px]" value={eventEditForm.purpose} onChange={(e) => setEventEditForm({ ...eventEditForm, purpose: e.target.value })} placeholder="What was the goal of this event?" />
+            </div>
+            <div className="mt-3">
+              <Input label="Number of attendees" type="number" min="0" value={eventEditForm.attendeesCount} onChange={(e) => setEventEditForm({ ...eventEditForm, attendeesCount: e.target.value })} />
+            </div>
+            <div className="mt-3">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Event report (value & outcomes)</label>
+              <textarea className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[100px]" value={eventEditForm.afterEventReport} onChange={(e) => setEventEditForm({ ...eventEditForm, afterEventReport: e.target.value })} placeholder="Describe what happened, outcomes, value delivered..." />
+            </div>
           </div>
           <Select label="Status" value={eventEditForm.status} onChange={(e) => setEventEditForm({ ...eventEditForm, status: e.target.value as any })} options={[{ value: 'draft', label: 'Draft' }, { value: 'submitted', label: 'Submitted' }]} />
           <div className="flex justify-end gap-2 pt-4">
@@ -401,6 +455,9 @@ export default function EventGrantDetail() {
                   creatixUrl: eventEditForm.creatixUrl || undefined,
                   attendeesCount: eventEditForm.attendeesCount ? parseInt(eventEditForm.attendeesCount, 10) : undefined,
                   description: eventEditForm.description || undefined,
+                  theme: eventEditForm.theme || undefined,
+                  purpose: eventEditForm.purpose || undefined,
+                  afterEventReport: eventEditForm.afterEventReport || undefined,
                   status: eventEditForm.status,
                 })
               }

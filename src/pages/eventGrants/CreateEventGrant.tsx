@@ -23,6 +23,9 @@ export default function CreateEventGrant() {
     creatixUrl: '',
     attendeesCount: '',
     description: '',
+    theme: '',
+    purpose: '',
+    afterEventReport: '',
   });
 
   const createMutation = useMutation({
@@ -33,6 +36,9 @@ export default function CreateEventGrant() {
         attendeesCount: data.attendeesCount ? parseInt(data.attendeesCount, 10) : undefined,
         lumaUrl: data.lumaUrl || undefined,
         creatixUrl: data.creatixUrl || undefined,
+        theme: data.theme || undefined,
+        purpose: data.purpose || undefined,
+        afterEventReport: data.afterEventReport || undefined,
       }),
     onSuccess: (event: any) => {
       queryClient.invalidateQueries({ queryKey: ['event-grants'] });
@@ -136,8 +142,41 @@ export default function CreateEventGrant() {
               placeholder="https://creatix.io/..."
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+              Description / Additional proof
+            </label>
+            <textarea
+              className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[80px]"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Brief description of the event..."
+            />
+          </div>
+
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] pt-4 border-t border-[var(--border-color)]">
+            After event report
+          </h2>
+          <p className="text-sm text-[var(--text-muted)] -mt-2">
+            Fill in after the event to document purpose, value, and outcomes for Superteam.
+          </p>
           <Input
-            label="Attendees count"
+            label="Theme"
+            value={formData.theme}
+            onChange={(e) => setFormData({ ...formData, theme: e.target.value })}
+            placeholder="e.g. Solana developer onboarding, Web3 networking"
+          />
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Purpose</label>
+            <textarea
+              className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[60px]"
+              value={formData.purpose}
+              onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
+              placeholder="What was the goal of this event?"
+            />
+          </div>
+          <Input
+            label="Number of attendees"
             type="number"
             min="0"
             value={formData.attendeesCount}
@@ -146,14 +185,17 @@ export default function CreateEventGrant() {
           />
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-              Description / Additional proof
+              Event report (value & outcomes)
             </label>
             <textarea
-              className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[100px]"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Brief description of the event and how it benefited Superteam..."
+              className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[120px]"
+              value={formData.afterEventReport}
+              onChange={(e) => setFormData({ ...formData, afterEventReport: e.target.value })}
+              placeholder="Describe what happened, key outcomes, value delivered to the community/Superteam, feedback received, photos or media links..."
             />
+            <p className="text-xs text-[var(--text-muted)] mt-1">
+              This helps identify the purpose and value of the event for accountability.
+            </p>
           </div>
 
           <div className="flex gap-3 pt-4">
