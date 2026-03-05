@@ -15,7 +15,7 @@ Frontend for the Obelisk Company Portal - HR & Payroll management for Indonesian
 - 🔐 **Password Reset** - Forgot password flow via email
 
 ## Tech Stack
-
+ 
 - React 18 + TypeScript
 - Vite
 - Tailwind CSS
