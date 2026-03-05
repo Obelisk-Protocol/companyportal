@@ -18,6 +18,7 @@ import {
   Users,
   Link2,
   Receipt,
+  FileText,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -46,6 +47,13 @@ export default function EventGrantDetail() {
     spentAt: new Date().toISOString().split('T')[0],
   });
   const [showEventEditModal, setShowEventEditModal] = useState(false);
+  const [showAfterEventReportModal, setShowAfterEventReportModal] = useState(false);
+  const [afterEventReportForm, setAfterEventReportForm] = useState({
+    theme: '',
+    purpose: '',
+    attendeesCount: '',
+    afterEventReport: '',
+  });
   const [eventEditForm, setEventEditForm] = useState({
     title: '',
     amountReceived: '',
@@ -55,9 +63,6 @@ export default function EventGrantDetail() {
     creatixUrl: '',
     attendeesCount: '',
     description: '',
-    theme: '',
-    purpose: '',
-    afterEventReport: '',
     status: 'draft' as 'draft' | 'submitted',
   });
   const [isUploading, setIsUploading] = useState(false);
@@ -118,6 +123,17 @@ export default function EventGrantDetail() {
       toast.success('Event grant updated');
     },
     onError: (err: any) => toast.error(err?.message || 'Failed to update'),
+  });
+
+  const updateAfterEventReportMutation = useMutation({
+    mutationFn: (body: { theme?: string; purpose?: string; attendeesCount?: number; afterEventReport?: string }) =>
+      api.put(`/event-grants/${id}`, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['event-grant', id] });
+      setShowAfterEventReportModal(false);
+      toast.success('After event report saved');
+    },
+    onError: (err: any) => toast.error(err?.message || 'Failed to save'),
   });
 
   const resetSpendingForm = () => {
@@ -210,9 +226,6 @@ export default function EventGrantDetail() {
               creatixUrl: event.creatixUrl || '',
               attendeesCount: event.attendeesCount != null ? String(event.attendeesCount) : '',
               description: event.description || '',
-              theme: event.theme || '',
-              purpose: event.purpose || '',
-              afterEventReport: event.afterEventReport || '',
               status: event.status || 'draft',
             });
             setShowEventEditModal(true);
@@ -256,10 +269,32 @@ export default function EventGrantDetail() {
 
       {/* After event report */}
       <Card className="p-6">
-        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">After event report</h2>
-        <p className="text-sm text-[var(--text-muted)] mb-4">
-          Purpose, value, and outcomes — helps identify the impact for Superteam.
-        </p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-semibold text-[var(--text-primary)]">After event report</h2>
+            <p className="text-sm text-[var(--text-muted)] mt-1">
+              Purpose, value, and outcomes — helps identify the impact for Superteam.
+            </p>
+          </div>
+          {canManage && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setAfterEventReportForm({
+                  theme: event.theme || '',
+                  purpose: event.purpose || '',
+                  attendeesCount: event.attendeesCount != null ? String(event.attendeesCount) : '',
+                  afterEventReport: event.afterEventReport || '',
+                });
+                setShowAfterEventReportModal(true);
+              }}
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              {(event.theme || event.purpose || event.afterEventReport) ? 'Edit report' : 'Add report'}
+            </Button>
+          )}
+        </div>
         <div className="space-y-4">
           {(event.theme || event.purpose || event.attendeesCount != null || event.afterEventReport) ? (
             <>
@@ -289,7 +324,9 @@ export default function EventGrantDetail() {
               )}
             </>
           ) : (
-            <p className="text-[var(--text-muted)] italic">No after-event report added yet. Edit the event grant to add theme, purpose, attendees, and value narrative.</p>
+            <p className="text-[var(--text-muted)] italic">
+              No after-event report yet. Click &quot;Add report&quot; to add theme, purpose, attendees, and value narrative.
+            </p>
           )}
         </div>
       </Card>
@@ -426,21 +463,6 @@ export default function EventGrantDetail() {
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Description</label>
             <textarea className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[80px]" value={eventEditForm.description} onChange={(e) => setEventEditForm({ ...eventEditForm, description: e.target.value })} />
           </div>
-          <div className="pt-4 border-t border-[var(--border-color)]">
-            <p className="text-sm font-medium text-[var(--text-primary)] mb-3">After event report</p>
-            <Input label="Theme" value={eventEditForm.theme} onChange={(e) => setEventEditForm({ ...eventEditForm, theme: e.target.value })} placeholder="e.g. Solana developer onboarding" />
-            <div className="mt-3">
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Purpose</label>
-              <textarea className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[60px]" value={eventEditForm.purpose} onChange={(e) => setEventEditForm({ ...eventEditForm, purpose: e.target.value })} placeholder="What was the goal of this event?" />
-            </div>
-            <div className="mt-3">
-              <Input label="Number of attendees" type="number" min="0" value={eventEditForm.attendeesCount} onChange={(e) => setEventEditForm({ ...eventEditForm, attendeesCount: e.target.value })} />
-            </div>
-            <div className="mt-3">
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Event report (value & outcomes)</label>
-              <textarea className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[100px]" value={eventEditForm.afterEventReport} onChange={(e) => setEventEditForm({ ...eventEditForm, afterEventReport: e.target.value })} placeholder="Describe what happened, outcomes, value delivered..." />
-            </div>
-          </div>
           <Select label="Status" value={eventEditForm.status} onChange={(e) => setEventEditForm({ ...eventEditForm, status: e.target.value as any })} options={[{ value: 'draft', label: 'Draft' }, { value: 'submitted', label: 'Submitted' }]} />
           <div className="flex justify-end gap-2 pt-4">
             <Button variant="ghost" onClick={() => setShowEventEditModal(false)}>Cancel</Button>
@@ -455,9 +477,6 @@ export default function EventGrantDetail() {
                   creatixUrl: eventEditForm.creatixUrl || undefined,
                   attendeesCount: eventEditForm.attendeesCount ? parseInt(eventEditForm.attendeesCount, 10) : undefined,
                   description: eventEditForm.description || undefined,
-                  theme: eventEditForm.theme || undefined,
-                  purpose: eventEditForm.purpose || undefined,
-                  afterEventReport: eventEditForm.afterEventReport || undefined,
                   status: eventEditForm.status,
                 })
               }
@@ -465,6 +484,76 @@ export default function EventGrantDetail() {
               isLoading={updateEventMutation.isPending}
             >
               Save
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* After event report modal */}
+      <Modal
+        isOpen={showAfterEventReportModal}
+        onClose={() => setShowAfterEventReportModal(false)}
+        title="After event report"
+        size="md"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-[var(--text-muted)]">
+            Document purpose, value, and outcomes for Superteam. Fill this in after the event.
+          </p>
+          <Input
+            label="Theme"
+            value={afterEventReportForm.theme}
+            onChange={(e) => setAfterEventReportForm({ ...afterEventReportForm, theme: e.target.value })}
+            placeholder="e.g. Solana developer onboarding, Web3 networking"
+          />
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Purpose</label>
+            <textarea
+              className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[60px]"
+              value={afterEventReportForm.purpose}
+              onChange={(e) => setAfterEventReportForm({ ...afterEventReportForm, purpose: e.target.value })}
+              placeholder="What was the goal of this event?"
+            />
+          </div>
+          <Input
+            label="Number of attendees"
+            type="number"
+            min="0"
+            value={afterEventReportForm.attendeesCount}
+            onChange={(e) => setAfterEventReportForm({ ...afterEventReportForm, attendeesCount: e.target.value })}
+            placeholder="e.g. 50"
+          />
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+              Event report (value & outcomes)
+            </label>
+            <textarea
+              className="w-full px-3 py-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-[120px]"
+              value={afterEventReportForm.afterEventReport}
+              onChange={(e) => setAfterEventReportForm({ ...afterEventReportForm, afterEventReport: e.target.value })}
+              placeholder="Describe what happened, key outcomes, value delivered to the community/Superteam, feedback received, photos or media links..."
+            />
+            <p className="text-xs text-[var(--text-muted)] mt-1">
+              This helps identify the purpose and value of the event for accountability.
+            </p>
+          </div>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="ghost" onClick={() => setShowAfterEventReportModal(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() =>
+                updateAfterEventReportMutation.mutate({
+                  theme: afterEventReportForm.theme || undefined,
+                  purpose: afterEventReportForm.purpose || undefined,
+                  attendeesCount: afterEventReportForm.attendeesCount ? parseInt(afterEventReportForm.attendeesCount, 10) : undefined,
+                  afterEventReport: afterEventReportForm.afterEventReport || undefined,
+                })
+              }
+              disabled={updateAfterEventReportMutation.isPending}
+              isLoading={updateAfterEventReportMutation.isPending}
+            >
+              Save report
             </Button>
           </div>
         </div>
