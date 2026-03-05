@@ -96,10 +96,10 @@ export default function Login() {
                   className="w-full pl-12 pr-4 py-3 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20 focus:border-[var(--accent-primary)]/50 transition-all"
                 />
               </div>
-              <div className="text-right">
+              <div className="text-right -mt-1">
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors"
+                  className="text-sm text-[var(--accent-primary)] hover:underline font-medium"
                 >
                   Forgot password?
                 </Link>
