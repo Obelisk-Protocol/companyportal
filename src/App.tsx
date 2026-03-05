@@ -300,11 +300,11 @@ export default function App() {
           }
         />
 
-        {/* Event Grants - standalone event grant tracking (Admin/HR) */}
+        {/* Event Grants - standalone event grant tracking (all employees) */}
         <Route
           path="event-grants"
           element={
-            <PrivateRoute allowedRoles={['admin', 'hr']}>
+            <PrivateRoute allowedRoles={['admin', 'hr', 'employee', 'accountant']}>
               <EventGrants />
             </PrivateRoute>
           }
@@ -312,7 +312,7 @@ export default function App() {
         <Route
           path="event-grants/new"
           element={
-            <PrivateRoute allowedRoles={['admin', 'hr']}>
+            <PrivateRoute allowedRoles={['admin', 'hr', 'employee', 'accountant']}>
               <CreateEventGrant />
             </PrivateRoute>
           }
@@ -320,7 +320,7 @@ export default function App() {
         <Route
           path="event-grants/:id"
           element={
-            <PrivateRoute allowedRoles={['admin', 'hr']}>
+            <PrivateRoute allowedRoles={['admin', 'hr', 'employee', 'accountant']}>
               <EventGrantDetail />
             </PrivateRoute>
           }

@@ -31,7 +31,7 @@ const hrNavigation = [
   { name: 'Payroll', href: '/payroll', icon: Wallet, roles: ['admin', 'hr'] },
   { name: 'Expenses', href: '/expenses', icon: Receipt, roles: ['admin', 'hr'] },
   { name: 'Grants', href: '/grants', icon: Gift, roles: ['admin', 'hr'] },
-  { name: 'Event grants', href: '/event-grants', icon: Calendar, roles: ['admin', 'hr'] },
+  { name: 'Event grants', href: '/event-grants', icon: Calendar, roles: ['admin', 'hr', 'employee', 'accountant'] },
   { name: 'Contracts', href: '/contracts/management', icon: FileSignature, roles: ['admin', 'hr'] },
   { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin', 'hr', 'accountant'] },
   { name: 'Generated Reports', href: '/reports/generated', icon: FileCheck, roles: ['admin', 'hr', 'accountant'] },
@@ -43,7 +43,7 @@ const crmNavigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['admin', 'hr', 'employee', 'client'] },
   { name: 'Clients', href: '/crm/clients', icon: Building2, roles: ['admin', 'hr', 'accountant'] },
   { name: 'Grants', href: '/grants', icon: Gift, roles: ['admin', 'hr'] },
-  { name: 'Event grants', href: '/event-grants', icon: Calendar, roles: ['admin', 'hr'] },
+  { name: 'Event grants', href: '/event-grants', icon: Calendar, roles: ['admin', 'hr', 'employee', 'accountant'] },
   { name: 'Contracts', href: '/contracts/management', icon: FileSignature, roles: ['admin', 'hr'] },
   { name: 'Invoices', href: '/invoices', icon: ReceiptText, roles: ['admin', 'hr', 'accountant'] },
   { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin', 'hr', 'accountant'] },
@@ -53,6 +53,7 @@ const crmNavigation = [
 // Employee Navigation Items
 const employeeNavigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['employee'] },
+  { name: 'Event grants', href: '/event-grants', icon: Calendar, roles: ['employee'] },
   { name: 'My Payslips', href: '/my-payslips', icon: CreditCard, roles: ['employee'] },
   { name: 'My Expenses', href: '/my-expenses', icon: Receipt, roles: ['employee'] },
   { name: 'My Contracts', href: '/my-contracts', icon: FileSignature, roles: ['employee'] },
