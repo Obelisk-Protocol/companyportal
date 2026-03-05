@@ -1,6 +1,6 @@
-# Company Portal
+# Company Portal (Frontend)
 
-A comprehensive HR and payroll management system for Indonesian companies, built with React, TypeScript, and Hono.js.
+Frontend for the Obelisk Company Portal - HR & Payroll management for Indonesian companies. Built with React, TypeScript, and Vite.
 
 ## Features
 
@@ -12,166 +12,69 @@ A comprehensive HR and payroll management system for Indonesian companies, built
 - 📊 **Reports & Analytics** - Comprehensive payroll and tax reports
 - 👤 **User Roles** - Admin, HR, Employee, and Accountant roles
 - 📧 **Email Invitations** - Automated user onboarding
+- 🔐 **Password Reset** - Forgot password flow via email
 
 ## Tech Stack
 
-### Frontend
 - React 18 + TypeScript
 - Vite
 - Tailwind CSS
 - React Query
 - React Router
-
-### Backend
-- Hono.js
-- PostgreSQL (Drizzle ORM)
-- Cloudflare R2 (Storage)
-- Resend (Email)
-- PDF-lib (Document generation)
-
-### Deployment
-- Cloudflare Pages (Frontend) - [https://companyportal.pages.dev](https://companyportal.pages.dev)
-- Railway (Backend API)
-- Cloudflare R2 (File Storage)
+- Framer Motion
 
 ## Project Structure
 
 ```
-Company-portal/
-├── api/                 # Backend API server
-│   ├── src/
-│   │   ├── routes/     # API routes
-│   │   ├── db/         # Database schema and migrations
-│   │   ├── utils/      # Utilities (PDF, payroll, etc.)
-│   │   └── services/   # Background services (scheduler)
-│   └── package.json
-├── web/                 # Frontend React app
-│   ├── src/
-│   │   ├── pages/      # Page components
-│   │   ├── components/ # Reusable components
-│   │   └── lib/        # Utilities and API client
-│   └── package.json
-└── DEPLOYMENT.md        # Deployment guide
+├── src/
+│   ├── pages/        # Page components
+│   ├── components/   # Reusable components
+│   ├── contexts/     # React contexts (Auth, Theme, etc.)
+│   └── lib/          # Utilities and API client
+├── public/
+├── index.html
+└── package.json
 ```
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ 
-- PostgreSQL database
-- Cloudflare account (for R2 storage)
-- Resend account (for emails)
+- Node.js 18+
 
 ### Installation
 
 1. Clone the repository
 ```bash
-git clone <your-repo-url>
-cd Company-portal
+git clone https://github.com/Obelisk-Protocol/companyportal.git
+cd companyportal
 ```
 
 2. Install dependencies
 ```bash
-# Frontend
-cd web
-npm install
-
-# Backend
-cd ../api
 npm install
 ```
 
 3. Set up environment variables
 
-**Frontend (`web/.env`):**
+Create `.env`:
 ```
-VITE_API_URL=http://localhost:3000
-```
-
-**Backend (`api/.env`):**
-```
-DATABASE_URL=postgresql://user:password@localhost:5432/company_portal
-JWT_SECRET=your-secret-key
-CLOUDFLARE_ACCOUNT_ID=your-account-id
-CLOUDFLARE_R2_ACCESS_KEY_ID=your-access-key
-CLOUDFLARE_R2_SECRET_ACCESS_KEY=your-secret-key
-CLOUDFLARE_R2_BUCKET_NAME=your-bucket-name
-CLOUDFLARE_R2_PUBLIC_URL=https://your-r2-url.com
-RESEND_API_KEY=your-resend-key
-FROM_EMAIL=Your Company <noreply@yourdomain.com>
-FRONTEND_URL=http://localhost:5173
-PORT=3000
+VITE_API_URL=https://your-api-url.com
 ```
 
-4. Set up database
+4. Start development server
 ```bash
-cd api
-npm run db:push
-```
-
-5. Start development servers
-```bash
-# Backend (from api/)
-npm run dev
-
-# Frontend (from web/)
 npm run dev
 ```
 
-## Deployment
+## Deployment (Cloudflare Pages)
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
-
-### Quick Deploy
-
-**Frontend (Cloudflare Pages):**
 - Connect GitHub repository
-- Build command: `cd web && npm install && npm run build`
-- Output directory: `web/dist`
-- Set `VITE_API_URL` environment variable
-
-**Backend (Railway):**
-- Connect GitHub repository
-- Root directory: `api`
-- Start command: `npm start`
-- Add all environment variables from Railway dashboard
-
-## Indonesian Tax Compliance
-
-This system implements:
-- ✅ PPh 21 (Income Tax) calculations
-- ✅ PTKP (Tax Status) handling
-- ✅ BPJS Kesehatan (Health Insurance)
-- ✅ BPJS Ketenagakerjaan (Employment Insurance)
-- ✅ SPT Masa PPh 21 (Monthly Tax Return) - Auto-generated
-- ✅ Bukti Potong 1721-A1 (Withholding Slip)
+- **Root directory:** (leave empty - repo root is the app)
+- **Build command:** `npm install && npm run build`
+- **Output directory:** `dist`
+- Set `VITE_API_URL` environment variable to your backend API URL
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file in the root directory for details.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## Security
-
-**Important:** Never commit `.env` files or any files containing:
-- API keys
-- Database credentials
-- JWT secrets
-- Cloudflare credentials
-- Any other sensitive information
-
-Always use `.env.example` files as templates and keep your actual `.env` files local or in secure environment variable storage (like Railway, Cloudflare, etc.).
-
-## Support
-
-For issues, questions, or contributions, please open an issue on GitHub.
+MIT License - see [LICENSE](./LICENSE) for details.
