@@ -164,8 +164,8 @@ export default function Dashboard() {
                     {hrStats?.activeEmployees || 0} active
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <Users className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -185,8 +185,8 @@ export default function Dashboard() {
                     {hrStats?.currentMonthPayroll?.status || 'Not created'}
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Wallet className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <Wallet className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -202,8 +202,8 @@ export default function Dashboard() {
                   </p>
                   <p className="text-sm text-[var(--text-muted)] mt-1">Awaiting review</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Receipt className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <Receipt className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -221,8 +221,8 @@ export default function Dashboard() {
                     {hrStats?.currentMonthApprovedCount || 0} expenses
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Check className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <Check className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -238,8 +238,8 @@ export default function Dashboard() {
                   </p>
                   <p className="text-sm text-[var(--text-secondary)] mt-1">{new Date().getFullYear()}</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <Calendar className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -324,8 +324,8 @@ export default function Dashboard() {
                   </p>
                   <p className="text-sm text-[var(--text-muted)] mt-1">Active clients</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Building2 className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <Building2 className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -343,8 +343,8 @@ export default function Dashboard() {
                     {crmStats?.pendingContracts || 0} pending
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <FileSignature className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <FileSignature className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -360,8 +360,8 @@ export default function Dashboard() {
                   </p>
                   <p className="text-sm text-[var(--text-muted)] mt-1">Awaiting payment</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <ReceiptText className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <ReceiptText className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -377,8 +377,8 @@ export default function Dashboard() {
                   </p>
                   <p className="text-sm text-[var(--text-muted)] mt-1">Outstanding</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <DollarSign className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -464,8 +464,8 @@ export default function Dashboard() {
                     {hrStats?.activeEmployees || 0} active
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <Users className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -485,8 +485,8 @@ export default function Dashboard() {
                     {hrStats?.currentMonthPayroll?.status || 'Not created'}
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Wallet className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <Wallet className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -502,8 +502,8 @@ export default function Dashboard() {
                   </p>
                   <p className="text-sm text-[var(--text-muted)] mt-1">Awaiting review</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Receipt className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <Receipt className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -521,8 +521,8 @@ export default function Dashboard() {
                     {hrStats?.currentMonthApprovedCount || 0} expenses
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Check className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <Check className="h-6 w-6" />
                 </div>
               </div>
             </Card>
@@ -538,8 +538,8 @@ export default function Dashboard() {
                   </p>
                   <p className="text-sm text-[var(--text-secondary)] mt-1">{new Date().getFullYear()}</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-[var(--text-primary)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">
+                  <Calendar className="h-6 w-6" />
                 </div>
               </div>
             </Card>

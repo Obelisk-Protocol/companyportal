@@ -22,16 +22,14 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
     <AnimatePresence>
       {isOpen && (
         <Fragment>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-inverse-surface/60 backdrop-blur-sm z-40 dark:bg-black/70"
           />
 
-          {/* Modal */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -40,23 +38,21 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
             <div
-              className={`${sizes[size]} w-full max-h-[90vh] flex flex-col bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-2xl transition-colors`}
+              className={`${sizes[size]} w-full max-h-[90vh] flex flex-col bg-surface-container-lowest dark:bg-[var(--bg-card)] border border-outline-variant dark:border-[var(--border-color)] rounded-2xl shadow-2xl transition-colors`}
             >
-              {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-color)] flex-shrink-0">
-                <h3 className="text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
+              <div className="flex items-center justify-between px-6 py-4 border-b border-outline-variant/80 dark:border-[var(--border-color)] flex-shrink-0">
+                <h3 className="text-lg font-semibold font-headline text-on-surface">{title}</h3>
                 <button
+                  type="button"
                   onClick={onClose}
-                  className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-bg)] rounded-lg transition-colors"
+                  className="p-2 text-on-surface-variant hover:text-on-surface hover:bg-[var(--hover-bg)] rounded-lg transition-colors"
+                  aria-label="Close dialog"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Content - Scrollable */}
-              <div className="p-6 overflow-y-auto flex-1">
-                {children}
-              </div>
+              <div className="p-6 overflow-y-auto flex-1 text-on-surface">{children}</div>
             </div>
           </motion.div>
         </Fragment>

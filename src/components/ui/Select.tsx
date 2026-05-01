@@ -12,7 +12,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="space-y-1.5">
         {label && (
-          <label htmlFor={id} className="block text-sm font-medium text-[var(--text-secondary)]">
+          <label htmlFor={id} className="block text-sm font-medium text-on-surface-variant font-label">
             {label}
           </label>
         )}
@@ -20,10 +20,9 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={id}
           className={cn(
-            'w-full px-4 py-2.5 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)]',
-            'focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20 focus:border-[var(--accent-primary)]/50',
-            'transition-all duration-200',
-            error && 'border-red-500/50 focus:ring-red-500/20 focus:border-red-500/50',
+            'w-full rounded-lg border border-outline-variant bg-surface-container-highest px-4 py-2.5 text-on-surface transition-all duration-200 dark:border-transparent dark:bg-[var(--bg-input)]',
+            'focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20',
+            error && 'border-error/50 focus:ring-error/30',
             className
           )}
           {...props}
@@ -34,7 +33,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             </option>
           ))}
         </select>
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && <p className="text-sm text-error">{error}</p>}
       </div>
     );
   }

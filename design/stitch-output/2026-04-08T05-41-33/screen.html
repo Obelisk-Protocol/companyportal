@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Obelisk | Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Public+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#532800",
+                        "tertiary-container": "#743b00",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#a0c9ff",
+                        "on-tertiary-fixed": "#2f1400",
+                        "on-secondary-fixed-variant": "#304a55",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#8ebdf9",
+                        "primary-container": "#0f4c81",
+                        "surface-tint": "#2d6197",
+                        "surface-container": "#eceef0",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed": "#d2e4ff",
+                        "on-primary-fixed": "#001c37",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#2d3133",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed-dim": "#ffb780",
+                        "surface": "#f7f9fb",
+                        "on-primary-fixed-variant": "#07497d",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c2c7d1",
+                        "on-tertiary-container": "#f9a767",
+                        "secondary": "#48626e",
+                        "secondary-fixed-dim": "#afcbd8",
+                        "inverse-primary": "#a0c9ff",
+                        "secondary-container": "#cbe7f5",
+                        "secondary-fixed": "#cbe7f5",
+                        "on-surface": "#191c1e",
+                        "inverse-on-surface": "#eff1f3",
+                        "outline": "#727780",
+                        "tertiary-fixed": "#ffdcc4",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#191c1e",
+                        "on-tertiary-fixed-variant": "#6f3800",
+                        "on-secondary-fixed": "#021f29",
+                        "on-secondary-container": "#4e6874",
+                        "on-surface-variant": "#42474f",
+                        "background": "#f7f9fb",
+                        "primary": "#00355f",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-container-highest": "#e0e3e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tonal-transition-no-border {
+            background-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopAppBar Login Variation (Shell visible but minimized context) -->
+<!-- Suppression logic: Navigation shell is suppressed for transactional page focus -->
+<header class="fixed top-0 w-full z-50 bg-[#f7f9fb]/70 backdrop-blur-xl flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-2">
+<span class="text-xl font-bold text-[#00355f] font-headline tracking-tight">Obelisk</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-sm font-medium text-primary-container font-label hover:opacity-80 transition-opacity">Help</button>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="dark_mode">dark_mode</span>
+</div>
+</header>
+<main class="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden">
+<!-- Minimalist Background with Branding Element -->
+<div class="absolute -top-[10%] -left-[10%] w-[40%] h-[60%] rounded-full bg-primary-container/5 blur-[120px]"></div>
+<div class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[60%] rounded-full bg-tertiary-container/5 blur-[120px]"></div>
+<div class="w-full max-w-md z-10">
+<!-- Branding/Greeting Section -->
+<div class="text-center mb-10">
+<h1 class="font-headline text-4xl font-extrabold text-primary tracking-tight mb-3">Welcome back</h1>
+<p class="font-body text-on-surface-variant">Access your enterprise dashboard</p>
+</div>
+<!-- Login Card -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_32px_64px_rgba(25,28,30,0.06)]">
+<form action="#" class="space-y-6">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider" for="email">Corporate Email</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-3.5 text-on-surface placeholder:text-outline/60 focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 transition-all outline-none" id="email" placeholder="name@company.com" type="email"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline/40" data-icon="alternate_email">alternate_email</span>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-wider" for="password">Password</label>
+<a class="text-xs font-semibold text-primary-container hover:underline" href="#">Forgot password?</a>
+</div>
+<div class="relative group">
+<input class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-3.5 text-on-surface placeholder:text-outline/60 focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 transition-all outline-none" id="password" placeholder="••••••••" type="password"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline/40 cursor-pointer" data-icon="visibility">visibility</span>
+</div>
+</div>
+<!-- Primary CTA -->
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold py-4 rounded-lg shadow-lg hover:shadow-xl active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="submit">
+                        Sign In
+                        <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<!-- Divider Alternative: Tonal Shift -->
+<div class="my-8 flex items-center gap-4">
+<div class="h-px flex-1 bg-outline-variant/20"></div>
+<span class="text-[10px] font-bold text-outline uppercase tracking-[0.2em]">Secure Access</span>
+<div class="h-px flex-1 bg-outline-variant/20"></div>
+</div>
+<!-- Secondary Action -->
+<div class="flex flex-col gap-4">
+<button class="w-full bg-surface-container-low text-on-surface font-label font-semibold py-3.5 rounded-lg flex items-center justify-center gap-3 hover:bg-surface-container-high transition-colors">
+<img alt="SSO" class="w-5 h-5" data-alt="Official Google G-Suite logo icon with high resolution and crisp colors on transparent background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxIwVh_RD0_77dn6rv69KJN3a74oFr8TtQ8F8c2XJjoYroPNXsia-foNvxXEqP66jb8fSdL_L-o7IArPjBYGNbdz0RpwDvNYHgd0bo-IqJlEE3x93JegUxzLtcJaSVPA41bkwYmCfXcgnSzA0uA6VItITBL2Hogpq8KshVty7lUu2MGlw0_nMawVzg7FYMaZWRU6FLcHZvFdnb3DYq_xIottsstLAKmq6uAevFxF6VdlZAD-hsNrpryVe9oAJuvcl30A0xO8aNNTk"/>
+                        Sign in with SSO
+                    </button>
+</div>
+</div>
+<!-- Bottom Branding -->
+<div class="mt-8 flex flex-col items-center gap-6">
+<div class="flex gap-8 items-center opacity-40">
+<div class="h-8 w-24 bg-on-surface-variant/20 rounded-md flex items-center justify-center overflow-hidden">
+<img class="grayscale h-4" data-alt="Minimalist abstract corporate logo icon for a financial institution, vector style, flat grey" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqbn-7jfcQ1F-24LiislFnCbbOtGan3A7dzmoV90bSTvvVgOxbKYscXmToh0zV89gMbVhb9y4T93Gux8nCUjdPAMaQyBih7hcxeVMQy1qJVn3rEj_ZwLCfb4-m18YH2OQ_btqh-czEawryy0MNcsHhVG6tfsMpLnJc6ipWpyfHXxSsL8ISy6Oq6c_liU_xNA9K3FeeYVC1OrJgV-esCQgYz0th3r_cpdpTYFymtd9RjYa6TQYonpZraK1kmXzbWHeLeCBulDj1aiM"/>
+</div>
+<div class="h-8 w-24 bg-on-surface-variant/20 rounded-md flex items-center justify-center overflow-hidden">
+<img class="grayscale h-4" data-alt="Professional technology company wordmark logo, elegant sans-serif typography, clean grey aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMam99MJpgfKuQowCu51ePg1lusn3lG1z0MfbX-x3LPFib1xRqYiZFU13HpQGlsAsf5daZFL0SIYQPLdy3fXOgrTrm3nrHwcqYO25VTybXyPjIoMckBHiOCjKuScyYH2Og_iWIVJ_r203QqqDBzfVmcpQmGqVbyNwjHvhQL73edZ_v7QC8Gh6EGcgc6BmXElw3eCIoP_76A7OFVdy0yDNpxBNcV20QtkT39bob4cc4L9rNFt4WYUrPuFjzZWXTxZuJEpvj64O4Uxs"/>
+</div>
+<div class="h-8 w-24 bg-on-surface-variant/20 rounded-md flex items-center justify-center overflow-hidden">
+<img class="grayscale h-4" data-alt="Modern geometric emblem logo for an enterprise cloud platform, simple bold shapes in neutral grey" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiT3SXBNP7z6nyN-kD5UXfm4xun2cpsQU6s2mWaV9vbMbwip3nKEpEDqOUt6E_5fV6yNJAh5j0pxYJdDkfI4b6zXIp30bxAJSW3gv1Yxb0Z_cl9pUyYZI-kR6zFzWvfZtnfz0rsElp4DpOMq4kFpUCWNyVE1a-FlU9Wo2GLY9BgyeVbx_Q_2ztzgdeuHTGVdNmtstPo8azoQ79V5lhWtBE_gOZnPUPrkrVDZSX5XzblX6mtaHW44ANsG8rZN8TPIS_CLJJE7PTZIw"/>
+</div>
+</div>
+<p class="text-[11px] font-label text-outline/60 uppercase tracking-widest">Trusted by 200+ Indonesian Enterprises</p>
+</div>
+</div>
+<!-- Footer Decoration / Asymmetric Element -->
+<div class="absolute bottom-0 left-0 p-12 hidden lg:block opacity-20">
+<div class="flex flex-col gap-1">
+<span class="font-headline text-8xl font-black text-primary leading-none">01</span>
+<span class="font-label text-xs font-bold uppercase tracking-[0.5em] text-primary">Security First</span>
+</div>
+</div>
+</main>
+<!-- Support Link Footer -->
+<footer class="fixed bottom-8 w-full flex justify-center items-center gap-6 z-10 px-6">
+<a class="text-[10px] font-bold text-outline/60 uppercase tracking-widest hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<span class="w-1 h-1 rounded-full bg-outline/20"></span>
+<a class="text-[10px] font-bold text-outline/60 uppercase tracking-widest hover:text-primary transition-colors" href="#">Terms of Service</a>
+<span class="w-1 h-1 rounded-full bg-outline/20"></span>
+<a class="text-[10px] font-bold text-outline/60 uppercase tracking-widest hover:text-primary transition-colors" href="#">System Status</a>
+</footer>
+</body></html>

@@ -11,7 +11,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl transition-colors',
+          'bg-surface-container-lowest dark:bg-[var(--bg-card)] border border-outline-variant/60 dark:border-[var(--border-color)] rounded-xl transition-colors shadow-stitch dark:shadow-stitch-dark',
           hover && 'card-hover cursor-pointer',
           className
         )}

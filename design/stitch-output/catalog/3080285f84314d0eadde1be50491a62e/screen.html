@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Obelisk | Event Grant Detail</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&amp;family=Public+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#532800",
+                        "tertiary-container": "#743b00",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#a0c9ff",
+                        "on-tertiary-fixed": "#2f1400",
+                        "on-secondary-fixed-variant": "#304a55",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#8ebdf9",
+                        "primary-container": "#0f4c81",
+                        "surface-tint": "#2d6197",
+                        "surface-container": "#eceef0",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed": "#d2e4ff",
+                        "on-primary-fixed": "#001c37",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#2d3133",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed-dim": "#ffb780",
+                        "surface": "#f7f9fb",
+                        "on-primary-fixed-variant": "#07497d",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c2c7d1",
+                        "on-tertiary-container": "#f9a767",
+                        "secondary": "#48626e",
+                        "secondary-fixed-dim": "#afcbd8",
+                        "inverse-primary": "#a0c9ff",
+                        "secondary-container": "#cbe7f5",
+                        "secondary-fixed": "#cbe7f5",
+                        "on-surface": "#191c1e",
+                        "inverse-on-surface": "#eff1f3",
+                        "outline": "#727780",
+                        "tertiary-fixed": "#ffdcc4",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#191c1e",
+                        "on-tertiary-fixed-variant": "#6f3800",
+                        "on-secondary-fixed": "#021f29",
+                        "on-secondary-container": "#4e6874",
+                        "on-surface-variant": "#42474f",
+                        "background": "#f7f9fb",
+                        "primary": "#00355f",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-container-highest": "#e0e3e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tonal-transition-no-border {
+            background: linear-gradient(180deg, #f7f9fb 0%, rgba(247, 249, 251, 0) 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f7f9fb]/70 backdrop-blur-xl shadow-[0_32px_64px_rgba(25,28,30,0.06)] flex items-center justify-between px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up portrait of a professional man in a bright office environment with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByaYT3fm1O06gDm0zAkvmr6majyR3uU99m7FRVfYU9mMaZjhn_YzCdmw2t5tNvN3z-CZnz1_zZC1Tto3_CMuSZ7ba-UiE49I_tkqV4ilaJsr7f5sOn5wisS2qSGypHCMYSsYw6-QRcNOmIyz8McGhECe9akwn_BwooOkKxGbQ0pSz4Xh08-RXtHYHLWbotP8TdsKG8FjKNJWe_eblX4U_906Vg4MMF8XZfLpS5Yo3G93JzUFTT_P2FzgNGde7d68C7guQI6saHVjg"/>
+</div>
+<span class="font-headline tracking-tight font-bold text-xl text-primary">Obelisk</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity active:scale-90 transition-transform" data-icon="dark_mode">dark_mode</button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+<!-- Hero Summary Section (Asymmetric Editorial Style) -->
+<section class="mb-12">
+<div class="flex items-baseline justify-between mb-2">
+<h1 class="font-headline text-3xl font-extrabold tracking-tight text-primary">Q3 Tech Summit</h1>
+<span class="font-label text-xs font-semibold uppercase tracking-widest text-secondary bg-secondary-container px-2 py-1 rounded-full">Active Grant</span>
+</div>
+<p class="font-body text-on-surface-variant mb-8">Quarterly professional development and ecosystem networking event.</p>
+<!-- Metric Hero Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_8px_24px_rgba(25,28,30,0.02)] relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<p class="font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">Amount Received</p>
+<h2 class="font-headline text-4xl font-extrabold text-primary">Rp 25.000.000</h2>
+<div class="mt-4 flex items-center gap-2 text-primary/60">
+<span class="material-symbols-outlined text-sm" data-icon="info">info</span>
+<span class="text-[10px] font-medium">Disbursed on Oct 12, 2023</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-8 rounded-xl relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-tertiary"></div>
+<p class="font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">Amount Spent</p>
+<h2 class="font-headline text-4xl font-extrabold text-on-surface">Rp 12.450.000</h2>
+<div class="mt-4 flex items-center gap-2">
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[49.8%]"></div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant whitespace-nowrap">49.8%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Spending Items (Bento Style Cards) -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="font-headline text-lg font-bold text-primary">Expense Log</h3>
+<button class="text-primary font-label text-sm font-semibold flex items-center gap-1 hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+                    Filter
+                </button>
+</div>
+<!-- List of Spending Items -->
+<div class="space-y-4">
+<!-- Item 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl group hover:shadow-lg transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="flight">flight</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-on-surface">Garuda Indonesia Flight</h4>
+<p class="text-xs text-on-surface-variant">Roundtrip: CGK - DPS</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-headline font-bold text-on-surface">Rp 4.200.000</p>
+<p class="text-[10px] font-medium text-on-surface-variant uppercase tracking-tighter">Oct 14, 2023</p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/15">
+<span class="font-label text-[10px] font-bold text-primary bg-primary-fixed px-2 py-0.5 rounded">TRAVEL</span>
+<a class="text-primary-container text-sm font-bold flex items-center gap-1 hover:underline" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long">receipt_long</span>
+                            View Receipt
+                        </a>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl group hover:shadow-lg transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="hotel">hotel</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-on-surface">St. Regis Bali Resort</h4>
+<p class="text-xs text-on-surface-variant">3 Nights Accomodation</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-headline font-bold text-on-surface">Rp 6.750.000</p>
+<p class="text-[10px] font-medium text-on-surface-variant uppercase tracking-tighter">Oct 15, 2023</p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/15">
+<span class="font-label text-[10px] font-bold text-primary bg-primary-fixed px-2 py-0.5 rounded">LODGING</span>
+<a class="text-primary-container text-sm font-bold flex items-center gap-1 hover:underline" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long">receipt_long</span>
+                            View Receipt
+                        </a>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl group hover:shadow-lg transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+</div>
+<div>
+<h4 class="font-headline font-bold text-on-surface">Networking Dinner</h4>
+<p class="text-xs text-on-surface-variant">Locavore Restaurant</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-headline font-bold text-on-surface">Rp 1.500.000</p>
+<p class="text-[10px] font-medium text-on-surface-variant uppercase tracking-tighter">Oct 16, 2023</p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/15">
+<span class="font-label text-[10px] font-bold text-primary bg-primary-fixed px-2 py-0.5 rounded">MEALS</span>
+<a class="text-primary-container text-sm font-bold flex items-center gap-1 hover:underline" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long">receipt_long</span>
+                            View Receipt
+                        </a>
+</div>
+</div>
+</div>
+</section>
+<!-- Signature Metric Hero for Remaining -->
+<section class="mt-8 bg-primary rounded-2xl p-10 text-white relative overflow-hidden shadow-2xl">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-9xl" data-icon="account_balance_wallet" style="font-size: 160px;">account_balance_wallet</span>
+</div>
+<p class="font-label text-sm font-bold uppercase tracking-[0.2em] mb-2 text-primary-fixed opacity-80">Remaining Funds</p>
+<h2 class="font-headline text-5xl font-extrabold mb-4">Rp 12.550.000</h2>
+<p class="font-body text-primary-fixed text-sm max-w-[240px]">Funds must be utilized by December 31st for this fiscal cycle.</p>
+</section>
+</main>
+<!-- FAB Action (Contextual to Detail View) -->
+<div class="fixed bottom-24 right-6 z-40">
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary h-14 px-6 rounded-xl shadow-xl flex items-center gap-3 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-headline font-bold text-sm tracking-wide">Add Spending</span>
+</button>
+</div>
+<!-- BottomNavBar (Employee Focus) -->
+<nav class="fixed bottom-0 left-0 w-full bg-white flex justify-around items-center px-4 pb-6 pt-2 shadow-[0_-8px_24px_rgba(25,28,30,0.04)] rounded-t-2xl z-50">
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1.5 hover:bg-slate-100 transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1.5 hover:bg-slate-100 transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="business_center">business_center</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase">Work</span>
+</a>
+<!-- Active Tab: Money/Grants -->
+<a class="flex flex-col items-center justify-center bg-[#0f4c81] text-white rounded-xl px-3 py-1.5 transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="payments" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase">Money</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1.5 hover:bg-slate-100 transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="group">group</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase">People</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-3 py-1.5 hover:bg-slate-100 transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="menu">menu</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase">More</span>
+</a>
+</nav>
+</body></html>

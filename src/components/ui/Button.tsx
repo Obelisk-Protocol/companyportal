@@ -10,21 +10,25 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', isLoading, children, disabled, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
-    
-    // Theme-aware variants using CSS variables
+    const baseStyles =
+      'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-label';
+
     const variants = {
-      primary: 'bg-[var(--accent-primary)] text-[var(--bg-primary)] hover:opacity-90 btn-glow',
-      secondary: 'bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:opacity-80',
-      outline: 'border border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--hover-bg)] hover:text-[var(--text-primary)]',
-      ghost: 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-bg)]',
-      danger: 'bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-color)] hover:bg-[var(--hover-bg)]',
+      primary:
+        'bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-semibold shadow-lg hover:shadow-xl active:scale-[0.98] btn-glow',
+      secondary:
+        'bg-surface-container-low text-on-surface dark:bg-[var(--bg-tertiary)] dark:text-[var(--text-primary)] hover:bg-surface-container-high dark:hover:opacity-90',
+      outline:
+        'border border-outline-variant text-on-surface-variant bg-transparent hover:bg-[var(--hover-bg)] hover:text-[var(--text-primary)]',
+      ghost: 'text-on-surface-variant hover:text-[var(--text-primary)] hover:bg-[var(--hover-bg)]',
+      danger:
+        'bg-error-container text-on-error-container border border-error/20 hover:opacity-90 dark:bg-red-950/40 dark:text-red-200 dark:border-red-800/50',
     };
 
     const sizes = {
-      sm: 'px-3 py-1.5 text-sm',
+      sm: 'px-3 py-1.5 text-sm rounded-lg',
       md: 'px-4 py-2 text-sm',
-      lg: 'px-6 py-3 text-base',
+      lg: 'px-6 py-3.5 text-base rounded-lg',
     };
 
     return (

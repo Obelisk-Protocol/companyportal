@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Public_Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#532800",
+                    "tertiary-container": "#743b00",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#a0c9ff",
+                    "on-tertiary-fixed": "#2f1400",
+                    "on-secondary-fixed-variant": "#304a55",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#8ebdf9",
+                    "primary-container": "#0f4c81",
+                    "surface-tint": "#2d6197",
+                    "surface-container": "#eceef0",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-variant": "#e0e3e5",
+                    "primary-fixed": "#d2e4ff",
+                    "on-primary-fixed": "#001c37",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#2d3133",
+                    "surface-dim": "#d8dadc",
+                    "tertiary-fixed-dim": "#ffb780",
+                    "surface": "#f7f9fb",
+                    "on-primary-fixed-variant": "#07497d",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "on-error": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c2c7d1",
+                    "on-tertiary-container": "#f9a767",
+                    "secondary": "#48626e",
+                    "secondary-fixed-dim": "#afcbd8",
+                    "inverse-primary": "#a0c9ff",
+                    "secondary-container": "#cbe7f5",
+                    "secondary-fixed": "#cbe7f5",
+                    "on-surface": "#191c1e",
+                    "inverse-on-surface": "#eff1f3",
+                    "outline": "#727780",
+                    "tertiary-fixed": "#ffdcc4",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#191c1e",
+                    "on-tertiary-fixed-variant": "#6f3800",
+                    "on-secondary-fixed": "#021f29",
+                    "on-secondary-container": "#4e6874",
+                    "on-surface-variant": "#42474f",
+                    "background": "#f7f9fb",
+                    "primary": "#00355f",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-container-highest": "#e0e3e5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Public Sans"],
+                    "label": ["Public Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tonal-transition-no-border {
+            background-image: linear-gradient(to bottom, var(--tw-gradient-from), transparent);
+        }
+        .glass-header {
+            backdrop-filter: blur(20px);
+        }
+        body {
+            font-family: 'Public Sans', sans-serif;
+            background-color: #f7f9fb;
+        }
+        .editorial-headline {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased mb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f7f9fb]/70 dark:bg-[#191c1e]/70 backdrop-blur-xl shadow-[0_32px_64px_rgba(25,28,30,0.06)]">
+<div class="flex items-center justify-between px-6 py-4 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high flex-shrink-0">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="close up professional portrait of a business leader in a modern office with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9Guy4gH4f6DIEFUtOMns8m7VMlmHr8xguQJ2LW7tRb5NM045D5vwOF0Df3lb6nfIar5sjW1uO0b0sonjW1uCjNXmHhhqynJ_0PWi8FI7fuZQn7qRYBkfF3eM-t1oDyI6aBkvXIBxhcK0AVnatSrMQ7DNwjVDjCCH0h8W7L94oW90nKm24oUWxzELayRat-Re7rGi4Y3gZepofSsV9z91Ov2WK7VhihRvm7s0KfIX2hAQ--R4C2y996zAMaWmmKND5EC1sN4cEPJw"/>
+</div>
+<h1 class="text-xl font-bold text-[#00355f] dark:text-[#d1e4ff] font-['Manrope'] tracking-tight">Obelisk</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-[#00355f] dark:text-[#d1e4ff] hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform">dark_mode</button>
+</div>
+</div>
+</header>
+<main class="pt-24 px-4 max-w-2xl mx-auto">
+<!-- Sticky Search Bar -->
+<div class="sticky top-20 z-40 pb-6 bg-surface">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-highest border-none rounded-xl focus:ring-2 focus:ring-primary-container focus:bg-surface-container-lowest transition-all placeholder:text-outline font-body" placeholder="Search team members..." type="text"/>
+</div>
+<div class="mt-6 flex justify-between items-end">
+<div class="space-y-1">
+<span class="text-[10px] font-medium tracking-widest uppercase text-outline font-label">Organization</span>
+<h2 class="text-3xl editorial-headline font-extrabold tracking-tight text-primary">People</h2>
+</div>
+<button class="bg-primary-container text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">person_add</span>
+                    Invite
+                </button>
+</div>
+</div>
+<!-- Employee List -->
+<div class="space-y-3">
+<!-- Employee Card 1: Active -->
+<div class="group relative bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between transition-all hover:translate-x-1">
+<div class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-full"></div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-low">
+<img alt="John Doe" class="w-full h-full object-cover" data-alt="professional portrait of a creative director in a minimalist studio environment soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMFDjO9rcehMoNFFk0UVpSTmm5UV_SyIjur9wjoSWczO0AVSDZanCkRGraw_5_ClM0JBFTE9IcClLaRpFo9HcuyYVJTo84IbeRFj26JdSx-9WDng4Iy-PD2bcjY1WwrvRQU2AV0wYDdjwobzHt-l661TVgN_m2lEscNPjs5z5DpvKcdjfuwyorsbysfvgp5i0YfJ6bGJg8C3OUOvVPdKAZAZ4NPaGoC8qRKnVWip1GzRLY3jsmzDUNmA0QDT3IJAvByfoBrB-zMKo"/>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface text-lg leading-none">Aditya Pratama</p>
+<p class="text-sm font-body text-on-surface-variant mt-1">Lead Architect</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="bg-primary-container/10 text-primary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+</div>
+<!-- Employee Card 2: On Leave -->
+<div class="group relative bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between transition-all hover:translate-x-1">
+<div class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-tertiary rounded-r-full"></div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-low">
+<img alt="Siti Rahma" class="w-full h-full object-cover" data-alt="studio headshot of a smiling female engineer against a neutral warm background professional soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUGNwbSsO4sWU8hP77J8rsR3UvQQyg-yuATNou2ZcX-0IaOPq5lNEOOHbWNMSMn2z3pdxCCdwJiQnWd7ZErDOV6047oOjVjjeWcbh7Zkb1L7IPKgRXLCQMD6Kxck_gPIcK4n38wQzQkfKy2rgfhaul0qNFPsEoyI0h4YV6z0l9CioVioc3bxOk2oojnUnkjd90cE1q89xXTPsFyy6BfapwmS6xQDart7QbrEJWxEzjgvd0hpENyokFlv8tPGaWuUBOtCizKl-_Kj0"/>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface text-lg leading-none">Siti Rahma</p>
+<p class="text-sm font-body text-on-surface-variant mt-1">Senior UX Designer</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="bg-tertiary/10 text-tertiary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">On Leave</span>
+</div>
+</div>
+<!-- Employee Card 3: Active -->
+<div class="group relative bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between transition-all hover:translate-x-1">
+<div class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-full"></div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-low">
+<img alt="Budi Wijaya" class="w-full h-full object-cover" data-alt="modern professional business portrait of a man in a blazer looking confident in a sunlit hallway" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfhWwXObVnjJdQbO1w6CLeEh62utC99RMw7ik9YMBOZFxlIPAq0DxJPXFcQlZ03eGDx1OkIfWyXmCoD1ZFjejClzzGcBP1LKrCxx5Oppyu0mc3j_iFWPV6VxhMP-mMy5DUrQU2VuMytocgNJjQyNOz-X93H5v6MdN07PQSJ4B7Je1P-nU_ZvjRL_kKZAB-Dv0xYUbPILtoWTvnHtw4qiNGaMnE-rrRFwylZYRrBfK_nbSc-MR8HS_vUf3ANOnA9ODzchnANlr9cFM"/>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface text-lg leading-none">Budi Wijaya</p>
+<p class="text-sm font-body text-on-surface-variant mt-1">Financial Analyst</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="bg-primary-container/10 text-primary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+</div>
+<!-- Employee Card 4: Active -->
+<div class="group relative bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between transition-all hover:translate-x-1">
+<div class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-full"></div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-low">
+<img alt="Dewi Anggraini" class="w-full h-full object-cover" data-alt="professional portrait of a young woman with glasses in a creative office space cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQ0xZ-ukQfX_9yLtmlZlGEY784dClQfYsB2WykLu0W0MJ0PNyY5IIy388m_H6-wmIHmqvI_9IiU4xwY94EMVj52brNSdw5OCsCMnt4gHwRgMr8XAKRb6q9my7nhZGZgHShCKIpIOLo2Mv4B3iWSOp7F45RR7ClzUdG4PnbZqQA4YXPvu8datkoa4EzGVeAWWYVygeHRXPZn1uNcfjXSRzwtTGZKhFQhu6AmW51baMoFIagQd_UH3wvcUQg-3zFfpMdPjfzQV8Vp7E"/>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface text-lg leading-none">Dewi Anggraini</p>
+<p class="text-sm font-body text-on-surface-variant mt-1">HR Operations</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="bg-primary-container/10 text-primary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+</div>
+<!-- Employee Card 5: Active -->
+<div class="group relative bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between transition-all hover:translate-x-1">
+<div class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-full"></div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-low">
+<img alt="Rizky Alamsyah" class="w-full h-full object-cover" data-alt="close-up portrait of a developer with a subtle smile in a modern tech hub soft focus background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE85ooWsMer7v_0iGdl80iYMh__7omYCuB9OP6CJVO5Tx4EkmkKXKp55lcJJBtA0lMiCARj5N6ZCQw0fejD3m_YeCLDyCTiJuh43fAPgNAC2xXbw8FYcAoh6oLF3WhMgB7PLLH4gqStlPPFGITcvhzHTTK0a0do4mbeH8SCN6wbP0ve4Jr3UTQ2rwSb1igDTQmb4DoOp-zLu8P7mUuHEMvoxekxqojyxNzXg6HrfGvHSchtBff7FnookEc_Ok1jOh6DCKB-ckep1E"/>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface text-lg leading-none">Rizky Alamsyah</p>
+<p class="text-sm font-body text-on-surface-variant mt-1">Frontend Engineer</p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="bg-primary-container/10 text-primary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-white dark:bg-[#191c1e] z-50 rounded-t-2xl shadow-[0_-8px_24px_rgba(25,28,30,0.04)]">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors tap-highlight-none active:opacity-70" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors tap-highlight-none active:opacity-70" href="#">
+<span class="material-symbols-outlined mb-1">business_center</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase">Work</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors tap-highlight-none active:opacity-70" href="#">
+<span class="material-symbols-outlined mb-1">payments</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase">Money</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#0f4c81] text-white dark:bg-[#d1e4ff] dark:text-[#00355f] rounded-xl px-3 py-1.5 tap-highlight-none active:opacity-70" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase">People</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors tap-highlight-none active:opacity-70" href="#">
+<span class="material-symbols-outlined mb-1">menu</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase">More</span>
+</a>
+</nav>
+</body></html>

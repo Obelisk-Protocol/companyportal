@@ -35,14 +35,15 @@ import GrantDetail from './pages/grants/GrantDetail';
 import EventGrants from './pages/eventGrants/EventGrants';
 import CreateEventGrant from './pages/eventGrants/CreateEventGrant';
 import EventGrantDetail from './pages/eventGrants/EventGrantDetail';
+import CompanyCalendar from './pages/calendar/CompanyCalendar';
 
 function PrivateRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
+      <div className="flex min-h-screen items-center justify-center bg-surface dark:bg-[var(--bg-primary)]">
+        <div className="h-12 w-12 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
@@ -182,6 +183,15 @@ export default function App() {
 
         {/* Profile - All users */}
         <Route path="profile" element={<Profile />} />
+
+        <Route
+          path="calendar"
+          element={
+            <PrivateRoute allowedRoles={['admin', 'hr', 'employee', 'accountant']}>
+              <CompanyCalendar />
+            </PrivateRoute>
+          }
+        />
 
         {/* Users - Admin only */}
         <Route

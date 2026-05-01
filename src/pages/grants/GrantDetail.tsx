@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../contexts/AuthContext';
-import { api } from '../../lib/api';
+import { api, ApiError } from '../../lib/api';
 import { formatAmount, formatShortDate } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
@@ -36,8 +36,10 @@ export default function GrantDetail() {
     amount: '',
     category: 'operational' as 'platform_fee' | 'tax' | 'operational' | 'other',
     description: '',
+    receiptUrl: '',
     deductedAt: new Date().toISOString().split('T')[0],
   });
+  const [deductionUploading, setDeductionUploading] = useState(false);
   const [memberForm, setMemberForm] = useState({ userId: '', role: 'founder' as 'owner' | 'founder' | 'viewer' });
 
   const { data: grant, isLoading, error } = useQuery({
@@ -83,6 +85,7 @@ export default function GrantDetail() {
         amount: '',
         category: 'operational',
         description: '',
+        receiptUrl: '',
         deductedAt: new Date().toISOString().split('T')[0],
       });
       toast.success('Deduction added');
@@ -109,6 +112,21 @@ export default function GrantDetail() {
     },
     onError: (err: any) => toast.error(err?.message || 'Failed to add member'),
   });
+
+  const handleDeductionReceiptUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setDeductionUploading(true);
+    try {
+      const result = await api.upload<{ url: string }>('/upload/receipt', file);
+      setDeductionForm((prev) => ({ ...prev, receiptUrl: result.url }));
+      toast.success('Receipt uploaded');
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : 'Failed to upload receipt');
+    } finally {
+      setDeductionUploading(false);
+    }
+  };
 
   const removeMemberMutation = useMutation({
     mutationFn: (userId: string) => api.delete(`/grants/${slug}/members/${userId}`),
@@ -348,6 +366,7 @@ export default function GrantDetail() {
               <TableHead>Amount</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Description</TableHead>
+              <TableHead>Receipt</TableHead>
               {canManage && <TableHead>Actions</TableHead>}
             </TableHeader>
             <TableBody>
@@ -357,6 +376,20 @@ export default function GrantDetail() {
                   <TableCell>{formatAmount(d.amount, d.currency || currency)}</TableCell>
                   <TableCell className="capitalize">{d.category.replace('_', ' ')}</TableCell>
                   <TableCell>{d.description || '—'}</TableCell>
+                  <TableCell>
+                    {d.receiptUrl ? (
+                      <a
+                        href={d.receiptUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-sm text-[var(--accent-primary)] hover:underline"
+                      >
+                        View <ExternalLink className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      '—'
+                    )}
+                  </TableCell>
                   {canManage && (
                     <TableCell>
                       <Button
@@ -466,6 +499,29 @@ export default function GrantDetail() {
               placeholder="Optional"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Receipt (optional)</label>
+            <div className="flex flex-wrap gap-2 items-center">
+              <input
+                type="file"
+                accept="image/*,.heic,.heif,.pdf"
+                onChange={handleDeductionReceiptUpload}
+                disabled={deductionUploading}
+                className="text-sm text-[var(--text-secondary)]"
+              />
+              {deductionForm.receiptUrl && (
+                <a
+                  href={deductionForm.receiptUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-[var(--accent-primary)] hover:underline"
+                >
+                  View uploaded
+                </a>
+              )}
+            </div>
+            {deductionUploading && <p className="text-sm text-[var(--text-muted)] mt-1">Uploading…</p>}
+          </div>
           <div className="flex justify-end gap-2 pt-4">
             <Button variant="ghost" onClick={() => setShowDeductionModal(false)}>Cancel</Button>
             <Button
@@ -474,6 +530,7 @@ export default function GrantDetail() {
                   amount: parseFloat(deductionForm.amount) || 0,
                   category: deductionForm.category,
                   description: deductionForm.description || undefined,
+                  receiptUrl: deductionForm.receiptUrl || undefined,
                   deductedAt: deductionForm.deductedAt,
                 })
               }

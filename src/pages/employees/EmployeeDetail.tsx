@@ -7,7 +7,7 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Modal from '../../components/ui/Modal';
-import { ArrowLeft, Edit, Wallet, User, Building, CreditCard, FileImage, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Edit, Wallet, User, Building, CreditCard, FileImage, ExternalLink, Briefcase } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
@@ -15,6 +15,12 @@ export default function EmployeeDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [isCompModalOpen, setIsCompModalOpen] = useState(false);
+  const [compForm, setCompForm] = useState({
+    compensationCategory: 'full_time' as 'full_time' | 'private_contract',
+    contractPaymentTxSignature: '',
+  });
+
   const [isSalaryModalOpen, setIsSalaryModalOpen] = useState(false);
   const [salaryForm, setSalaryForm] = useState({
     gajiPokok: 0,
@@ -36,6 +42,22 @@ export default function EmployeeDetail() {
     queryFn: () => api.get<any>(`/employees/${id}/salary`).catch(() => null),
   });
 
+  const updateCompMutation = useMutation({
+    mutationFn: (data: typeof compForm) =>
+      api.put(`/employees/${id}`, {
+        compensationCategory: data.compensationCategory,
+        contractPaymentTxSignature: data.contractPaymentTxSignature || undefined,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['employee', id] });
+      toast.success('Compensation settings updated');
+      setIsCompModalOpen(false);
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : 'Failed to update');
+    },
+  });
+
   const updateSalaryMutation = useMutation({
     mutationFn: (data: typeof salaryForm) => api.put(`/employees/${id}/salary`, data),
     onSuccess: () => {
@@ -47,6 +69,15 @@ export default function EmployeeDetail() {
       toast.error(error instanceof Error ? error.message : 'Failed to update salary');
     },
   });
+
+  const openCompModal = () => {
+    if (!employee) return;
+    setCompForm({
+      compensationCategory: employee.compensationCategory === 'private_contract' ? 'private_contract' : 'full_time',
+      contractPaymentTxSignature: employee.contractPaymentTxSignature || '',
+    });
+    setIsCompModalOpen(true);
+  };
 
   const openSalaryModal = () => {
     if (salary) {
@@ -150,9 +181,15 @@ export default function EmployeeDetail() {
 
         {/* Employment Info */}
         <Card className="p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <Building className="w-5 h-5 text-[var(--text-primary)]" />
-            <h3 className="font-semibold text-[var(--text-primary)]">Employment</h3>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <Building className="w-5 h-5 text-[var(--text-primary)]" />
+              <h3 className="font-semibold text-[var(--text-primary)]">Employment</h3>
+            </div>
+            <Button variant="outline" size="sm" onClick={openCompModal}>
+              <Briefcase className="w-4 h-4 mr-2" />
+              Payroll type
+            </Button>
           </div>
           <div className="space-y-4">
             <div>
@@ -167,6 +204,28 @@ export default function EmployeeDetail() {
               <p className="text-sm text-[var(--text-secondary)]">Employment Type</p>
               <p className="text-[var(--text-primary)] capitalize">{employee.employmentType}</p>
             </div>
+            <div>
+              <p className="text-sm text-[var(--text-secondary)]">Payroll category</p>
+              <p className="text-[var(--text-primary)]">
+                {employee.compensationCategory === 'private_contract'
+                  ? 'Private contract (grant / non-payroll)'
+                  : 'Full-time payroll'}
+              </p>
+            </div>
+            {employee.compensationCategory === 'private_contract' && employee.contractPaymentTxSignature && (
+              <div>
+                <p className="text-sm text-[var(--text-secondary)]">Payment proof</p>
+                <a
+                  href={`https://solscan.io/tx/${employee.contractPaymentTxSignature}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-[var(--accent-primary)] hover:underline"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Open on Solscan
+                </a>
+              </div>
+            )}
           </div>
         </Card>
 
@@ -276,6 +335,58 @@ export default function EmployeeDetail() {
           )}
         </Card>
       </div>
+
+      <Modal
+        isOpen={isCompModalOpen}
+        onClose={() => setIsCompModalOpen(false)}
+        title="Payroll category"
+        size="md"
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            updateCompMutation.mutate(compForm);
+          }}
+          className="space-y-4"
+        >
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-[var(--text-secondary)]">Category</label>
+            <select
+              value={compForm.compensationCategory}
+              onChange={(e) =>
+                setCompForm({
+                  ...compForm,
+                  compensationCategory: e.target.value as 'full_time' | 'private_contract',
+                })
+              }
+              className="w-full px-4 py-2.5 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20"
+            >
+              <option value="full_time">Full-time (standard payslip & BPJS payroll)</option>
+              <option value="private_contract">Private contract / grant (Solscan payment proof)</option>
+            </select>
+          </div>
+          {compForm.compensationCategory === 'private_contract' && (
+            <Input
+              label="Solana transaction signature (Solscan)"
+              value={compForm.contractPaymentTxSignature}
+              onChange={(e) => setCompForm({ ...compForm, contractPaymentTxSignature: e.target.value })}
+              placeholder="Paste tx signature from Solscan"
+            />
+          )}
+          <p className="text-xs text-[var(--text-muted)]">
+            Private-contract people are skipped in payroll calculation. Keep their latest on-chain payment signature here
+            for their portal view.
+          </p>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button type="button" variant="outline" onClick={() => setIsCompModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" isLoading={updateCompMutation.isPending}>
+              Save
+            </Button>
+          </div>
+        </form>
+      </Modal>
 
       {/* Salary Modal */}
       <Modal

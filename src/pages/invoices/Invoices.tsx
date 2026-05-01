@@ -53,8 +53,8 @@ export default function Invoices() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
+      <div className="flex h-64 items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
@@ -80,92 +80,118 @@ export default function Invoices() {
         )}
       </div>
 
-      <Card>
+      <Card className="overflow-hidden p-0">
         {invoices && invoices.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableHead>Invoice</TableHead>
-              <TableHead>Client</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Due Date</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableHeader>
-            <TableBody>
+          <>
+            <div className="hidden lg:block">
+              <Table>
+                <TableHeader>
+                  <TableHead>Invoice</TableHead>
+                  <TableHead>Client</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Due Date</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableHeader>
+                <TableBody>
+                  {invoices.map((invoice: any) => (
+                    <TableRow key={invoice.id}>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium text-[var(--text-primary)]">{invoice.invoiceNumber}</p>
+                          {invoice.contract && (
+                            <p className="text-xs text-on-surface-variant">
+                              Contract: {invoice.contract.contractNumber}
+                            </p>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {invoice.client ? (
+                          <div>
+                            <p className="text-[var(--text-primary)]">{invoice.client.name || invoice.client.fullName}</p>
+                            <p className="text-xs text-on-surface-variant">
+                              {invoice.client.type === 'company' ? 'Company' : 'Individual'}
+                            </p>
+                          </div>
+                        ) : (
+                          <span className="text-on-surface-variant">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2 text-on-surface-variant">
+                          <Calendar className="h-4 w-4 shrink-0" />
+                          <span>{new Date(invoice.invoiceDate).toLocaleDateString()}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2 text-on-surface-variant">
+                          <Calendar className="h-4 w-4 shrink-0" />
+                          <span>{new Date(invoice.dueDate).toLocaleDateString()}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <DollarSign className="h-4 w-4 shrink-0 text-on-surface-variant" />
+                          <span className="font-medium text-[var(--text-primary)]">
+                            {formatRupiah(parseFloat(invoice.total))}
+                          </span>
+                        </div>
+                        {invoice.paymentStatus === 'partial' && invoice.paidAmount && (
+                          <p className="mt-1 text-xs text-on-surface-variant">
+                            Paid: {formatRupiah(parseFloat(invoice.paidAmount))}
+                          </p>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {getStatusIcon(invoice.paymentStatus)}
+                          {getStatusBadge(invoice.paymentStatus)}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Button variant="ghost" size="sm" onClick={() => navigate(`/invoices/${invoice.id}`)}>
+                          <Eye className="mr-2 h-4 w-4" />
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="space-y-3 p-4 lg:hidden">
               {invoices.map((invoice: any) => (
-                <TableRow key={invoice.id}>
-                  <TableCell>
+                <Card
+                  key={invoice.id}
+                  className="p-4"
+                  hover
+                  onClick={() => navigate(`/invoices/${invoice.id}`)}
+                >
+                  <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="font-medium text-[var(--text-primary)]">{invoice.invoiceNumber}</p>
-                      {invoice.contract && (
-                        <p className="text-xs text-neutral-500">
-                          Contract: {invoice.contract.contractNumber}
-                        </p>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {invoice.client ? (
-                      <div>
-                        <p className="text-[var(--text-primary)]">{invoice.client.name || invoice.client.fullName}</p>
-                        <p className="text-xs text-neutral-500">
-                          {invoice.client.type === 'company' ? 'Company' : 'Individual'}
-                        </p>
-                      </div>
-                    ) : (
-                      <span className="text-neutral-500">-</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2 text-neutral-400">
-                      <Calendar className="w-4 h-4" />
-                      <span>{new Date(invoice.invoiceDate).toLocaleDateString()}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2 text-neutral-400">
-                      <Calendar className="w-4 h-4" />
-                      <span>{new Date(invoice.dueDate).toLocaleDateString()}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-neutral-400" />
-                      <span className="font-medium text-[var(--text-primary)]">
-                        {formatRupiah(parseFloat(invoice.total))}
-                      </span>
-                    </div>
-                    {invoice.paymentStatus === 'partial' && invoice.paidAmount && (
-                      <p className="text-xs text-neutral-500 mt-1">
-                        Paid: {formatRupiah(parseFloat(invoice.paidAmount))}
+                      <p className="font-headline font-semibold text-on-surface">{invoice.invoiceNumber}</p>
+                      <p className="text-sm text-on-surface-variant">
+                        {invoice.client?.name || invoice.client?.fullName || '—'}
                       </p>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(invoice.paymentStatus)}
-                      {getStatusBadge(invoice.paymentStatus)}
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => navigate(`/invoices/${invoice.id}`)}
-                    >
-                      <Eye className="w-4 h-4 mr-2" />
-                      View
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                    <div className="flex shrink-0 items-center gap-1">{getStatusBadge(invoice.paymentStatus)}</div>
+                  </div>
+                  <p className="mt-2 font-medium text-on-surface">{formatRupiah(parseFloat(invoice.total))}</p>
+                  <div className="mt-2 flex flex-wrap gap-3 text-xs text-on-surface-variant">
+                    <span>Issued {new Date(invoice.invoiceDate).toLocaleDateString()}</span>
+                    <span>Due {new Date(invoice.dueDate).toLocaleDateString()}</span>
+                  </div>
+                </Card>
               ))}
-            </TableBody>
-          </Table>
+            </div>
+          </>
         ) : (
-          <div className="text-center py-12">
-            <ReceiptText className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
-            <p className="text-neutral-500">No invoices found</p>
+          <div className="py-12 text-center">
+            <ReceiptText className="mx-auto mb-4 h-12 w-12 text-outline" />
+            <p className="text-on-surface-variant">No invoices found</p>
           </div>
         )}
       </Card>

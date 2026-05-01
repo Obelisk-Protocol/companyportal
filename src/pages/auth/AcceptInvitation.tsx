@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../../lib/api';
-import { useTheme } from '../../contexts/ThemeContext';
 import { toast } from 'react-hot-toast';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
+import AuthPageShell from '../../components/auth/AuthPageShell';
 import { motion } from 'framer-motion';
-import { cn } from '../../lib/utils';
 import { Upload, X, ExternalLink } from 'lucide-react';
 
 const PTKP_OPTIONS = [
@@ -143,51 +142,45 @@ export default function AcceptInvitation() {
     }
   };
 
-  const { theme } = useTheme();
-
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] transition-colors">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-primary)]"></div>
+      <div className="flex min-h-screen items-center justify-center bg-surface dark:bg-[var(--bg-primary)]">
+        <div className="h-12 w-12 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--bg-primary)] transition-colors">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-4">Invalid Invitation</h1>
-          <p className="text-[var(--text-secondary)] mb-6">{error}</p>
-          <Button onClick={() => navigate('/login')}>Back to Login</Button>
-        </div>
-      </div>
+      <AuthPageShell title="Invalid invitation" subtitle={error}>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-xl bg-surface-container-lowest p-8 text-center shadow-stitch dark:bg-[var(--bg-card)]"
+        >
+          <Button onClick={() => navigate('/login')} className="w-full" size="lg">
+            Back to Login
+          </Button>
+        </motion.div>
+      </AuthPageShell>
     );
   }
 
   return (
-    <div className="min-h-screen py-12 px-4 bg-[var(--bg-primary)] transition-colors">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-2xl mx-auto"
-      >
-        {/* Header */}
-        <div className="text-center mb-8">
-          <img 
-            src="/obelisk_white.png" 
-            alt="Obelisk" 
-            className={cn("w-20 h-20 mx-auto mb-4", theme === 'light' && 'invert')}
-          />
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">Welcome!</h1>
-          <p className="text-[var(--text-secondary)]">
-            You've been invited to join as{' '}
-            <span className="text-[var(--text-primary)] font-medium">{invitation?.role}</span>
-          </p>
-        </div>
-
-        {/* Form */}
-        <div className="bg-[var(--bg-card)] backdrop-blur-xl border border-[var(--border-color)] rounded-2xl p-8 transition-colors">
+    <AuthPageShell
+      wide
+      alignTop
+      showFooterLinks={false}
+      title="Welcome!"
+      subtitle={
+        <>
+          You&apos;ve been invited to join as{' '}
+          <span className="font-semibold text-primary">{invitation?.role}</span>
+        </>
+      }
+    >
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
+        <div className="rounded-xl border border-outline-variant/60 bg-surface-container-lowest p-6 shadow-stitch dark:border-[var(--border-color)] dark:bg-[var(--bg-card)] sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Account Info */}
             <div>
@@ -366,6 +359,6 @@ export default function AcceptInvitation() {
           </form>
         </div>
       </motion.div>
-    </div>
+    </AuthPageShell>
   );
 }

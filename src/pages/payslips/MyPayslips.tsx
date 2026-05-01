@@ -5,12 +5,22 @@ import { formatRupiah, getIndonesianMonth } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '../../components/ui/Table';
-import { FileText, Download, Calendar } from 'lucide-react';
+import { FileText, Download, Calendar, ExternalLink } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
+function formatLeaveDays(n: number) {
+  return (Math.round(n * 10) / 10).toFixed(1);
+}
+
 export default function MyPayslips() {
   const { user } = useAuth();
+
+  const { data: employeeRecord } = useQuery({
+    queryKey: ['employee-me', user?.employeeId],
+    queryFn: () => api.get<any>(`/employees/${user?.employeeId}`),
+    enabled: !!user?.employeeId,
+  });
 
   const { data: payslips, isLoading } = useQuery({
     queryKey: ['my-payslips'],
@@ -33,6 +43,37 @@ export default function MyPayslips() {
         <FileText className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
         <p className="text-neutral-500">Your account is not linked to an employee record</p>
       </div>
+    );
+  }
+
+  if (employeeRecord?.compensationCategory === 'private_contract') {
+    const sig = employeeRecord.contractPaymentTxSignature as string | undefined;
+    const solscanUrl = sig ? `https://solscan.io/tx/${sig}` : null;
+    return (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Payments</h1>
+          <p className="text-neutral-500">
+            You are on a private contract / grant arrangement. Official payment proof is your on-chain transfer (not a payroll payslip).
+          </p>
+        </div>
+        <Card className="p-6">
+          {solscanUrl ? (
+            <div className="space-y-4">
+              <p className="text-[var(--text-primary)]">Latest payment transaction</p>
+              <Button variant="outline" onClick={() => window.open(solscanUrl, '_blank')}>
+                <ExternalLink className="w-4 h-4 mr-2" />
+                View on Solscan
+              </Button>
+              <p className="text-xs text-neutral-500 font-mono break-all">{sig}</p>
+            </div>
+          ) : (
+            <p className="text-neutral-500">
+              No Solscan transaction has been recorded yet. Ask HR to attach your payment signature on your employee profile.
+            </p>
+          )}
+        </Card>
+      </motion.div>
     );
   }
 
@@ -191,6 +232,44 @@ export default function MyPayslips() {
                     <span className="text-2xl font-bold text-[var(--text-primary)]">
                       {formatRupiah(parseFloat(payslip.netSalary))}
                     </span>
+                  </div>
+                </div>
+
+                <div className="md:col-span-2 border border-neutral-800 dark:border-white/15 rounded-lg p-4">
+                  <h4 className="text-sm font-medium text-neutral-500 mb-3 uppercase tracking-wider">
+                    Annual leave (cuti tahunan)
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <div className="flex justify-between gap-2">
+                      <span className="text-neutral-400">Entitlement / year</span>
+                      <span className="text-[var(--text-primary)]">
+                        {formatLeaveDays(parseFloat(payslip.annualLeaveEntitlementDays || '12'))} days
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <span className="text-neutral-400">Opening balance</span>
+                      <span className="text-[var(--text-primary)]">
+                        {formatLeaveDays(parseFloat(payslip.annualLeaveOpeningBalance || '0'))} days
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <span className="text-neutral-400">Accrued this month</span>
+                      <span className="text-[var(--text-primary)]">
+                        {formatLeaveDays(parseFloat(payslip.annualLeaveAccruedThisMonth || '0'))} days
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <span className="text-neutral-400">Taken this month</span>
+                      <span className="text-[var(--text-primary)]">
+                        {formatLeaveDays(parseFloat(payslip.annualLeaveTakenThisMonth || '0'))} days
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-2 sm:col-span-2 pt-2 border-t border-neutral-800 dark:border-white/10">
+                      <span className="font-medium text-[var(--text-primary)]">Closing balance</span>
+                      <span className="font-semibold text-[var(--text-primary)]">
+                        {formatLeaveDays(parseFloat(payslip.annualLeaveClosingBalance || '0'))} days
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

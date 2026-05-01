@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Public_Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#532800",
+                    "tertiary-container": "#743b00",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#a0c9ff",
+                    "on-tertiary-fixed": "#2f1400",
+                    "on-secondary-fixed-variant": "#304a55",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#8ebdf9",
+                    "primary-container": "#0f4c81",
+                    "surface-tint": "#2d6197",
+                    "surface-container": "#eceef0",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-variant": "#e0e3e5",
+                    "primary-fixed": "#d2e4ff",
+                    "on-primary-fixed": "#001c37",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#2d3133",
+                    "surface-dim": "#d8dadc",
+                    "tertiary-fixed-dim": "#ffb780",
+                    "surface": "#f7f9fb",
+                    "on-primary-fixed-variant": "#07497d",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "on-error": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c2c7d1",
+                    "on-tertiary-container": "#f9a767",
+                    "secondary": "#48626e",
+                    "secondary-fixed-dim": "#afcbd8",
+                    "inverse-primary": "#a0c9ff",
+                    "secondary-container": "#cbe7f5",
+                    "secondary-fixed": "#cbe7f5",
+                    "on-surface": "#191c1e",
+                    "inverse-on-surface": "#eff1f3",
+                    "outline": "#727780",
+                    "tertiary-fixed": "#ffdcc4",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#191c1e",
+                    "on-tertiary-fixed-variant": "#6f3800",
+                    "on-secondary-fixed": "#021f29",
+                    "on-secondary-container": "#4e6874",
+                    "on-surface-variant": "#42474f",
+                    "background": "#f7f9fb",
+                    "primary": "#00355f",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-container-highest": "#e0e3e5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Public Sans"],
+                    "label": ["Public Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tonal-transition-no-border {
+            border: none !important;
+        }
+        .glass-header {
+            background: rgba(247, 249, 251, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 glass-header shadow-[0_32px_64px_rgba(25,28,30,0.06)] flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-white overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="professional male portrait for user profile in corporate fintech setting, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2IUVI3_ZdSrJZKgB1aV7DcW2IxJ6JGEucoBmjQPINUUUEbgbP_M75eAh_AG6PEhZfENOdLYcRWRnLLlc9e9wwqOyHY8eweN9DxLDuk9etCk0FJnIcx9BaEAvMJg85rKsaYuASSQwPX3jbhMRqegB9o291SjzKDSfHvKA6KHpsJIaHwkjv0m7KV4kt4uERGFECPOv0qpybpM-I3P3Kai_TheNV4bg1IsbDh3pUelq-eE3W3_jVOVYlCk5_Y41ZoBEg9Rrm6LZbkCo"/>
+</div>
+<h1 class="text-xl font-bold text-[#00355f] font-headline tracking-tight">Obelisk</h1>
+</div>
+<button class="material-symbols-outlined text-[#00355f] hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform" data-icon="dark_mode">dark_mode</button>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-5xl mx-auto">
+<!-- Hero Section / Editorial Headline -->
+<section class="mb-10">
+<h2 class="font-headline text-4xl font-extrabold text-primary tracking-tight mb-2">Client Portal</h2>
+<p class="text-on-surface-variant font-label text-sm tracking-wide">MANAGEMENT &amp; ANALYTICS</p>
+</section>
+<!-- Search and Segmented Control Layer -->
+<section class="space-y-6 mb-8">
+<!-- Custom Search Bar -->
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-highest border-none rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all placeholder:text-outline/60" placeholder="Search clients, industries, or tags..." type="text"/>
+</div>
+<!-- Segmented Control (Bento-style wrapper) -->
+<div class="p-1.5 bg-surface-container-low rounded-xl flex items-center gap-1 w-full sm:w-fit">
+<button class="px-8 py-2.5 rounded-lg bg-surface-container-lowest text-primary font-semibold shadow-sm text-sm transition-all flex-1 sm:flex-none">
+                    Companies
+                </button>
+<button class="px-8 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-highest transition-all text-sm flex-1 sm:flex-none">
+                    Individuals
+                </button>
+</div>
+</section>
+<!-- Client Grid (Asymmetric & Tonal depth) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Client Card 1 -->
+<div class="group relative bg-surface-container-lowest rounded-xl p-6 transition-all hover:translate-y-[-4px]">
+<div class="absolute left-0 top-6 bottom-6 w-1 bg-primary rounded-r-full"></div>
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="minimalist corporate building exterior reflecting blue sky for company profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB68o7oB7ijy_bMNg3VxdMnHTYv96qgmIINTLwaGLMvC3IupFCk36o_4Rj2jB6pT3CnZsAbs3_WupKyxiVSuDa26F6928vg67SUNzDFaKObDKx_4YjVRJoL1Nz1a7_S8JzzFk_0G4ZtaERZPOSEIQd6Odlb-seTfUcH8_iOLkhj1Qdc5cwNk9kpzmEYF1VHcJmtUFNGLrH6K4kaSHrixPEdUAizOikJLrr_Ih-9zSfsjF-XzlMTguwPQCfHF0Xw-SVx7gnItsuDGRk"/>
+</div>
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Nusantara Energy Corp</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-xs font-medium px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container uppercase tracking-wider">Renewables</span>
+<span class="text-xs text-on-surface-variant">• Enterprise</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="mt-6 flex items-end justify-between">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest mb-1">Total Assets</p>
+<p class="font-headline text-xl font-extrabold text-primary">IDR 4.2B</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest mb-1">Status</p>
+<div class="flex items-center gap-1.5 text-sm font-semibold text-tertiary">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span> Active
+                        </div>
+</div>
+</div>
+</div>
+<!-- Client Card 2 -->
+<div class="group relative bg-surface-container-lowest rounded-xl p-6 transition-all hover:translate-y-[-4px]">
+<div class="absolute left-0 top-6 bottom-6 w-1 bg-outline-variant opacity-30 rounded-r-full"></div>
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="architectural office facade with glass panels for tech client identity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtBJvZXeBg2bzqd0RSQtv3LG8_1-F_ziL320mZTP61we_o7kFxDZrT-lGai2UmaHIpmAcEMamj9m92zQhXP0m-IZvfTAivx2OfgqWCoaYYMyHWVYgVDYnHNUScr-3Dks8zMOGBSZ3xml_AUTHrGG-knpHdbimPcGbpMZq47YvU9G72GpNG1Rvcs75NzKGg_HLrbjL2Hd5YjlDGXnNDTpQWwYxDgkmL1zS3fxmi9OGP3IIcBIETPF7pCnLjliz7AL262H97ylF1VBg"/>
+</div>
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Lumina Tech Systems</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-xs font-medium px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container uppercase tracking-wider">SaaS</span>
+<span class="text-xs text-on-surface-variant">• Strategic</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="mt-6 flex items-end justify-between">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest mb-1">Project Value</p>
+<p class="font-headline text-xl font-extrabold text-primary">IDR 850M</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest mb-1">Status</p>
+<div class="flex items-center gap-1.5 text-sm font-semibold text-outline">
+<span class="w-2 h-2 rounded-full bg-outline opacity-40"></span> On Hold
+                        </div>
+</div>
+</div>
+</div>
+<!-- Client Card 3 -->
+<div class="group relative bg-surface-container-lowest rounded-xl p-6 transition-all hover:translate-y-[-4px] md:col-span-2">
+<div class="absolute left-0 top-6 bottom-6 w-1 bg-primary rounded-r-full"></div>
+<div class="flex flex-col md:flex-row justify-between gap-6">
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="modern skyscraper detailing showing steel and glass for premium corporate client" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3mdxoL99ifb_o4iVuZFycYxlKSkh1hOjEqgTuuGY3Sa24hpzJv37yOLi0vkT_64Zy9_C2VGg2S9rNyCSwJ2qSulWTdYRuX77OHVXLt4WNDDrNCkNUNk3olJI8FPWB80Xss9pa8o_9psAkBfCw2m9REh3eg7UeC1-_cnk9CJX8gPP5fpxxKlI7oMLh2PXxZKZt_4Of0dkdp4LUT4J6QxYIPjH6Vz7475h-dodYIkqib71uT5dRZZci5YXKuoU30WbfaJy58o3mLwo"/>
+</div>
+<div>
+<h3 class="font-headline text-xl font-extrabold text-on-surface">Pacific Maritime Group</h3>
+<div class="flex items-center gap-3 mt-1">
+<span class="text-xs font-medium px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container uppercase tracking-wider">Logistics</span>
+<span class="flex items-center gap-1 text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> Jakarta
+                                </span>
+</div>
+</div>
+</div>
+<div class="flex flex-1 justify-between md:justify-end gap-12 items-center">
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest mb-1">Last Interaction</p>
+<p class="text-sm font-semibold text-on-surface">Yesterday, 4:12 PM</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest mb-1">Portfolio</p>
+<p class="font-headline text-xl font-extrabold text-primary">IDR 12.8B</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors hidden md:block" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Client Card 4 -->
+<div class="group relative bg-surface-container-lowest rounded-xl p-6 transition-all hover:translate-y-[-4px]">
+<div class="absolute left-0 top-6 bottom-6 w-1 bg-tertiary-container rounded-r-full"></div>
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="clean desk setup with coffee and laptop for boutique agency client" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGk2uQj-hXShMrMjTM_4ZQPxTHgjDo0fDdAOCV4bCuH4rVUHWwPGp3KJE_1q0h18OoZrFwOFZw-EEWS4xUVpBm9IaEUUHP2J20SNkygtbnqfWeGhO2bQ2hHsQZ0GXyAd_OC5xEQw1m6NMPofAs_r076hFQWgovoDwRuO0xOLn5rpK-TsrBBsRE_8rru3nUbv8FvSCLnmgA5xTBJv6DfbN_8JGtt_5vyZiw6FgEgc5CgNon-2OqH2ZYggUme5vZcXhyBG9p8dk0h88"/>
+</div>
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Suryani &amp; Partners</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-xs font-medium px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container uppercase tracking-wider">Legal</span>
+<span class="text-xs text-on-surface-variant">• Boutique</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="mt-6 flex items-end justify-between">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest mb-1">Retention</p>
+<p class="font-headline text-xl font-extrabold text-tertiary">98.4%</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest mb-1">Status</p>
+<div class="flex items-center gap-1.5 text-sm font-semibold text-tertiary">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span> Active
+                        </div>
+</div>
+</div>
+</div>
+<!-- Client Card 5 -->
+<div class="group relative bg-surface-container-lowest rounded-xl p-6 transition-all hover:translate-y-[-4px]">
+<div class="absolute left-0 top-6 bottom-6 w-1 bg-error opacity-50 rounded-r-full"></div>
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="minimalist office interior with plants for small business client" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDKg_eAqRlO80Nm7GE1J6I5s_uJ1p-Tq125mn8W6AEltbw3Z1ImnEO6SPBHntqBl_sJw-W_a_Pago6wdVl7nrgFLrlmvMHWIGtcTbs2ZCK_bSX-jdt3sKBvPt1QBZ6WLR6aCILKUnSPbO48Qiikl1lSpgJ9ZpV8rYP2RbA_W8ZBxCtcnrSN6c9peaZCTZ7Tlln9CNqqP_7kd2rAE5VHTUnvjcEgT5X9_YjmrJjYmO167xipvRkFY9_xVliGxeuXT-63fpfKC0jGFU"/>
+</div>
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Green Horizon Retail</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-xs font-medium px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container uppercase tracking-wider">Retail</span>
+<span class="text-xs text-on-surface-variant">• Growth</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="mt-6 flex items-end justify-between">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest mb-1">Outstanding</p>
+<p class="font-headline text-xl font-extrabold text-error">IDR 124M</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest mb-1">Status</p>
+<div class="flex items-center gap-1.5 text-sm font-semibold text-error">
+<span class="w-2 h-2 rounded-full bg-error"></span> Overdue
+                        </div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB for adding new client (Admin Context) -->
+<button class="fixed bottom-28 right-6 w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-primary-container text-white shadow-xl flex items-center justify-center scale-100 hover:scale-105 active:scale-95 transition-transform z-40">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full bg-white dark:bg-[#191c1e] flex justify-around items-center px-4 pb-6 pt-2 z-50 shadow-[0_-8px_24px_rgba(25,28,30,0.04)] rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="business_center">business_center</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase mt-1">Work</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase mt-1">Money</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#0f4c81] text-white dark:bg-[#d1e4ff] dark:text-[#00355f] rounded-xl px-3 py-1.5 active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase mt-1">People</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase mt-1">More</span>
+</a>
+</nav>
+</body></html>

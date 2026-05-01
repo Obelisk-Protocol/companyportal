@@ -20,6 +20,7 @@ export default function PayrollRuns() {
     periodMonth: new Date().getMonth() + 1,
     periodYear: new Date().getFullYear(),
     notes: '',
+    paymentDate: '' as string,
   });
 
   const { data: payrollRuns, isLoading } = useQuery({
@@ -28,7 +29,13 @@ export default function PayrollRuns() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data: typeof newRun) => api.post('/payroll/runs', data),
+    mutationFn: (data: typeof newRun) =>
+      api.post('/payroll/runs', {
+        periodMonth: data.periodMonth,
+        periodYear: data.periodYear,
+        notes: data.notes || undefined,
+        paymentDate: data.paymentDate || undefined,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['payroll-runs'] });
       toast.success('Payroll run created successfully');
@@ -48,7 +55,7 @@ export default function PayrollRuns() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Payroll</h1>
-          <p className="text-neutral-500">Manage monthly payroll runs</p>
+          <p className="text-on-surface-variant">Manage monthly payroll runs</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
@@ -56,71 +63,108 @@ export default function PayrollRuns() {
         </Button>
       </div>
 
-      <Card className="p-6">
+      <Card className="overflow-hidden p-0">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableHead>Period</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Total Gross</TableHead>
-              <TableHead>Total Net</TableHead>
-              <TableHead>PPh 21</TableHead>
-              <TableHead>BPJS</TableHead>
-            </TableHeader>
-            <TableBody>
+          <>
+            <div className="hidden lg:block">
+              <Table>
+                <TableHeader>
+                  <TableHead>Period</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Total Gross</TableHead>
+                  <TableHead>Total Net</TableHead>
+                  <TableHead>PPh 21</TableHead>
+                  <TableHead>BPJS</TableHead>
+                </TableHeader>
+                <TableBody>
+                  {payrollRuns?.map((run) => (
+                    <TableRow key={run.id} onClick={() => navigate(`/payroll/${run.id}`)}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--accent-primary)]/12">
+                            <Calendar className="h-5 w-5 text-[var(--accent-primary)]" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-[var(--text-primary)]">
+                              {getIndonesianMonth(run.periodMonth)} {run.periodYear}
+                            </p>
+                            <p className="text-sm text-on-surface-variant">{run.notes || 'Monthly payroll'}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className={cn('badge', getStatusBadgeClass(run.status))}>
+                          {getStatusLabel(run.status)}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        {run.totalGross ? formatRupiah(parseFloat(run.totalGross)) : '-'}
+                      </TableCell>
+                      <TableCell>
+                        {run.totalNet ? formatRupiah(parseFloat(run.totalNet)) : '-'}
+                      </TableCell>
+                      <TableCell>
+                        {run.totalPph21 ? formatRupiah(parseFloat(run.totalPph21)) : '-'}
+                      </TableCell>
+                      <TableCell>
+                        {run.totalBpjsEmployee
+                          ? formatRupiah(parseFloat(run.totalBpjsEmployee) + parseFloat(run.totalBpjsEmployer || 0))
+                          : '-'}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="space-y-3 p-4 lg:hidden">
               {payrollRuns?.map((run) => (
-                <TableRow
+                <Card
                   key={run.id}
+                  className="p-4"
+                  hover
                   onClick={() => navigate(`/payroll/${run.id}`)}
                 >
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                        <Calendar className="w-5 h-5 text-[var(--text-primary)]" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-[var(--text-primary)]">
-                          {getIndonesianMonth(run.periodMonth)} {run.periodYear}
-                        </p>
-                        <p className="text-sm text-neutral-500">
-                          {run.notes || 'Monthly payroll'}
-                        </p>
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[var(--accent-primary)]/12">
+                      <Calendar className="h-5 w-5 text-[var(--accent-primary)]" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-headline font-semibold text-on-surface">
+                        {getIndonesianMonth(run.periodMonth)} {run.periodYear}
+                      </p>
+                      <p className="text-sm text-on-surface-variant">{run.notes || 'Monthly payroll'}</p>
+                      <div className="mt-2">
+                        <span className={cn('badge', getStatusBadgeClass(run.status))}>
+                          {getStatusLabel(run.status)}
+                        </span>
                       </div>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className={cn('badge', getStatusBadgeClass(run.status))}>
-                      {getStatusLabel(run.status)}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    {run.totalGross ? formatRupiah(parseFloat(run.totalGross)) : '-'}
-                  </TableCell>
-                  <TableCell>
-                    {run.totalNet ? formatRupiah(parseFloat(run.totalNet)) : '-'}
-                  </TableCell>
-                  <TableCell>
-                    {run.totalPph21 ? formatRupiah(parseFloat(run.totalPph21)) : '-'}
-                  </TableCell>
-                  <TableCell>
-                    {run.totalBpjsEmployee
-                      ? formatRupiah(parseFloat(run.totalBpjsEmployee) + parseFloat(run.totalBpjsEmployer || 0))
-                      : '-'}
-                  </TableCell>
-                </TableRow>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-2 border-t border-outline-variant/50 pt-3 text-sm dark:border-[var(--border-color)]">
+                    <div>
+                      <p className="text-xs text-on-surface-variant">Gross</p>
+                      <p className="font-medium">{run.totalGross ? formatRupiah(parseFloat(run.totalGross)) : '—'}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-on-surface-variant">Net</p>
+                      <p className="font-medium">{run.totalNet ? formatRupiah(parseFloat(run.totalNet)) : '—'}</p>
+                    </div>
+                  </div>
+                </Card>
               ))}
-            </TableBody>
-          </Table>
+            </div>
+          </>
         )}
 
         {payrollRuns?.length === 0 && !isLoading && (
-          <div className="text-center py-12">
-            <Wallet className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
-            <p className="text-neutral-500">No payroll runs yet</p>
+          <div className="py-12 text-center">
+            <Wallet className="mx-auto mb-4 h-12 w-12 text-outline" />
+            <p className="text-on-surface-variant">No payroll runs yet</p>
           </div>
         )}
       </Card>
@@ -140,7 +184,7 @@ export default function PayrollRuns() {
         >
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-1.5">Month</label>
+              <label className="mb-1.5 block text-sm font-medium text-on-surface-variant">Month</label>
               <select
                 value={newRun.periodMonth}
                 onChange={(e) => setNewRun({ ...newRun, periodMonth: parseInt(e.target.value) })}
@@ -166,6 +210,12 @@ export default function PayrollRuns() {
             value={newRun.notes}
             onChange={(e) => setNewRun({ ...newRun, notes: e.target.value })}
             placeholder="Additional notes..."
+          />
+          <Input
+            label="Payment date (optional)"
+            type="date"
+            value={newRun.paymentDate}
+            onChange={(e) => setNewRun({ ...newRun, paymentDate: e.target.value })}
           />
           <div className="flex justify-end gap-3 pt-4">
             <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>

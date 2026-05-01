@@ -4,129 +4,28 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigation } from '../../contexts/NavigationContext';
 import { api } from '../../lib/api';
-import {
-  LayoutDashboard,
-  Users,
-  Wallet,
-  Receipt,
-  FileText,
-  Settings,
-  UserPlus,
-  CreditCard,
-  UserCog,
-  FileCheck,
-  Building2,
-  FileSignature,
-  ReceiptText,
-  Briefcase,
-  Gift,
-  Calendar,
-} from 'lucide-react';
+import { buildSidebarNav } from '../../lib/navConfig';
+import { Briefcase, Building2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
-
-// HR Navigation Items
-const hrNavigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['admin', 'hr', 'employee', 'client'] },
-  { name: 'Employees', href: '/employees', icon: Users, roles: ['admin', 'hr'] },
-  { name: 'Payroll', href: '/payroll', icon: Wallet, roles: ['admin', 'hr'] },
-  { name: 'Expenses', href: '/expenses', icon: Receipt, roles: ['admin', 'hr'] },
-  { name: 'Grants', href: '/grants', icon: Gift, roles: ['admin', 'hr'] },
-  { name: 'Event grants', href: '/event-grants', icon: Calendar, roles: ['admin', 'hr', 'employee', 'accountant'] },
-  { name: 'Contracts', href: '/contracts/management', icon: FileSignature, roles: ['admin', 'hr'] },
-  { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin', 'hr', 'accountant'] },
-  { name: 'Generated Reports', href: '/reports/generated', icon: FileCheck, roles: ['admin', 'hr', 'accountant'] },
-  { name: 'Invitations', href: '/invitations', icon: UserPlus, roles: ['admin', 'hr'] },
-];
-
-// CRM Navigation Items
-const crmNavigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['admin', 'hr', 'employee', 'client'] },
-  { name: 'Clients', href: '/crm/clients', icon: Building2, roles: ['admin', 'hr', 'accountant'] },
-  { name: 'Grants', href: '/grants', icon: Gift, roles: ['admin', 'hr'] },
-  { name: 'Event grants', href: '/event-grants', icon: Calendar, roles: ['admin', 'hr', 'employee', 'accountant'] },
-  { name: 'Contracts', href: '/contracts/management', icon: FileSignature, roles: ['admin', 'hr'] },
-  { name: 'Invoices', href: '/invoices', icon: ReceiptText, roles: ['admin', 'hr', 'accountant'] },
-  { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin', 'hr', 'accountant'] },
-  { name: 'Generated Reports', href: '/reports/generated', icon: FileCheck, roles: ['admin', 'hr', 'accountant'] },
-];
-
-// Employee Navigation Items
-const employeeNavigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['employee'] },
-  { name: 'Event grants', href: '/event-grants', icon: Calendar, roles: ['employee'] },
-  { name: 'My Payslips', href: '/my-payslips', icon: CreditCard, roles: ['employee'] },
-  { name: 'My Expenses', href: '/my-expenses', icon: Receipt, roles: ['employee'] },
-  { name: 'My Contracts', href: '/my-contracts', icon: FileSignature, roles: ['employee'] },
-];
-
-// Client Navigation Items
-const clientNavigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard, roles: ['client'] },
-  { name: 'Contracts', href: '/contracts', icon: FileSignature, roles: ['client'] },
-  { name: 'Invoices', href: '/invoices', icon: ReceiptText, roles: ['client'] },
-];
-
-// Admin-only items (always visible for admins)
-const adminNavigation = [
-  { name: 'Users', href: '/users', icon: UserCog, roles: ['admin'] },
-  { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin'] },
-];
 
 export default function Sidebar() {
   const { user } = useAuth();
   const { theme } = useTheme();
   const { viewMode, toggleViewMode } = useNavigation();
 
-  // Fetch company data for logo
   const { data: company } = useQuery({
     queryKey: ['company'],
     queryFn: () => api.get<any>('/company').catch(() => null),
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    staleTime: 1000 * 60 * 5,
   });
 
-  // Determine which navigation to show based on role and view mode
-  const getNavigationItems = () => {
-    if (!user) return [];
-
-    // Admin can toggle between HR and CRM views
-    if (user.role === 'admin') {
-      const viewNav = viewMode === 'hr' ? hrNavigation : crmNavigation;
-      return [
-        ...viewNav.filter(item => item.roles.includes('admin')),
-        ...adminNavigation.filter(item => item.roles.includes('admin')),
-      ];
-    }
-
-    // HR sees HR navigation
-    if (user.role === 'hr') {
-      return hrNavigation.filter(item => item.roles.includes('hr'));
-    }
-
-    // Employee sees employee navigation
-    if (user.role === 'employee') {
-      return employeeNavigation.filter(item => item.roles.includes('employee'));
-    }
-
-    // Client sees client navigation
-    if (user.role === 'client') {
-      return clientNavigation.filter(item => item.roles.includes('client'));
-    }
-
-    // Accountant sees CRM navigation
-    if (user.role === 'accountant') {
-      return crmNavigation.filter(item => item.roles.includes('accountant'));
-    }
-
-    return [];
-  };
-
-  const filteredNav = getNavigationItems();
+  const filteredNav = user ? buildSidebarNav({ role: user.role }, viewMode) : [];
   const isAdmin = user?.role === 'admin';
 
   return (
-    <aside className="w-64 bg-[var(--bg-primary)] border-r border-[var(--border-color)] flex flex-col transition-colors">
+    <aside className="hidden w-64 shrink-0 border-r border-[var(--border-color)] bg-surface dark:bg-[var(--bg-primary)] transition-colors lg:flex lg:flex-col">
       {/* Logo */}
-      <div className="h-16 flex items-center px-6 border-b border-[var(--border-color)]">
+      <div className="flex h-16 items-center border-b border-[var(--border-color)] px-6">
         <div className="flex items-center gap-3">
           {company?.logoUrl ? (
             <img 
@@ -142,10 +41,10 @@ export default function Sidebar() {
             />
           )}
           <div>
-            <h1 className="font-semibold text-[var(--text-primary)]">
+            <h1 className="font-headline font-semibold text-on-surface dark:text-[var(--text-primary)]">
               {company?.name || 'Obelisk Portal'}
             </h1>
-            <p className="text-xs text-[var(--text-muted)]">HR & Payroll</p>
+            <p className="text-xs text-on-surface-variant">HR & Payroll</p>
           </div>
         </div>
       </div>
@@ -159,8 +58,8 @@ export default function Sidebar() {
               className={cn(
                 'flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all',
                 viewMode === 'hr'
-                  ? 'bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  ? 'border border-primary/20 bg-primary/10 text-primary shadow-sm'
+                  : 'text-on-surface-variant hover:text-on-surface'
               )}
             >
               <Briefcase className="w-4 h-4" />
@@ -171,8 +70,8 @@ export default function Sidebar() {
               className={cn(
                 'flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all',
                 viewMode === 'crm'
-                  ? 'bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  ? 'border border-primary/20 bg-primary/10 text-primary shadow-sm'
+                  : 'text-on-surface-variant hover:text-on-surface'
               )}
             >
               <Building2 className="w-4 h-4" />
@@ -199,15 +98,13 @@ export default function Sidebar() {
               )}
               <NavLink
                 to={item.href}
-                end={item.href === '/reports'} // Only match exactly for /reports, not /reports/generated
+                end={item.end === true}
                 className={({ isActive }) =>
                   cn(
                     'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
                     isActive
-                      ? theme === 'dark' 
-                        ? 'bg-white text-black' 
-                        : 'bg-black text-white'
-                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--hover-bg)]'
+                      ? 'border border-primary/20 bg-primary/10 font-semibold text-primary shadow-sm'
+                      : 'text-on-surface-variant hover:bg-[var(--hover-bg)] hover:text-on-surface'
                   )
                 }
               >

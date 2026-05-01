@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../lib/api';
+import { api, ApiError } from '../../lib/api';
 import { formatAmount, formatShortDate, getEventSpendingCategoryLabel } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
@@ -164,10 +164,11 @@ export default function EventGrantDetail() {
     setIsUploading(true);
     try {
       const result = await api.upload<{ url: string }>('/upload/receipt', file);
-      setSpendingForm({ ...spendingForm, receiptUrl: result.url });
+      setSpendingForm((prev) => ({ ...prev, receiptUrl: result.url }));
       toast.success('Receipt uploaded');
-    } catch {
-      toast.error('Failed to upload receipt');
+    } catch (e) {
+      const msg = e instanceof ApiError ? e.message : 'Failed to upload receipt';
+      toast.error(msg);
     } finally {
       setIsUploading(false);
     }
@@ -429,7 +430,7 @@ export default function EventGrantDetail() {
           <div>
             <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Receipt (optional)</label>
             <div className="flex gap-2 items-center">
-              <input type="file" accept="image/*,.pdf" onChange={handleFileUpload} disabled={isUploading} className="text-sm text-[var(--text-secondary)]" />
+              <input type="file" accept="image/*,.heic,.heif,.pdf" onChange={handleFileUpload} disabled={isUploading} className="text-sm text-[var(--text-secondary)]" />
               {spendingForm.receiptUrl && <a href={spendingForm.receiptUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--accent-primary)] hover:underline">View</a>}
             </div>
             {isUploading && <p className="text-sm text-[var(--text-muted)] mt-1">Uploading…</p>}

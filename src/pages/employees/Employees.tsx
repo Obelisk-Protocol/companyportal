@@ -21,6 +21,7 @@ interface Employee {
   position: string | null;
   status: string;
   joinDate: string;
+  compensationCategory?: string | null;
 }
 
 export default function Employees() {
@@ -66,7 +67,7 @@ export default function Employees() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Employees</h1>
-          <p className="text-neutral-500">Manage employee records</p>
+          <p className="text-on-surface-variant">Manage employee records</p>
         </div>
         <Button onClick={() => navigate('/invitations')}>
           <Plus className="w-4 h-4 mr-2" />
@@ -78,7 +79,7 @@ export default function Employees() {
         {/* Search */}
         <div className="mb-6">
           <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-600" />
+            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-on-surface-variant" />
             <input
               type="text"
               value={search}
@@ -89,73 +90,148 @@ export default function Employees() {
           </div>
         </div>
 
-        {/* Table */}
+        {/* Table (desktop) + cards (mobile) */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableHead>Employee</TableHead>
-              <TableHead>Employee #</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Position</TableHead>
-              <TableHead>Status</TableHead>
-              {isAdmin && <TableHead></TableHead>}
-            </TableHeader>
-            <TableBody>
+          <>
+            <div className="hidden lg:block">
+              <Table>
+                <TableHeader>
+                  <TableHead>Employee</TableHead>
+                  <TableHead>Employee #</TableHead>
+                  <TableHead>Department</TableHead>
+                  <TableHead>Position</TableHead>
+                  <TableHead>Payroll</TableHead>
+                  <TableHead>Status</TableHead>
+                  {isAdmin && <TableHead></TableHead>}
+                </TableHeader>
+                <TableBody>
+                  {filteredEmployees?.map((employee) => (
+                    <TableRow
+                      key={employee.id}
+                      onClick={() => navigate(`/employees/${employee.id}`)}
+                    >
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent-primary)]/12">
+                            <User className="h-5 w-5 text-[var(--accent-primary)]" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-[var(--text-primary)]">{employee.fullName}</p>
+                            <p className="text-sm text-on-surface-variant">{employee.email}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="font-mono text-sm">{employee.employeeNumber}</span>
+                      </TableCell>
+                      <TableCell>{employee.department || '-'}</TableCell>
+                      <TableCell>{employee.position || '-'}</TableCell>
+                      <TableCell>
+                        <span
+                          className={cn(
+                            'badge',
+                            employee.compensationCategory === 'private_contract'
+                              ? 'bg-amber-500/15 text-amber-200'
+                              : 'bg-emerald-500/15 text-emerald-200'
+                          )}
+                        >
+                          {employee.compensationCategory === 'private_contract' ? 'Contract' : 'Full-time'}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <span className={cn('badge', getStatusBadgeClass(employee.status))}>
+                          {getStatusLabel(employee.status)}
+                        </span>
+                      </TableCell>
+                      {isAdmin && (
+                        <TableCell>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteModal(employee);
+                            }}
+                            title="Delete employee"
+                          >
+                            <Trash2 className="h-4 w-4 text-red-400" />
+                          </Button>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="space-y-3 lg:hidden">
               {filteredEmployees?.map((employee) => (
-                <TableRow
+                <Card
                   key={employee.id}
+                  className="p-4"
                   onClick={() => navigate(`/employees/${employee.id}`)}
+                  hover
                 >
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center">
-                        <User className="w-5 h-5 text-neutral-400" />
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex min-w-0 flex-1 items-start gap-3">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--accent-primary)]/12">
+                        <User className="h-5 w-5 text-[var(--accent-primary)]" />
                       </div>
-                      <div>
-                        <p className="font-medium text-[var(--text-primary)]">{employee.fullName}</p>
-                        <p className="text-sm text-neutral-500">{employee.email}</p>
+                      <div className="min-w-0">
+                        <p className="font-headline font-semibold text-on-surface">{employee.fullName}</p>
+                        <p className="truncate text-sm text-on-surface-variant">{employee.email}</p>
+                        <p className="mt-1 font-mono text-xs text-outline">{employee.employeeNumber}</p>
                       </div>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="font-mono text-sm">{employee.employeeNumber}</span>
-                  </TableCell>
-                  <TableCell>{employee.department || '-'}</TableCell>
-                  <TableCell>{employee.position || '-'}</TableCell>
-                  <TableCell>
-                    <span className={cn('badge', getStatusBadgeClass(employee.status))}>
-                      {getStatusLabel(employee.status)}
-                    </span>
-                  </TableCell>
-                  {isAdmin && (
-                    <TableCell>
+                    {isAdmin && (
                       <Button
                         variant="ghost"
                         size="sm"
+                        className="shrink-0"
                         onClick={(e) => {
                           e.stopPropagation();
                           setDeleteModal(employee);
                         }}
                         title="Delete employee"
                       >
-                        <Trash2 className="w-4 h-4 text-red-400" />
+                        <Trash2 className="h-4 w-4 text-red-400" />
                       </Button>
-                    </TableCell>
-                  )}
-                </TableRow>
+                    )}
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2 border-t border-outline-variant/50 pt-3 text-sm text-on-surface-variant dark:border-[var(--border-color)]">
+                    <span>{employee.department || '—'}</span>
+                    <span className="text-outline">·</span>
+                    <span>{employee.position || '—'}</span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <span
+                      className={cn(
+                        'badge',
+                        employee.compensationCategory === 'private_contract'
+                          ? 'bg-amber-500/15 text-amber-200'
+                          : 'bg-emerald-500/15 text-emerald-200'
+                      )}
+                    >
+                      {employee.compensationCategory === 'private_contract' ? 'Contract' : 'Full-time'}
+                    </span>
+                    <span className={cn('badge', getStatusBadgeClass(employee.status))}>
+                      {getStatusLabel(employee.status)}
+                    </span>
+                  </div>
+                </Card>
               ))}
-            </TableBody>
-          </Table>
+            </div>
+          </>
         )}
 
         {filteredEmployees?.length === 0 && !isLoading && (
           <div className="text-center py-12">
-            <User className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
-            <p className="text-neutral-500">No employees found</p>
+            <User className="mx-auto mb-4 h-12 w-12 text-outline" />
+            <p className="text-on-surface-variant">No employees found</p>
           </div>
         )}
       </Card>

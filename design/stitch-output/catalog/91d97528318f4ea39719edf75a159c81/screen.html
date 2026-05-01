@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Obelisk UI Components Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Public+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#532800",
+                        "tertiary-container": "#743b00",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#a0c9ff",
+                        "on-tertiary-fixed": "#2f1400",
+                        "on-secondary-fixed-variant": "#304a55",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#8ebdf9",
+                        "primary-container": "#0f4c81",
+                        "surface-tint": "#2d6197",
+                        "surface-container": "#eceef0",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed": "#d2e4ff",
+                        "on-primary-fixed": "#001c37",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#2d3133",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed-dim": "#ffb780",
+                        "surface": "#f7f9fb",
+                        "on-primary-fixed-variant": "#07497d",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c2c7d1",
+                        "on-tertiary-container": "#f9a767",
+                        "secondary": "#48626e",
+                        "secondary-fixed-dim": "#afcbd8",
+                        "inverse-primary": "#a0c9ff",
+                        "secondary-container": "#cbe7f5",
+                        "secondary-fixed": "#cbe7f5",
+                        "on-surface": "#191c1e",
+                        "inverse-on-surface": "#eff1f3",
+                        "outline": "#727780",
+                        "tertiary-fixed": "#ffdcc4",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#191c1e",
+                        "on-tertiary-fixed-variant": "#6f3800",
+                        "on-secondary-fixed": "#021f29",
+                        "on-secondary-container": "#4e6874",
+                        "on-surface-variant": "#42474f",
+                        "background": "#f7f9fb",
+                        "primary": "#00355f",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-container-highest": "#e0e3e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .tonal-transition-no-border { background: linear-gradient(to bottom, transparent, rgba(242, 244, 246, 0.5)); }
+        .tap-highlight-none { -webkit-tap-highlight-color: transparent; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f7f9fb]/70 dark:bg-[#191c1e]/70 backdrop-blur-xl shadow-[0_32px_64px_rgba(25,28,30,0.06)] flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">person</span>
+</div>
+<span class="text-xl font-bold text-[#00355f] dark:text-[#d1e4ff] font-headline tracking-tight">Obelisk</span>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary font-semibold text-sm transition-opacity hover:opacity-80" href="#">Components</a>
+<a class="text-on-surface-variant font-medium text-sm transition-opacity hover:opacity-80" href="#">Documentation</a>
+<a class="text-on-surface-variant font-medium text-sm transition-opacity hover:opacity-80" href="#">Guidelines</a>
+</nav>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors scale-95 active:scale-90">
+<span class="material-symbols-outlined text-[#00355f] dark:text-[#d1e4ff]">dark_mode</span>
+</button>
+</header>
+<main class="max-w-7xl mx-auto px-6 pt-32 space-y-16">
+<!-- Header Section -->
+<section class="space-y-4">
+<p class="text-primary font-semibold tracking-widest text-xs uppercase">Design System 2024</p>
+<h1 class="text-5xl font-extrabold tracking-tight text-primary leading-tight max-w-2xl">
+                The Digital Sanctuary <br/>
+<span class="text-secondary opacity-60">Component Library</span>
+</h1>
+<p class="text-on-surface-variant text-lg max-w-xl">
+                A meticulously curated set of UI elements designed for high-end Indonesian enterprise solutions. Embracing architectural calm and tonal depth.
+            </p>
+</section>
+<!-- Components Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Buttons & Actions -->
+<div class="md:col-span-7 bg-surface-container-lowest p-8 rounded-xl shadow-[0_4px_24px_rgba(25,28,30,0.02)] space-y-8">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold text-primary">Buttons &amp; Actions</h2>
+<span class="text-[10px] font-bold uppercase tracking-widest text-outline">Interactive</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+<div class="space-y-3">
+<p class="text-[10px] font-semibold text-outline uppercase tracking-wider">Primary</p>
+<button class="w-full py-3 px-4 bg-gradient-to-br from-primary to-primary-container text-white rounded-lg font-semibold text-sm transition-transform active:scale-95">
+                            Action
+                        </button>
+</div>
+<div class="space-y-3">
+<p class="text-[10px] font-semibold text-outline uppercase tracking-wider">Secondary</p>
+<button class="w-full py-3 px-4 bg-surface-container-high text-primary rounded-lg font-semibold text-sm transition-transform active:scale-95">
+                            Outline
+                        </button>
+</div>
+<div class="space-y-3">
+<p class="text-[10px] font-semibold text-outline uppercase tracking-wider">Ghost</p>
+<button class="w-full py-3 px-4 text-primary rounded-lg font-semibold text-sm hover:bg-surface-container-low transition-colors active:scale-95">
+                            Cancel
+                        </button>
+</div>
+<div class="space-y-3">
+<p class="text-[10px] font-semibold text-outline uppercase tracking-wider">Destructive</p>
+<button class="w-full py-3 px-4 bg-error-container text-error rounded-lg font-semibold text-sm transition-transform active:scale-95">
+                            Delete
+                        </button>
+</div>
+</div>
+<!-- Chips & Toggles -->
+<div class="pt-8 space-y-6">
+<div class="flex flex-wrap gap-3">
+<span class="px-4 py-1.5 bg-primary text-white rounded-full text-xs font-semibold">Active Chip</span>
+<span class="px-4 py-1.5 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-medium">Secondary</span>
+<span class="px-4 py-1.5 bg-tertiary-fixed text-on-tertiary-fixed-variant rounded-full text-xs font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">bolt</span> Priority
+                        </span>
+</div>
+<div class="flex items-center gap-12">
+<div class="flex items-center gap-3">
+<div class="w-12 h-6 bg-primary rounded-full relative p-1 flex items-center justify-end">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+<span class="text-sm font-medium text-on-surface">Switch On</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-12 h-6 bg-surface-container-highest rounded-full relative p-1 flex items-center justify-start">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+<span class="text-sm font-medium text-outline">Switch Off</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Toast Notification -->
+<div class="md:col-span-5 bg-surface-container-low p-8 rounded-xl space-y-6 border border-white/50">
+<h2 class="text-xl font-bold text-primary">Feedback</h2>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-lg flex items-center gap-4 relative overflow-hidden group">
+<div class="absolute left-0 top-0 h-full w-1 bg-tertiary"></div>
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">notification_important</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-on-surface">Data Sync Successful</p>
+<p class="text-xs text-on-surface-variant">Your changes have been saved to the cloud.</p>
+</div>
+<button class="text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="bg-error-container p-4 rounded-xl flex items-center gap-4 border border-error/10">
+<div class="w-10 h-10 rounded-full bg-error text-white flex items-center justify-center">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-error">Connection Failed</p>
+<p class="text-xs text-on-error-container">Unable to reach the server.</p>
+</div>
+</div>
+</div>
+<!-- Form Inputs -->
+<div class="md:col-span-8 bg-surface-container-lowest p-8 rounded-xl shadow-[0_4px_24px_rgba(25,28,30,0.02)] space-y-8">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold text-primary">Form Controls</h2>
+<span class="text-[10px] font-bold uppercase tracking-widest text-outline">Utility</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Active Text Field -->
+<div class="space-y-2">
+<label class="text-xs font-bold text-primary uppercase tracking-wider px-1">Email Address</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-lowest border-2 border-primary-container rounded-lg px-4 py-3 text-sm font-medium text-on-surface focus:outline-none focus:ring-0" type="text" value="design@obelisk.portal"/>
+<span class="material-symbols-outlined absolute right-4 top-3 text-primary">check_circle</span>
+</div>
+</div>
+<!-- Disabled State -->
+<div class="space-y-2">
+<label class="text-xs font-bold text-outline uppercase tracking-wider px-1">System ID</label>
+<div class="relative">
+<input class="w-full bg-surface-container-highest border border-outline-variant/30 rounded-lg px-4 py-3 text-sm font-medium text-outline cursor-not-allowed" disabled="" type="text" value="OBSK-990-22"/>
+<span class="material-symbols-outlined absolute right-4 top-3 text-outline opacity-40">lock</span>
+</div>
+</div>
+<!-- Select Dropdown -->
+<div class="space-y-2">
+<label class="text-xs font-bold text-primary uppercase tracking-wider px-1">Role Hierarchy</label>
+<div class="relative">
+<select class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-3 text-sm font-medium text-on-surface appearance-none focus:ring-2 focus:ring-primary-container transition-all">
+<option>Executive Administrator</option>
+<option>Regional Manager</option>
+<option>Standard User</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Date Picker -->
+<div class="space-y-2">
+<label class="text-xs font-bold text-primary uppercase tracking-wider px-1">Project Milestone</label>
+<div class="relative">
+<input class="w-full bg-surface-container-highest border-none rounded-lg px-4 py-3 text-sm font-medium text-on-surface appearance-none focus:ring-2 focus:ring-primary-container transition-all" type="date" value="2024-12-15"/>
+<span class="material-symbols-outlined absolute right-4 top-3 text-on-surface-variant pointer-events-none">calendar_today</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State Illustration Placeholder -->
+<div class="md:col-span-4 bg-surface-container-low p-8 rounded-xl flex flex-col items-center justify-center text-center space-y-6">
+<div class="w-32 h-32 rounded-2xl bg-surface-container-high flex items-center justify-center overflow-hidden relative group">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary-container/20 to-transparent opacity-50"></div>
+<span class="material-symbols-outlined text-6xl text-outline-variant group-hover:scale-110 transition-transform duration-500">folder_open</span>
+</div>
+<div class="space-y-2">
+<h3 class="text-lg font-bold text-primary">No Records Found</h3>
+<p class="text-xs text-on-surface-variant max-w-[200px] leading-relaxed">It looks like this archive is currently empty. Start by adding your first project entry.</p>
+</div>
+<button class="px-6 py-2 bg-primary text-white text-xs font-bold rounded-lg hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95">
+                    Create New Entry
+                </button>
+</div>
+</div>
+<!-- Typography Showcase -->
+<section class="bg-surface-container-low rounded-2xl p-12 overflow-hidden relative">
+<div class="absolute top-0 right-0 w-1/2 h-full opacity-5 pointer-events-none">
+<svg height="100%" preserveaspectratio="none" viewbox="0 0 100 100" width="100%">
+<path class="text-primary" d="M0,0 L100,0 L100,100 L0,50 Z" fill="currentColor"></path>
+</svg>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+<div class="space-y-6">
+<div class="space-y-2">
+<span class="text-primary font-bold text-4xl block font-headline">Manrope</span>
+<span class="text-outline text-xs uppercase tracking-[0.2em]">Display &amp; Editorial</span>
+</div>
+<div class="space-y-4">
+<p class="text-5xl font-extrabold tracking-tight text-on-surface">Headline Large</p>
+<p class="text-3xl font-bold tracking-tight text-on-surface">Headline Medium</p>
+<p class="text-xl font-semibold tracking-tight text-on-surface-variant">Headline Small</p>
+</div>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<span class="text-primary font-bold text-4xl block font-body">Public Sans</span>
+<span class="text-outline text-xs uppercase tracking-[0.2em]">Functional &amp; Data</span>
+</div>
+<div class="space-y-4">
+<p class="text-lg text-on-surface leading-relaxed">The quick brown fox jumps over the lazy dog. Body Large for readable documentation.</p>
+<p class="text-sm text-on-surface-variant leading-relaxed">System metadata and utility text should be clear and concise. Body Small handles complex financial tables.</p>
+<div class="flex gap-4 pt-4">
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary border-b-2 border-primary pb-1">Label Bold</span>
+<span class="text-[10px] font-medium uppercase tracking-widest text-outline pb-1">Label Medium</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-white dark:bg-[#191c1e] shadow-[0_-8px_24px_rgba(25,28,30,0.04)] rounded-t-2xl z-50 md:hidden">
+<a class="flex flex-col items-center justify-center bg-[#0f4c81] text-white dark:bg-[#d1e4ff] dark:text-[#00355f] rounded-xl px-3 py-1.5 transition-colors tap-highlight-none" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 transition-colors tap-highlight-none active:opacity-70" href="#">
+<span class="material-symbols-outlined">business_center</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase mt-1">Work</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 transition-colors tap-highlight-none active:opacity-70" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase mt-1">Money</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 transition-colors tap-highlight-none active:opacity-70" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase mt-1">People</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-3 py-1.5 transition-colors tap-highlight-none active:opacity-70" href="#">
+<span class="material-symbols-outlined">menu</span>
+<span class="font-['Public_Sans'] text-[10px] font-medium tracking-wide uppercase mt-1">More</span>
+</a>
+</nav>
+</body></html>

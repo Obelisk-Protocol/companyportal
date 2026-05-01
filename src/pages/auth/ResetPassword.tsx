@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useTheme } from '../../contexts/ThemeContext';
 import { toast } from 'react-hot-toast';
 import Button from '../../components/ui/Button';
-import { Lock, ArrowLeft } from 'lucide-react';
+import MaterialIcon from '../../components/ui/MaterialIcon';
+import AuthPageShell from '../../components/auth/AuthPageShell';
+import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { cn } from '../../lib/utils';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -17,7 +17,6 @@ export default function ResetPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [isValidating, setIsValidating] = useState(true);
   const [tokenValid, setTokenValid] = useState(false);
-  const { theme } = useTheme();
 
   useEffect(() => {
     const validateToken = async () => {
@@ -87,110 +86,111 @@ export default function ResetPassword() {
 
   if (isValidating) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--bg-primary)]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-primary)]" />
+      <div className="flex min-h-screen items-center justify-center bg-surface dark:bg-[var(--bg-primary)]">
+        <div className="h-12 w-12 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   if (!tokenValid) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--bg-primary)]">
+      <AuthPageShell title="Invalid link" subtitle="This reset link is invalid or has expired.">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center max-w-md"
+          className="rounded-xl bg-surface-container-lowest p-8 text-center shadow-stitch dark:bg-[var(--bg-card)]"
         >
-          <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-4">Invalid Reset Link</h1>
-          <p className="text-[var(--text-secondary)] mb-6">
-            This password reset link is invalid or has expired. Please request a new one.
-          </p>
           <Link to="/forgot-password">
-            <Button>Request New Link</Button>
+            <Button className="w-full" size="lg">
+              Request new link
+            </Button>
           </Link>
-          <p className="mt-4">
-            <Link to="/login" className="text-sm text-[var(--text-muted)] hover:text-[var(--accent-primary)]">
+          <p className="mt-6">
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-1 text-sm text-on-surface-variant hover:text-primary"
+            >
+              <ArrowLeft className="h-4 w-4" />
               Back to Login
             </Link>
           </p>
         </motion.div>
-      </div>
+      </AuthPageShell>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--bg-primary)] transition-colors">
-      {/* Background pattern */}
-      <div
-        className={cn(
-          "absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMtNi42MjcgMC0xMiA1LjM3My0xMiAxMnM1LjM3MyAxMiAxMiAxMiAxMi01LjM3MyAxMi0xMi01LjM3My0xMi0xMi0xMnptMCAxOGMtMy4zMTQgMC02LTIuNjg2LTYtNnMyLjY4Ni02IDYtNiA2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNnoiIGZpbGw9InJnYmEoMTI4LDEyOCwxMjgsMC4wNSkiLz48L2c+PC9zdmc+')]",
-          theme === 'dark' ? 'opacity-30' : 'opacity-50'
-        )}
-      />
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative w-full max-w-md"
-      >
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <img
-            src="/obelisk_white.png"
-            alt="Obelisk"
-            className={cn('w-20 h-20 mx-auto mb-4', theme === 'light' && 'invert')}
-          />
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">Set New Password</h1>
-          <p className="text-[var(--text-secondary)]">Enter your new password below</p>
-        </div>
-
-        <div className="bg-[var(--bg-card)] backdrop-blur-xl border border-[var(--border-color)] rounded-2xl p-8 shadow-lg transition-colors">
+    <AuthPageShell title="Set new password" subtitle="Choose a strong password you haven’t used before.">
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
+        <div className="rounded-xl bg-surface-container-lowest p-8 shadow-stitch dark:bg-[var(--bg-card)] dark:shadow-stitch-dark">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
+            <div className="space-y-2">
+              <label
+                htmlFor="new-password"
+                className="font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant"
+              >
+                New password
+              </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
                 <input
+                  id="new-password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="New password (min 8 characters)"
+                  placeholder="Min. 8 characters"
                   required
                   minLength={8}
-                  className="w-full pl-12 pr-4 py-3 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20 focus:border-[var(--accent-primary)]/50 transition-all"
+                  className="w-full rounded-lg border-none bg-surface-container-highest py-3.5 pl-4 pr-12 text-on-surface placeholder:text-outline/60 transition-all focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-[var(--bg-input)] dark:focus:bg-[var(--bg-card)]"
                 />
-              </div>
-
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm new password"
-                  required
-                  minLength={8}
-                  className="w-full pl-12 pr-4 py-3 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20 focus:border-[var(--accent-primary)]/50 transition-all"
+                <MaterialIcon
+                  name="lock"
+                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-outline/40"
                 />
               </div>
             </div>
 
-            <Button type="submit" isLoading={isLoading} className="w-full py-3" size="lg">
-              Reset Password
+            <div className="space-y-2">
+              <label
+                htmlFor="confirm-password"
+                className="font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant"
+              >
+                Confirm password
+              </label>
+              <div className="relative">
+                <input
+                  id="confirm-password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Repeat password"
+                  required
+                  minLength={8}
+                  className="w-full rounded-lg border-none bg-surface-container-highest py-3.5 pl-4 pr-12 text-on-surface placeholder:text-outline/60 transition-all focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-[var(--bg-input)] dark:focus:bg-[var(--bg-card)]"
+                />
+                <MaterialIcon
+                  name="lock_reset"
+                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-outline/40"
+                />
+              </div>
+            </div>
+
+            <Button type="submit" isLoading={isLoading} className="w-full gap-2 py-4" size="lg">
+              Update password
+              <MaterialIcon name="check_circle" className="!text-[1.25rem]" />
             </Button>
           </form>
         </div>
 
-        <p className="text-center mt-6">
+        <p className="mt-8 text-center">
           <Link
             to="/login"
-            className="text-sm text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors inline-flex items-center gap-1"
+            className="inline-flex items-center gap-1 text-sm font-medium text-on-surface-variant transition-colors hover:text-primary"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="h-4 w-4" />
             Back to Login
           </Link>
         </p>
       </motion.div>
-    </div>
+    </AuthPageShell>
   );
 }

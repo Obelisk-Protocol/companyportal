@@ -89,7 +89,7 @@ export default function Clients() {
       {/* Clients List */}
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       ) : filteredClients.length === 0 ? (
         <Card className="p-12 text-center">
@@ -106,12 +106,12 @@ export default function Clients() {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   {client.clientType === 'company' ? (
-                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                      <Building2 className="w-5 h-5 text-[var(--text-primary)]" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--accent-primary)]/12">
+                      <Building2 className="h-5 w-5 text-[var(--accent-primary)]" />
                     </div>
                   ) : (
-                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                      <User className="w-5 h-5 text-[var(--text-primary)]" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--accent-primary)]/12">
+                      <User className="h-5 w-5 text-[var(--accent-primary)]" />
                     </div>
                   )}
                   <div>

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useTheme } from '../../contexts/ThemeContext';
 import { toast } from 'react-hot-toast';
 import Button from '../../components/ui/Button';
-import { Mail, ArrowLeft } from 'lucide-react';
+import MaterialIcon from '../../components/ui/MaterialIcon';
+import AuthPageShell from '../../components/auth/AuthPageShell';
+import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { cn } from '../../lib/utils';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -13,7 +13,6 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const { theme } = useTheme();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,49 +43,28 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--bg-primary)] transition-colors">
-      {/* Background pattern */}
-      <div
-        className={cn(
-          "absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMtNi42MjcgMC0xMiA1LjM3My0xMiAxMnM1LjM3MyAxMiAxMiAxMiAxMi01LjM3MyAxMi0xMi01LjM3My0xMi0xMi0xMnptMCAxOGMtMy4zMTQgMC02LTIuNjg2LTYtNnMyLjY4Ni02IDYtNiA2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNnoiIGZpbGw9InJnYmEoMTI4LDEyOCwxMjgsMC4wNSkiLz48L2c+PC9zdmc+')]",
-          theme === 'dark' ? 'opacity-30' : 'opacity-50'
-        )}
-      />
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative w-full max-w-md"
-      >
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <img
-            src="/obelisk_white.png"
-            alt="Obelisk"
-            className={cn('w-20 h-20 mx-auto mb-4', theme === 'light' && 'invert')}
-          />
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">Reset Password</h1>
-          <p className="text-[var(--text-secondary)]">
-            {submitted
-              ? 'Check your email for a reset link'
-              : 'Enter your email and we\'ll send you a link to reset your password'}
-          </p>
-        </div>
-
-        <div className="bg-[var(--bg-card)] backdrop-blur-xl border border-[var(--border-color)] rounded-2xl p-8 shadow-lg transition-colors">
+    <AuthPageShell
+      title={submitted ? 'Check your inbox' : 'Reset password'}
+      subtitle={
+        submitted
+          ? 'We sent instructions to your email if an account exists.'
+          : "Enter your corporate email and we'll send a reset link."
+      }
+    >
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
+        <div className="rounded-xl bg-surface-container-lowest p-8 shadow-stitch dark:bg-[var(--bg-card)] dark:shadow-stitch-dark">
           {submitted ? (
             <div className="space-y-6">
-              <p className="text-[var(--text-secondary)] text-center">
-                We've sent an email to <strong className="text-[var(--text-primary)]">{email}</strong> with
-                instructions to reset your password. The link will expire in 1 hour.
+              <p className="text-center text-on-surface-variant">
+                We&apos;ve sent an email to <strong className="text-on-surface">{email}</strong> with instructions.
+                The link expires in one hour.
               </p>
-              <p className="text-sm text-[var(--text-muted)] text-center">
-                Didn't receive the email? Check your spam folder or{' '}
+              <p className="text-center text-sm text-outline">
+                Didn&apos;t receive it? Check spam or{' '}
                 <button
                   type="button"
                   onClick={() => setSubmitted(false)}
-                  className="text-[var(--accent-primary)] hover:underline"
+                  className="font-semibold text-primary-container hover:underline"
                 >
                   try again
                 </button>
@@ -98,41 +76,54 @@ export default function ForgotPassword() {
                 size="lg"
                 onClick={() => navigate('/login')}
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Login
               </Button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email address"
-                  required
-                  className="w-full pl-12 pr-4 py-3 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20 focus:border-[var(--accent-primary)]/50 transition-all"
-                />
+              <div className="space-y-2">
+                <label
+                  htmlFor="forgot-email"
+                  className="font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant"
+                >
+                  Corporate Email
+                </label>
+                <div className="relative">
+                  <input
+                    id="forgot-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@company.com"
+                    required
+                    className="w-full rounded-lg border-none bg-surface-container-highest py-3.5 pl-4 pr-12 text-on-surface placeholder:text-outline/60 transition-all focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-[var(--bg-input)] dark:focus:bg-[var(--bg-card)]"
+                  />
+                  <MaterialIcon
+                    name="alternate_email"
+                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-outline/40"
+                  />
+                </div>
               </div>
 
-              <Button type="submit" isLoading={isLoading} className="w-full py-3" size="lg">
-                Send Reset Link
+              <Button type="submit" isLoading={isLoading} className="w-full gap-2 py-4" size="lg">
+                Send reset link
+                <MaterialIcon name="mail" className="!text-[1.25rem]" />
               </Button>
             </form>
           )}
         </div>
 
-        <p className="text-center mt-6">
+        <p className="mt-8 text-center">
           <Link
             to="/login"
-            className="text-sm text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors inline-flex items-center gap-1"
+            className="inline-flex items-center gap-1 text-sm font-medium text-on-surface-variant transition-colors hover:text-primary"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="h-4 w-4" />
             Back to Login
           </Link>
         </p>
       </motion.div>
-    </div>
+    </AuthPageShell>
   );
 }
