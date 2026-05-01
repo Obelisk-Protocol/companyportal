@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigation } from '../../contexts/NavigationContext';
+import { api } from '../../lib/api';
 import { LogOut, User, ChevronDown, Sun, Moon, Settings, Briefcase, Building2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+
+const defaultLogoSrc = `${import.meta.env.BASE_URL}obelisk_white.png`.replace(/\/{2,}/g, '/');
 
 export default function Header() {
   const navigate = useNavigate();
@@ -13,6 +17,13 @@ export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const { viewMode, toggleViewMode } = useNavigation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const { data: company } = useQuery({
+    queryKey: ['company'],
+    queryFn: () => api.get<any>('/company').catch(() => null),
+    staleTime: 1000 * 60 * 5,
+    enabled: !!user,
+  });
 
   const getRoleBadge = (role: string) => {
     switch (role) {
@@ -83,18 +94,35 @@ export default function Header() {
         </div>
       )}
       {user && (
-        <div className="flex-1 min-w-0">
-          <h2 className="text-base sm:text-lg font-semibold text-[var(--text-primary)] truncate">
-            Welcome, {user.employee?.fullName?.split(' ')[0] || user.email?.split('@')[0] || 'User'}
-          </h2>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)] hidden sm:block">
-            {new Date().toLocaleDateString('en-US', {
-              weekday: 'long',
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            })}
-          </p>
+        <div className="flex flex-1 min-w-0 items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 lg:hidden">
+            {company?.logoUrl ? (
+              <img
+                src={company.logoUrl}
+                alt={company.name || 'Company'}
+                className="h-9 w-9 object-contain sm:h-10 sm:w-10"
+              />
+            ) : (
+              <img
+                src={defaultLogoSrc}
+                alt="Obelisk"
+                className={cn('h-9 w-9 object-contain sm:h-10 sm:w-10', theme === 'light' && 'invert')}
+              />
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base sm:text-lg font-semibold text-[var(--text-primary)] truncate">
+              Welcome, {user.employee?.fullName?.split(' ')[0] || user.email?.split('@')[0] || 'User'}
+            </h2>
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] hidden sm:block">
+              {new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })}
+            </p>
+          </div>
         </div>
       )}
 

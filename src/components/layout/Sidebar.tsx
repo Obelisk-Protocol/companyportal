@@ -34,10 +34,10 @@ export default function Sidebar() {
               className="h-10 w-10 object-contain"
             />
           ) : (
-            <img 
-              src="/obelisk_white.png" 
-              alt="Obelisk" 
-              className={cn("w-10 h-10", theme === 'light' && 'invert')}
+            <img
+              src={`${import.meta.env.BASE_URL}obelisk_white.png`.replace(/\/{2,}/g, '/')}
+              alt="Obelisk"
+              className={cn('h-10 w-10 object-contain', theme === 'light' && 'invert')}
             />
           )}
           <div>

@@ -23,6 +23,8 @@ type PayrollInputContext = {
 
 type EmployeeFormRow = { sickDays: string; holidayWorked: Record<string, boolean> };
 
+type PayslipRow = { payslip: { sickDays?: string; publicHolidayAttendance?: Record<string, boolean> }; employee: { id: string } };
+
 export default function PayrollDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -35,13 +37,16 @@ export default function PayrollDetail() {
 
   const { data: payslips, isLoading: payslipsLoading } = useQuery({
     queryKey: ['payroll-payslips', id],
-    queryFn: () => api.get<any[]>(`/payroll/runs/${id}/payslips`),
+    queryFn: () => api.get<PayslipRow[]>(`/payroll/runs/${id}/payslips`),
   });
+
+  const canEditPayrollInputs =
+    payrollRun?.status === 'draft' || payrollRun?.status === 'calculated';
 
   const { data: inputContext, isLoading: inputContextLoading } = useQuery({
     queryKey: ['payroll-input-context', id],
     queryFn: () => api.get<PayrollInputContext>(`/payroll/runs/${id}/input-context`),
-    enabled: !!id && payrollRun?.status === 'draft',
+    enabled: !!id && canEditPayrollInputs,
   });
 
   const [employeeForm, setEmployeeForm] = useState<Record<string, EmployeeFormRow>>({});
@@ -51,18 +56,44 @@ export default function PayrollDetail() {
   }, [id]);
 
   useEffect(() => {
-    if (!inputContext?.employees?.length) return;
+    if (!inputContext?.employees?.length || !payrollRun) return;
+    if (payrollRun.status === 'calculated' && payslipsLoading) return;
+
     setEmployeeForm((prev) => {
       if (Object.keys(prev).length > 0) return prev;
-      const next: Record<string, EmployeeFormRow> = {};
-      for (const e of inputContext.employees) {
-        const holidayWorked: Record<string, boolean> = {};
-        for (const h of inputContext.holidays) holidayWorked[h.date] = true;
-        next[e.id] = { sickDays: '0', holidayWorked };
+
+      if (payrollRun.status === 'calculated' && payslips && payslips.length > 0) {
+        const next: Record<string, EmployeeFormRow> = {};
+        for (const e of inputContext.employees) {
+          const item = payslips.find((p) => p.employee?.id === e.id);
+          const ph = item?.payslip?.publicHolidayAttendance;
+          const holidayWorked: Record<string, boolean> = {};
+          for (const h of inputContext.holidays) {
+            holidayWorked[h.date] = ph?.[h.date] === true;
+          }
+          const sickRaw = item?.payslip?.sickDays;
+          const sickDays =
+            sickRaw !== undefined && sickRaw !== null && String(sickRaw) !== ''
+              ? String(sickRaw)
+              : '0';
+          next[e.id] = { sickDays, holidayWorked };
+        }
+        return next;
       }
-      return next;
+
+      if (payrollRun.status === 'draft' || payrollRun.status === 'calculated') {
+        const next: Record<string, EmployeeFormRow> = {};
+        for (const e of inputContext.employees) {
+          const holidayWorked: Record<string, boolean> = {};
+          for (const h of inputContext.holidays) holidayWorked[h.date] = false;
+          next[e.id] = { sickDays: '0', holidayWorked };
+        }
+        return next;
+      }
+
+      return prev;
     });
-  }, [inputContext]);
+  }, [inputContext, payrollRun?.id, payrollRun?.status, payslips, payslipsLoading]);
 
   const calculateMutation = useMutation({
     mutationFn: () => {
@@ -201,7 +232,7 @@ export default function PayrollDetail() {
         </Card>
       </div>
 
-      {payrollRun.status === 'draft' && (
+      {canEditPayrollInputs && (
         <Card className="p-6">
           <div className="mb-4">
             <h3 className="text-lg font-semibold text-[var(--text-primary)]">Full-time: holidays & sick days</h3>
@@ -209,8 +240,9 @@ export default function PayrollDetail() {
               Pay is based on a standard day of {inputContext?.standardWorkdayHours ?? 7.5} hours. Fixed salary and fixed
               allowances are spread across{' '}
               <span className="text-[var(--text-primary)]">{inputContext?.workWeekdaysInMonth ?? '—'}</span> Mon–Fri
-              weekdays in this month. Uncheck a public holiday if the employee did not work that day (one day’s pay is
-              deducted). Each sick day deducts one day’s pay. Calculate applies these before BPJS and tax.
+              weekdays in this month. Check a public holiday only if the employee worked that day (otherwise one day’s
+              pay is deducted). Each sick day deducts one day’s pay. Calculation runs before BPJS and tax. You can
+              recalculate while the run is in calculated status (before approval).
             </p>
           </div>
           {inputContextLoading ? (
@@ -250,12 +282,16 @@ export default function PayrollDetail() {
                         <p className="text-xs text-neutral-500">{e.employeeNumber}</p>
                       </td>
                       {inputContext.holidays.map((h) => {
-                        const worked = employeeForm[e.id]?.holidayWorked[h.date] !== false;
+                        const worked = employeeForm[e.id]?.holidayWorked[h.date] === true;
                         return (
                           <td key={h.date} className="text-center py-3 px-1 align-middle">
                             <label
                               className="inline-flex cursor-pointer justify-center"
-                              title={worked ? 'Worked this public holiday' : 'Did not work — one day pay deducted'}
+                              title={
+                                worked
+                                  ? 'Worked this public holiday (no deduction for this day)'
+                                  : 'Did not work — one day’s pay deducted'
+                              }
                             >
                               <input
                                 type="checkbox"
@@ -316,14 +352,14 @@ export default function PayrollDetail() {
       {/* Actions */}
       <Card className="p-4">
         <div className="flex flex-wrap gap-3">
-          {payrollRun.status === 'draft' && (
+          {canEditPayrollInputs && (
             <Button
               onClick={() => calculateMutation.mutate()}
               isLoading={calculateMutation.isPending}
               disabled={inputContextLoading}
             >
               <Calculator className="w-4 h-4 mr-2" />
-              Calculate Payroll
+              {payrollRun.status === 'calculated' ? 'Recalculate payroll' : 'Calculate payroll'}
             </Button>
           )}
           {payrollRun.status === 'calculated' && (
@@ -406,8 +442,8 @@ export default function PayrollDetail() {
           <div className="text-center py-12">
             <FileText className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
             <p className="text-neutral-500">
-              {payrollRun.status === 'draft'
-                ? 'Click "Calculate Payroll" to generate payslips'
+              {canEditPayrollInputs
+                ? 'Use Calculate or Recalculate payroll to generate payslips.'
                 : 'No payslips found'}
             </p>
           </div>
