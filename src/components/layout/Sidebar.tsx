@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../contexts/AuthContext';
-import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigation } from '../../contexts/NavigationContext';
 import { api } from '../../lib/api';
 import { buildSidebarNav } from '../../lib/navConfig';
@@ -10,7 +9,6 @@ import { cn } from '../../lib/utils';
 
 export default function Sidebar() {
   const { user } = useAuth();
-  const { theme } = useTheme();
   const { viewMode, toggleViewMode } = useNavigation();
 
   const { data: company } = useQuery({
@@ -23,7 +21,7 @@ export default function Sidebar() {
   const isAdmin = user?.role === 'admin';
 
   return (
-    <aside className="hidden w-64 shrink-0 border-r border-[var(--border-color)] bg-surface dark:bg-[var(--bg-primary)] transition-colors lg:flex lg:flex-col">
+    <aside className="hidden w-64 shrink-0 border-r border-[var(--border-color)] bg-surface transition-colors lg:flex lg:flex-col">
       {/* Logo */}
       <div className="flex h-16 items-center border-b border-[var(--border-color)] px-6">
         <div className="flex items-center gap-3">
@@ -37,11 +35,11 @@ export default function Sidebar() {
             <img
               src={`${import.meta.env.BASE_URL}obelisk_white.png`.replace(/\/{2,}/g, '/')}
               alt="Obelisk"
-              className={cn('h-10 w-10 object-contain', theme === 'light' && 'invert')}
+              className="h-10 w-10 object-contain invert"
             />
           )}
           <div>
-            <h1 className="font-headline font-semibold text-on-surface dark:text-[var(--text-primary)]">
+            <h1 className="font-headline font-semibold text-on-surface">
               {company?.name || 'Obelisk Portal'}
             </h1>
             <p className="text-xs text-on-surface-variant">HR & Payroll</p>

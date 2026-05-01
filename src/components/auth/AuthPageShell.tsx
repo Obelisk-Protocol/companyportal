@@ -1,7 +1,5 @@
 import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { useTheme } from '../../contexts/ThemeContext';
-import MaterialIcon from '../ui/MaterialIcon';
 import { cn } from '../../lib/utils';
 
 type AuthPageShellProps = {
@@ -25,11 +23,9 @@ export default function AuthPageShell({
   wide = false,
   alignTop = false,
 }: AuthPageShellProps) {
-  const { theme, toggleTheme } = useTheme();
-
   return (
-    <div className="min-h-[100dvh] bg-surface dark:bg-[var(--bg-primary)] font-body text-on-surface antialiased transition-colors">
-      <header className="fixed top-0 z-50 flex w-full items-center justify-between bg-surface/70 px-6 py-4 backdrop-blur-xl dark:bg-[var(--bg-primary)]/80">
+    <div className="min-h-[100dvh] bg-surface font-body text-on-surface antialiased transition-colors">
+      <header className="fixed top-0 z-50 flex w-full items-center justify-between bg-surface/70 px-6 py-4 backdrop-blur-xl">
         <div className="flex items-center gap-2">
           <span className="font-headline text-xl font-bold tracking-tight text-primary">Obelisk</span>
         </div>
@@ -41,18 +37,6 @@ export default function AuthPageShell({
           >
             Help
           </a>
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="text-on-surface-variant transition-colors hover:text-on-surface"
-            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            <MaterialIcon
-              name={theme === 'dark' ? 'light_mode' : 'dark_mode'}
-              className="text-2xl !text-[1.5rem]"
-            />
-          </button>
         </div>
       </header>
 

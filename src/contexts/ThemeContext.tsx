@@ -1,41 +1,19 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, ReactNode } from 'react';
 
-type Theme = 'dark' | 'light';
-
-interface ThemeContextType {
-  theme: Theme;
-  toggleTheme: () => void;
-}
-
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+/** App uses light theme only; context kept so chart/pages can read a stable `theme` if needed. */
+const ThemeContext = createContext<{ theme: 'light' } | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('theme') as Theme;
-    return saved || 'dark';
-  });
-
   useEffect(() => {
-    localStorage.setItem('theme', theme);
-    
-    // Tailwind's dark mode uses class-based strategy - only add/remove 'dark' class
-    // Light mode is the default (when 'dark' class is absent)
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove('dark');
+    try {
+      localStorage.removeItem('theme');
+    } catch {
+      /* ignore */
     }
-  }, [theme]);
+  }, []);
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
-  };
-
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme: 'light' }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

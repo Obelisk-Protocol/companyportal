@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  /* class-based only; we never add `dark` to <html> — avoids OS `prefers-color-scheme` flipping the UI */
   darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {

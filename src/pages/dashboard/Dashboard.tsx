@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../contexts/AuthContext';
-import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigation } from '../../contexts/NavigationContext';
 import { api } from '../../lib/api';
 import { formatRupiah, getIndonesianMonth } from '../../lib/utils';
@@ -11,7 +10,6 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { theme } = useTheme();
   const { viewMode } = useNavigation();
   const isAdmin = user?.role === 'admin';
   const isHr = user?.role === 'hr';
@@ -257,29 +255,29 @@ export default function Dashboard() {
                 <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="grossGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={theme === 'dark' ? '#ffffff' : '#0a0a0a'} stopOpacity={0.3} />
-                      <stop offset="95%" stopColor={theme === 'dark' ? '#ffffff' : '#0a0a0a'} stopOpacity={0} />
+                      <stop offset="5%" stopColor={'#0a0a0a'} stopOpacity={0.3} />
+                      <stop offset="95%" stopColor={'#0a0a0a'} stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="netGradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#737373" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#737373" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="name" stroke={theme === 'dark' ? '#525252' : '#a3a3a3'} fontSize={12} />
-                  <YAxis stroke={theme === 'dark' ? '#525252' : '#a3a3a3'} fontSize={12} tickFormatter={(v) => `${v}M`} />
+                  <XAxis dataKey="name" stroke={'#a3a3a3'} fontSize={12} />
+                  <YAxis stroke={'#a3a3a3'} fontSize={12} tickFormatter={(v) => `${v}M`} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: theme === 'dark' ? '#0a0a0a' : '#ffffff',
-                      border: theme === 'dark' ? '1px solid #262626' : '1px solid #e5e5e5',
+                      backgroundColor: '#ffffff',
+                      border: '1px solid #e5e5e5',
                       borderRadius: '8px',
-                      color: theme === 'dark' ? '#ffffff' : '#0a0a0a',
+                      color: '#0a0a0a',
                     }}
                     formatter={(value: number) => [`Rp ${value.toFixed(0)} million`, '']}
                   />
                   <Area
                     type="monotone"
                     dataKey="gross"
-                    stroke={theme === 'dark' ? '#ffffff' : '#0a0a0a'}
+                    stroke={'#0a0a0a'}
                     fill="url(#grossGradient)"
                     name="Gross"
                   />
@@ -557,29 +555,29 @@ export default function Dashboard() {
                 <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="grossGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={theme === 'dark' ? '#ffffff' : '#0a0a0a'} stopOpacity={0.3} />
-                      <stop offset="95%" stopColor={theme === 'dark' ? '#ffffff' : '#0a0a0a'} stopOpacity={0} />
+                      <stop offset="5%" stopColor={'#0a0a0a'} stopOpacity={0.3} />
+                      <stop offset="95%" stopColor={'#0a0a0a'} stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="netGradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#737373" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#737373" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="name" stroke={theme === 'dark' ? '#525252' : '#a3a3a3'} fontSize={12} />
-                  <YAxis stroke={theme === 'dark' ? '#525252' : '#a3a3a3'} fontSize={12} tickFormatter={(v) => `${v}M`} />
+                  <XAxis dataKey="name" stroke={'#a3a3a3'} fontSize={12} />
+                  <YAxis stroke={'#a3a3a3'} fontSize={12} tickFormatter={(v) => `${v}M`} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: theme === 'dark' ? '#0a0a0a' : '#ffffff',
-                      border: theme === 'dark' ? '1px solid #262626' : '1px solid #e5e5e5',
+                      backgroundColor: '#ffffff',
+                      border: '1px solid #e5e5e5',
                       borderRadius: '8px',
-                      color: theme === 'dark' ? '#ffffff' : '#0a0a0a',
+                      color: '#0a0a0a',
                     }}
                     formatter={(value: number) => [`Rp ${value.toFixed(0)} million`, '']}
                   />
                   <Area
                     type="monotone"
                     dataKey="gross"
-                    stroke={theme === 'dark' ? '#ffffff' : '#0a0a0a'}
+                    stroke={'#0a0a0a'}
                     fill="url(#grossGradient)"
                     name="Gross"
                   />

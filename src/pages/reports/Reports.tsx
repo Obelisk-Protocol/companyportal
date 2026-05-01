@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
-import { useTheme } from '../../contexts/ThemeContext';
 import { formatRupiah, getIndonesianMonth, getStatusBadgeClass, getStatusLabel, cn } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
@@ -16,7 +15,6 @@ type ReportType = 'pph21' | 'bpjs' | 'summary' | 'expenses';
 
 export default function Reports() {
   const { user } = useAuth();
-  const { theme } = useTheme();
   const [reportType, setReportType] = useState<ReportType>('summary');
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
@@ -182,19 +180,19 @@ export default function Reports() {
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData}>
-                      <XAxis dataKey="name" stroke={theme === 'dark' ? '#525252' : '#a3a3a3'} fontSize={12} />
-                      <YAxis stroke={theme === 'dark' ? '#525252' : '#a3a3a3'} fontSize={12} tickFormatter={(v) => `${v}M`} />
+                      <XAxis dataKey="name" stroke="#a3a3a3" fontSize={12} />
+                      <YAxis stroke="#a3a3a3" fontSize={12} tickFormatter={(v) => `${v}M`} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: theme === 'dark' ? '#0a0a0a' : '#ffffff',
-                          border: theme === 'dark' ? '1px solid #262626' : '1px solid #e5e5e5',
+                          backgroundColor: '#ffffff',
+                          border: '1px solid #e5e5e5',
                           borderRadius: '8px',
-                          color: theme === 'dark' ? '#ffffff' : '#0a0a0a',
+                          color: '#0a0a0a',
                         }}
                         formatter={(value: number) => [`Rp ${value.toFixed(0)} million`, '']}
                       />
                       <Legend />
-                      <Bar dataKey="Gross" fill={theme === 'dark' ? '#ffffff' : '#0a0a0a'} radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="Gross" fill="#0a0a0a" radius={[4, 4, 0, 0]} />
                       <Bar dataKey="Net" fill="#a3a3a3" radius={[4, 4, 0, 0]} />
                       <Bar dataKey="PPh21" fill="#525252" radius={[4, 4, 0, 0]} />
                     </BarChart>

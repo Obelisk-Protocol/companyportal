@@ -2,10 +2,9 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../contexts/AuthContext';
-import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigation } from '../../contexts/NavigationContext';
 import { api } from '../../lib/api';
-import { LogOut, User, ChevronDown, Sun, Moon, Settings, Briefcase, Building2 } from 'lucide-react';
+import { LogOut, User, ChevronDown, Settings, Briefcase, Building2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const defaultLogoSrc = `${import.meta.env.BASE_URL}obelisk_white.png`.replace(/\/{2,}/g, '/');
@@ -14,7 +13,6 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const { viewMode, toggleViewMode } = useNavigation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -54,7 +52,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex min-h-16 shrink-0 flex-col gap-2 border-b border-[var(--border-color)] bg-surface/80 backdrop-blur-md dark:bg-[var(--bg-primary)]/90 sm:h-16 sm:flex-row sm:items-center sm:justify-between sm:py-0 px-4 py-2 sm:px-6 transition-colors">
+    <header className="flex min-h-16 shrink-0 flex-col gap-2 border-b border-[var(--border-color)] bg-surface/80 backdrop-blur-md sm:h-16 sm:flex-row sm:items-center sm:justify-between sm:py-0 px-4 py-2 sm:px-6 transition-colors">
       {!user && location.pathname.startsWith('/grants') && (
         <div className="flex-1 min-w-0">
           <h2 className="text-base sm:text-lg font-semibold text-[var(--text-primary)]">Grant transparency</h2>
@@ -106,7 +104,7 @@ export default function Header() {
               <img
                 src={defaultLogoSrc}
                 alt="Obelisk"
-                className={cn('h-9 w-9 object-contain sm:h-10 sm:w-10', theme === 'light' && 'invert')}
+                className="h-9 w-9 object-contain invert sm:h-10 sm:w-10"
               />
             )}
           </div>
@@ -127,19 +125,6 @@ export default function Header() {
       )}
 
       <div className="flex items-center gap-2 sm:gap-3 shrink-0 self-end sm:self-center">
-        {/* Theme Toggle */}
-        <button
-          onClick={toggleTheme}
-          className="p-2.5 rounded-lg hover:bg-[var(--hover-bg)] transition-colors"
-          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {theme === 'dark' ? (
-            <Sun className="w-5 h-5 text-[var(--text-secondary)]" />
-          ) : (
-            <Moon className="w-5 h-5 text-[var(--text-secondary)]" />
-          )}
-        </button>
-
         {user ? (
           <div className="relative">
             <button

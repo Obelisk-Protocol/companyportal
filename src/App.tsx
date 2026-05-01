@@ -42,7 +42,7 @@ function PrivateRoute({ children, allowedRoles }: { children: React.ReactNode; a
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-surface dark:bg-[var(--bg-primary)]">
+      <div className="flex min-h-screen items-center justify-center bg-surface">
         <div className="h-12 w-12 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
