@@ -46,6 +46,8 @@ export default function MyPayslips() {
     );
   }
 
+  const isEmploymentContract = employeeRecord?.compensationCategory === 'employment_contract';
+
   if (employeeRecord?.compensationCategory === 'private_contract') {
     const sig = employeeRecord.contractPaymentTxSignature as string | undefined;
     const solscanUrl = sig ? `https://solscan.io/tx/${sig}` : null;
@@ -202,18 +204,25 @@ export default function MyPayslips() {
                 <div>
                   <h4 className="text-sm font-medium text-neutral-500 mb-4 uppercase tracking-wider">Deductions</h4>
                   <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-neutral-300">BPJS Kesehatan</span>
-                      <span className="text-neutral-400">-{formatRupiah(parseFloat(payslip.bpjsKesehatanEmployee))}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-neutral-300">BPJS JHT</span>
-                      <span className="text-neutral-400">-{formatRupiah(parseFloat(payslip.bpjsJhtEmployee))}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-neutral-300">BPJS JP</span>
-                      <span className="text-neutral-400">-{formatRupiah(parseFloat(payslip.bpjsJpEmployee))}</span>
-                    </div>
+                    {!isEmploymentContract && (
+                      <>
+                        <div className="flex justify-between">
+                          <span className="text-neutral-300">BPJS Kesehatan</span>
+                          <span className="text-neutral-400">-{formatRupiah(parseFloat(payslip.bpjsKesehatanEmployee))}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-neutral-300">BPJS JHT</span>
+                          <span className="text-neutral-400">-{formatRupiah(parseFloat(payslip.bpjsJhtEmployee))}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-neutral-300">BPJS JP</span>
+                          <span className="text-neutral-400">-{formatRupiah(parseFloat(payslip.bpjsJpEmployee))}</span>
+                        </div>
+                      </>
+                    )}
+                    {isEmploymentContract && (
+                      <p className="text-xs text-neutral-500">BPJS is not applied on employment-contract payslips.</p>
+                    )}
                     <div className="flex justify-between">
                       <span className="text-neutral-300">PPh 21 (Income Tax)</span>
                       <span className="text-neutral-400">-{formatRupiah(parseFloat(payslip.pph21))}</span>
@@ -235,43 +244,45 @@ export default function MyPayslips() {
                   </div>
                 </div>
 
-                <div className="md:col-span-2 border border-neutral-800 dark:border-white/15 rounded-lg p-4">
-                  <h4 className="text-sm font-medium text-neutral-500 mb-3 uppercase tracking-wider">
-                    Annual leave (cuti tahunan)
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    <div className="flex justify-between gap-2">
-                      <span className="text-neutral-400">Entitlement / year</span>
-                      <span className="text-[var(--text-primary)]">
-                        {formatLeaveDays(parseFloat(payslip.annualLeaveEntitlementDays || '12'))} days
-                      </span>
-                    </div>
-                    <div className="flex justify-between gap-2">
-                      <span className="text-neutral-400">Opening balance</span>
-                      <span className="text-[var(--text-primary)]">
-                        {formatLeaveDays(parseFloat(payslip.annualLeaveOpeningBalance || '0'))} days
-                      </span>
-                    </div>
-                    <div className="flex justify-between gap-2">
-                      <span className="text-neutral-400">Accrued this month</span>
-                      <span className="text-[var(--text-primary)]">
-                        {formatLeaveDays(parseFloat(payslip.annualLeaveAccruedThisMonth || '0'))} days
-                      </span>
-                    </div>
-                    <div className="flex justify-between gap-2">
-                      <span className="text-neutral-400">Taken this month</span>
-                      <span className="text-[var(--text-primary)]">
-                        {formatLeaveDays(parseFloat(payslip.annualLeaveTakenThisMonth || '0'))} days
-                      </span>
-                    </div>
-                    <div className="flex justify-between gap-2 sm:col-span-2 pt-2 border-t border-neutral-800 dark:border-white/10">
-                      <span className="font-medium text-[var(--text-primary)]">Closing balance</span>
-                      <span className="font-semibold text-[var(--text-primary)]">
-                        {formatLeaveDays(parseFloat(payslip.annualLeaveClosingBalance || '0'))} days
-                      </span>
+                {!isEmploymentContract && (
+                  <div className="md:col-span-2 border border-neutral-800 dark:border-white/15 rounded-lg p-4">
+                    <h4 className="text-sm font-medium text-neutral-500 mb-3 uppercase tracking-wider">
+                      Annual leave (cuti tahunan)
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                      <div className="flex justify-between gap-2">
+                        <span className="text-neutral-400">Entitlement / year</span>
+                        <span className="text-[var(--text-primary)]">
+                          {formatLeaveDays(parseFloat(payslip.annualLeaveEntitlementDays || '12'))} days
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-2">
+                        <span className="text-neutral-400">Opening balance</span>
+                        <span className="text-[var(--text-primary)]">
+                          {formatLeaveDays(parseFloat(payslip.annualLeaveOpeningBalance || '0'))} days
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-2">
+                        <span className="text-neutral-400">Accrued this month</span>
+                        <span className="text-[var(--text-primary)]">
+                          {formatLeaveDays(parseFloat(payslip.annualLeaveAccruedThisMonth || '0'))} days
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-2">
+                        <span className="text-neutral-400">Taken this month</span>
+                        <span className="text-[var(--text-primary)]">
+                          {formatLeaveDays(parseFloat(payslip.annualLeaveTakenThisMonth || '0'))} days
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-2 sm:col-span-2 pt-2 border-t border-neutral-800 dark:border-white/10">
+                        <span className="font-medium text-[var(--text-primary)]">Closing balance</span>
+                        <span className="font-semibold text-[var(--text-primary)]">
+                          {formatLeaveDays(parseFloat(payslip.annualLeaveClosingBalance || '0'))} days
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             );
           })()}

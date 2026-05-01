@@ -16,8 +16,10 @@ export default function EmployeeDetail() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isCompModalOpen, setIsCompModalOpen] = useState(false);
+  type CompensationCategory = 'full_time' | 'employment_contract' | 'private_contract';
+
   const [compForm, setCompForm] = useState({
-    compensationCategory: 'full_time' as 'full_time' | 'private_contract',
+    compensationCategory: 'full_time' as CompensationCategory,
     contractPaymentTxSignature: '',
   });
 
@@ -72,8 +74,10 @@ export default function EmployeeDetail() {
 
   const openCompModal = () => {
     if (!employee) return;
+    const cat = employee.compensationCategory as CompensationCategory | undefined;
     setCompForm({
-      compensationCategory: employee.compensationCategory === 'private_contract' ? 'private_contract' : 'full_time',
+      compensationCategory:
+        cat === 'private_contract' || cat === 'employment_contract' ? cat : 'full_time',
       contractPaymentTxSignature: employee.contractPaymentTxSignature || '',
     });
     setIsCompModalOpen(true);
@@ -208,8 +212,10 @@ export default function EmployeeDetail() {
               <p className="text-sm text-[var(--text-secondary)]">Payroll category</p>
               <p className="text-[var(--text-primary)]">
                 {employee.compensationCategory === 'private_contract'
-                  ? 'Private contract (grant / non-payroll)'
-                  : 'Full-time payroll'}
+                  ? 'Private contract (grant / off payroll batch)'
+                  : employee.compensationCategory === 'employment_contract'
+                    ? 'Employment contract (monthly payroll, no leave/BPJS on payslip)'
+                    : 'Full-time payroll'}
               </p>
             </div>
             {employee.compensationCategory === 'private_contract' && employee.contractPaymentTxSignature && (
@@ -356,13 +362,16 @@ export default function EmployeeDetail() {
               onChange={(e) =>
                 setCompForm({
                   ...compForm,
-                  compensationCategory: e.target.value as 'full_time' | 'private_contract',
+                  compensationCategory: e.target.value as CompensationCategory,
                 })
               }
               className="w-full px-4 py-2.5 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]/20"
             >
-              <option value="full_time">Full-time (standard payslip & BPJS payroll)</option>
-              <option value="private_contract">Private contract / grant (Solscan payment proof)</option>
+              <option value="full_time">Full-time (payslip, BPJS, annual leave)</option>
+              <option value="employment_contract">
+                Employment contract (monthly payroll; PPh 21; no BPJS / leave on payslip)
+              </option>
+              <option value="private_contract">Private contract / grant (Solscan; excluded from payroll batch)</option>
             </select>
           </div>
           {compForm.compensationCategory === 'private_contract' && (
@@ -374,8 +383,8 @@ export default function EmployeeDetail() {
             />
           )}
           <p className="text-xs text-[var(--text-muted)]">
-            Private-contract people are skipped in payroll calculation. Keep their latest on-chain payment signature here
-            for their portal view.
+            Private contract is for grant-style pay (Solscan proof, not in batch payroll). Employment contract is paid
+            through the same monthly run as full-time but without statutory leave tracking or BPJS on the payslip.
           </p>
           <div className="flex justify-end gap-3 pt-4">
             <Button type="button" variant="outline" onClick={() => setIsCompModalOpen(false)}>

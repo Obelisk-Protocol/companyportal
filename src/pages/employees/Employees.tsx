@@ -24,6 +24,17 @@ interface Employee {
   compensationCategory?: string | null;
 }
 
+function compensationBadge(employee: { compensationCategory?: string | null }) {
+  const c = employee.compensationCategory;
+  if (c === 'private_contract') {
+    return { label: 'Grant / private', className: 'bg-amber-500/15 text-amber-200' };
+  }
+  if (c === 'employment_contract') {
+    return { label: 'Employment contract', className: 'bg-sky-500/15 text-sky-200' };
+  }
+  return { label: 'Full-time', className: 'bg-emerald-500/15 text-emerald-200' };
+}
+
 export default function Employees() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -131,16 +142,12 @@ export default function Employees() {
                       <TableCell>{employee.department || '-'}</TableCell>
                       <TableCell>{employee.position || '-'}</TableCell>
                       <TableCell>
-                        <span
-                          className={cn(
-                            'badge',
-                            employee.compensationCategory === 'private_contract'
-                              ? 'bg-amber-500/15 text-amber-200'
-                              : 'bg-emerald-500/15 text-emerald-200'
-                          )}
-                        >
-                          {employee.compensationCategory === 'private_contract' ? 'Contract' : 'Full-time'}
-                        </span>
+                        {(() => {
+                          const b = compensationBadge(employee);
+                          return (
+                            <span className={cn('badge', b.className)}>{b.label}</span>
+                          );
+                        })()}
                       </TableCell>
                       <TableCell>
                         <span className={cn('badge', getStatusBadgeClass(employee.status))}>
@@ -208,16 +215,10 @@ export default function Employees() {
                     <span>{employee.position || '—'}</span>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    <span
-                      className={cn(
-                        'badge',
-                        employee.compensationCategory === 'private_contract'
-                          ? 'bg-amber-500/15 text-amber-200'
-                          : 'bg-emerald-500/15 text-emerald-200'
-                      )}
-                    >
-                      {employee.compensationCategory === 'private_contract' ? 'Contract' : 'Full-time'}
-                    </span>
+                    {(() => {
+                      const b = compensationBadge(employee);
+                      return <span className={cn('badge', b.className)}>{b.label}</span>;
+                    })()}
                     <span className={cn('badge', getStatusBadgeClass(employee.status))}>
                       {getStatusLabel(employee.status)}
                     </span>
