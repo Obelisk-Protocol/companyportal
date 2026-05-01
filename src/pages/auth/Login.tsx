@@ -23,9 +23,9 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      await login(email, password);
+      const loggedIn = await login(email, password);
       toast.success('Login successful!');
-      navigate('/');
+      navigate(loggedIn.mustChangePassword ? '/force-password-change' : '/');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed');
     } finally {

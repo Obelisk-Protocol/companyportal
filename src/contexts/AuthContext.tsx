@@ -8,6 +8,8 @@ interface User {
   employeeId?: string;
   companyId?: string;
   individualClientId?: string;
+  /** When true, the API blocks most routes until the user changes password. */
+  mustChangePassword?: boolean;
   employee?: {
     id: string;
     fullName: string;
@@ -19,7 +21,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
   refreshUser: () => Promise<void>;
   // Test mode: switch roles without logging in
@@ -56,11 +58,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const response = await api.post<{ accessToken: string; refreshToken: string; user: User }>('/auth/login', { email, password });
-    
+
     localStorage.setItem('accessToken', response.accessToken);
     localStorage.setItem('refreshToken', response.refreshToken);
-    
+
     setUser(response.user);
+    return response.user;
   };
 
   const logout = () => {

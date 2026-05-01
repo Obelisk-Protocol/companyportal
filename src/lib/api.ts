@@ -72,6 +72,9 @@ async function request<T>(
   const data = await response.json();
 
   if (!response.ok) {
+    if (response.status === 403 && data?.error === 'PASSWORD_CHANGE_REQUIRED') {
+      window.location.assign('/force-password-change');
+    }
     throw new ApiError(response.status, data.error || 'An error occurred');
   }
 

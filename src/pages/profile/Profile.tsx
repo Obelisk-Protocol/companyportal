@@ -9,6 +9,7 @@ import Modal from '../../components/ui/Modal';
 import { User, MapPin, CreditCard, Lock, Save, Upload, FileImage, ExternalLink, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface ProfileData {
   user: {
@@ -43,6 +44,7 @@ interface ProfileData {
 }
 
 export default function Profile() {
+  const { refreshUser } = useAuth();
   const queryClient = useQueryClient();
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -101,8 +103,12 @@ export default function Profile() {
 
   const passwordMutation = useMutation({
     mutationFn: (data: { currentPassword: string; newPassword: string }) =>
-      api.put('/me/password', data),
-    onSuccess: () => {
+      api.put<{ message: string; accessToken: string }>('/me/password', data),
+    onSuccess: async (res) => {
+      if (res.accessToken) {
+        localStorage.setItem('accessToken', res.accessToken);
+        await refreshUser();
+      }
       toast.success('Password changed successfully');
       setIsPasswordModalOpen(false);
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });

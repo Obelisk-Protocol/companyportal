@@ -112,6 +112,10 @@ export default function EmployeeDetail() {
     mutationFn: (data: typeof salaryForm) => api.put(`/employees/${id}/salary`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['employee-salary', id] });
+      queryClient.invalidateQueries({ queryKey: ['employee', id] });
+      queryClient.invalidateQueries({ queryKey: ['payroll-runs'] });
+      queryClient.invalidateQueries({ queryKey: ['payroll-input-context'] });
+      queryClient.invalidateQueries({ queryKey: ['payroll-payslips'] });
       toast.success('Salary updated successfully');
       setIsSalaryModalOpen(false);
     },
@@ -228,6 +232,12 @@ export default function EmployeeDetail() {
 
   const openSalaryModal = () => {
     if (salary) {
+      const ed = salary.effectiveDate as string | undefined;
+      const effectiveDateStr = ed
+        ? ed.includes('T')
+          ? ed.split('T')[0]!
+          : ed
+        : new Date().toISOString().split('T')[0]!;
       setSalaryForm({
         gajiPokok: parseFloat(salary.gajiPokok) || 0,
         tunjanganTransport: parseFloat(salary.tunjanganTransport) || 0,
@@ -235,7 +245,7 @@ export default function EmployeeDetail() {
         tunjanganKomunikasi: parseFloat(salary.tunjanganKomunikasi) || 0,
         tunjanganJabatan: parseFloat(salary.tunjanganJabatan) || 0,
         tunjanganLainnya: parseFloat(salary.tunjanganLainnya) || 0,
-        effectiveDate: new Date().toISOString().split('T')[0],
+        effectiveDate: effectiveDateStr,
       });
     }
     setIsSalaryModalOpen(true);

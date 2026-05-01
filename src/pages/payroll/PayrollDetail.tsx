@@ -366,6 +366,14 @@ export default function PayrollDetail() {
 
       {/* Actions */}
       <Card className="p-4">
+        {canEditPayrollInputs && (
+          <p className="text-sm text-neutral-500 mb-3 max-w-3xl">
+            Payslip amounts are stored when you calculate. After changing an employee&apos;s salary in Employees, use{' '}
+            <span className="font-medium text-[var(--text-primary)]">Recalculate payroll</span> here so this run picks up
+            the new salary. Calculation uses the latest salary row whose{' '}
+            <span className="font-medium">effective date</span> is on or before the last day of this payroll month.
+          </p>
+        )}
         <div className="flex flex-wrap gap-3">
           {canEditPayrollInputs && (
             <Button

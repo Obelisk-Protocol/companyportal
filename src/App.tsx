@@ -1,7 +1,8 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import Layout from './components/layout/Layout';
 import Login from './pages/auth/Login';
+import ForcePasswordChange from './pages/auth/ForcePasswordChange';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import AcceptInvitation from './pages/auth/AcceptInvitation';
@@ -39,6 +40,7 @@ import CompanyCalendar from './pages/calendar/CompanyCalendar';
 
 function PrivateRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { user, isLoading } = useAuth();
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -50,6 +52,14 @@ function PrivateRoute({ children, allowedRoles }: { children: React.ReactNode; a
 
   if (!user) {
     return <Navigate to="/login" replace />;
+  }
+
+  const path = location.pathname;
+  if (user.mustChangePassword && path !== '/force-password-change') {
+    return <Navigate to="/force-password-change" replace />;
+  }
+  if (!user.mustChangePassword && path === '/force-password-change') {
+    return <Navigate to="/" replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
@@ -67,6 +77,15 @@ export default function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/accept-invitation/:token" element={<AcceptInvitation />} />
+
+      <Route
+        path="/force-password-change"
+        element={
+          <PrivateRoute>
+            <ForcePasswordChange />
+          </PrivateRoute>
+        }
+      />
 
       {/* Grants - list and detail are public */}
       <Route path="/grants" element={<Layout />}>
