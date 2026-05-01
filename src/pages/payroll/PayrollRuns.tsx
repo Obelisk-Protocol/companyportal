@@ -8,7 +8,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Modal from '../../components/ui/Modal';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '../../components/ui/Table';
-import { Plus, Calendar, Wallet } from 'lucide-react';
+import { Plus, Calendar, Wallet, Trash2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
@@ -22,6 +22,7 @@ export default function PayrollRuns() {
     notes: '',
     paymentDate: '' as string,
   });
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
 
   const { data: payrollRuns, isLoading } = useQuery({
     queryKey: ['payroll-runs'],
@@ -45,6 +46,20 @@ export default function PayrollRuns() {
       toast.error(error instanceof Error ? error.message : 'Failed to create payroll run');
     },
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: (runId: string) => api.delete<{ ok: boolean }>(`/payroll/runs/${runId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['payroll-runs'] });
+      toast.success('Payroll run deleted');
+      setDeleteTarget(null);
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : 'Failed to delete payroll run');
+    },
+  });
+
+  const canDeleteRun = (status: string) => status === 'draft' || status === 'calculated';
 
   return (
     <motion.div
@@ -79,6 +94,7 @@ export default function PayrollRuns() {
                   <TableHead>Total Net</TableHead>
                   <TableHead>PPh 21</TableHead>
                   <TableHead>BPJS</TableHead>
+                  <TableHead className="w-[1%] whitespace-nowrap text-right">Actions</TableHead>
                 </TableHeader>
                 <TableBody>
                   {payrollRuns?.map((run) => (
@@ -115,6 +131,34 @@ export default function PayrollRuns() {
                           ? formatRupiah(parseFloat(run.totalBpjsEmployee) + parseFloat(run.totalBpjsEmployer || 0))
                           : '-'}
                       </TableCell>
+                      <TableCell className="text-right">
+                        <div
+                          className="inline-flex justify-end"
+                          onClick={(e) => e.stopPropagation()}
+                          onKeyDown={(e) => e.stopPropagation()}
+                          role="presentation"
+                        >
+                          {canDeleteRun(run.status) ? (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-500/10"
+                              title="Delete draft or calculated run"
+                              onClick={() =>
+                                setDeleteTarget({
+                                  id: run.id,
+                                  label: `${getIndonesianMonth(run.periodMonth)} ${run.periodYear}`,
+                                })
+                              }
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          ) : (
+                            <span className="text-on-surface-variant text-sm">—</span>
+                          )}
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -138,10 +182,28 @@ export default function PayrollRuns() {
                         {getIndonesianMonth(run.periodMonth)} {run.periodYear}
                       </p>
                       <p className="text-sm text-on-surface-variant">{run.notes || 'Monthly payroll'}</p>
-                      <div className="mt-2">
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
                         <span className={cn('badge', getStatusBadgeClass(run.status))}>
                           {getStatusLabel(run.status)}
                         </span>
+                        {canDeleteRun(run.status) && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="border-red-500/40 text-red-600 hover:bg-red-500/10"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteTarget({
+                                id: run.id,
+                                label: `${getIndonesianMonth(run.periodMonth)} ${run.periodYear}`,
+                              });
+                            }}
+                          >
+                            <Trash2 className="h-3.5 w-3.5 mr-1" />
+                            Delete
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -168,6 +230,35 @@ export default function PayrollRuns() {
           </div>
         )}
       </Card>
+
+      <Modal
+        isOpen={!!deleteTarget}
+        onClose={() => !deleteMutation.isPending && setDeleteTarget(null)}
+        title="Delete payroll run?"
+      >
+        {deleteTarget && (
+          <div className="space-y-4">
+            <p className="text-sm text-on-surface-variant">
+              This removes the run for <span className="font-medium text-[var(--text-primary)]">{deleteTarget.label}</span>{' '}
+              and all generated payslips. Linked expenses are set back to approved (not tied to a payslip). Approved or
+              paid runs cannot be deleted here.
+            </p>
+            <div className="flex justify-end gap-3 pt-2">
+              <Button type="button" variant="outline" onClick={() => setDeleteTarget(null)} disabled={deleteMutation.isPending}>
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="danger"
+                isLoading={deleteMutation.isPending}
+                onClick={() => deleteMutation.mutate(deleteTarget.id)}
+              >
+                Delete run
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
 
       {/* Create Modal */}
       <Modal

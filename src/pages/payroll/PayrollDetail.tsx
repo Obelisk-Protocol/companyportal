@@ -5,8 +5,9 @@ import { api } from '../../lib/api';
 import { formatRupiah, getIndonesianMonth, getStatusBadgeClass, getStatusLabel, cn } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
+import Modal from '../../components/ui/Modal';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '../../components/ui/Table';
-import { ArrowLeft, Calculator, CheckCircle, CreditCard, FileText, Download } from 'lucide-react';
+import { ArrowLeft, Calculator, CheckCircle, CreditCard, FileText, Download, Trash2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
@@ -50,6 +51,7 @@ export default function PayrollDetail() {
   });
 
   const [employeeForm, setEmployeeForm] = useState<Record<string, EmployeeFormRow>>({});
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     setEmployeeForm({});
@@ -141,6 +143,19 @@ export default function PayrollDetail() {
     },
     onError: (error) => {
       toast.error(error instanceof Error ? error.message : 'Failed to mark payroll as paid');
+    },
+  });
+
+  const deleteRunMutation = useMutation({
+    mutationFn: () => api.delete<{ ok: boolean }>(`/payroll/runs/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['payroll-runs'] });
+      toast.success('Payroll run deleted');
+      setShowDeleteConfirm(false);
+      navigate('/payroll');
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : 'Failed to delete payroll run');
     },
   });
 
@@ -374,8 +389,41 @@ export default function PayrollDetail() {
               Mark as Paid
             </Button>
           )}
+          {canEditPayrollInputs && (
+            <Button type="button" variant="outline" onClick={() => setShowDeleteConfirm(true)}>
+              <Trash2 className="w-4 h-4 mr-2 text-red-600" />
+              Delete run
+            </Button>
+          )}
         </div>
       </Card>
+
+      <Modal
+        isOpen={showDeleteConfirm}
+        onClose={() => !deleteRunMutation.isPending && setShowDeleteConfirm(false)}
+        title="Delete this payroll run?"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-neutral-500">
+            This removes all payslips for {getIndonesianMonth(payrollRun.periodMonth)} {payrollRun.periodYear} and sets
+            linked expenses back to approved. You can create a new run for the same month afterward with updated company
+            branding and rules.
+          </p>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button type="button" variant="outline" onClick={() => setShowDeleteConfirm(false)} disabled={deleteRunMutation.isPending}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="danger"
+              isLoading={deleteRunMutation.isPending}
+              onClick={() => deleteRunMutation.mutate()}
+            >
+              Delete run
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Payslips Table */}
       <Card className="p-6">
@@ -385,6 +433,7 @@ export default function PayrollDetail() {
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white"></div>
           </div>
         ) : payslips && payslips.length > 0 ? (
+          <>
           <Table>
             <TableHeader>
               <TableHead>Employee</TableHead>
@@ -405,9 +454,18 @@ export default function PayrollDetail() {
                   parseFloat(payslip.tunjanganJabatan || 0) +
                   parseFloat(payslip.tunjanganLainnya || 0);
                 const bpjsEmployee =
-                  parseFloat(payslip.bpjsKesehatanEmployee) +
-                  parseFloat(payslip.bpjsJhtEmployee) +
-                  parseFloat(payslip.bpjsJpEmployee);
+                  parseFloat(payslip.bpjsKesehatanEmployee || 0) +
+                  parseFloat(payslip.bpjsJhtEmployee || 0) +
+                  parseFloat(payslip.bpjsJpEmployee || 0);
+                const isEmploymentContract =
+                  String(employee?.compensationCategory ?? '')
+                    .trim()
+                    .toLowerCase() === 'employment_contract';
+                /** Payslips calculated before switching to employment_contract can still store BPJS; show contract rules in UI. */
+                const displayNet =
+                  isEmploymentContract && bpjsEmployee > 0
+                    ? parseFloat(payslip.netSalary) + bpjsEmployee
+                    : parseFloat(payslip.netSalary);
 
                 return (
                   <TableRow key={payslip.id}>
@@ -419,10 +477,18 @@ export default function PayrollDetail() {
                     </TableCell>
                     <TableCell>{formatRupiah(parseFloat(payslip.gajiPokok))}</TableCell>
                     <TableCell>{formatRupiah(tunjangan)}</TableCell>
-                    <TableCell className="text-neutral-400">-{formatRupiah(bpjsEmployee)}</TableCell>
+                    <TableCell className="text-neutral-400">
+                      {isEmploymentContract ? (
+                        <span className="text-neutral-500" title="Employment contract — no BPJS on payslip. Recalculate payroll to refresh stored payslip lines.">
+                          —
+                        </span>
+                      ) : (
+                        <>-{formatRupiah(bpjsEmployee)}</>
+                      )}
+                    </TableCell>
                     <TableCell className="text-neutral-400">-{formatRupiah(parseFloat(payslip.pph21))}</TableCell>
                     <TableCell className="font-semibold text-[var(--text-primary)]">
-                      {formatRupiah(parseFloat(payslip.netSalary))}
+                      {formatRupiah(displayNet)}
                     </TableCell>
                     <TableCell>
                       <Button
@@ -438,6 +504,23 @@ export default function PayrollDetail() {
               })}
             </TableBody>
           </Table>
+          {payslips.some((row: any) => {
+            const ec =
+              String(row.employee?.compensationCategory ?? '')
+                .trim()
+                .toLowerCase() === 'employment_contract';
+            const bpjs =
+              parseFloat(row.payslip?.bpjsKesehatanEmployee || 0) +
+              parseFloat(row.payslip?.bpjsJhtEmployee || 0) +
+              parseFloat(row.payslip?.bpjsJpEmployee || 0);
+            return ec && bpjs > 0;
+          }) && (
+            <p className="text-xs text-neutral-500 mt-3 px-1">
+              Employment-contract rows: BPJS shows as &quot;—&quot; and take-home is adjusted here until you use
+              Recalculate payroll so stored payslips and PPh 21 match the new category.
+            </p>
+          )}
+          </>
         ) : (
           <div className="text-center py-12">
             <FileText className="w-12 h-12 text-neutral-700 mx-auto mb-4" />
