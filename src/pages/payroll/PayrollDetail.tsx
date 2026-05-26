@@ -461,9 +461,9 @@ export default function PayrollDetail() {
           <Table>
             <TableHeader>
               <TableHead>Employee</TableHead>
-              <TableHead title="Monthly salary rate before holiday/sick adjustments">Monthly rate</TableHead>
-              <TableHead title="Pay after holiday and sick day deductions, before BPJS and tax">Gross pay</TableHead>
-              <TableHead title="Extra pay for public holidays worked, sick day deductions">Adjustments</TableHead>
+              <TableHead>Base Salary</TableHead>
+              <TableHead>Public Holiday Pay</TableHead>
+              <TableHead>Allowances</TableHead>
               <TableHead>BPJS</TableHead>
               <TableHead>PPh 21</TableHead>
               <TableHead>Take Home Pay</TableHead>
@@ -476,14 +476,12 @@ export default function PayrollDetail() {
                   contractualGajiPokok != null && !Number.isNaN(contractualGajiPokok)
                     ? contractualGajiPokok
                     : parseFloat(payslip.gajiPokok);
-                const grossPay = parseFloat(payslip.grossSalary);
                 const tunjangan =
                   parseFloat(payslip.tunjanganTransport || 0) +
                   parseFloat(payslip.tunjanganMakan || 0) +
                   parseFloat(payslip.tunjanganKomunikasi || 0) +
                   parseFloat(payslip.tunjanganJabatan || 0) +
                   parseFloat(payslip.tunjanganLainnya || 0);
-                const fixedMonthly = monthlyRate + tunjangan;
                 const holidayExtra = parseFloat(payslip.overtime || '0');
                 const dailyRate = parseFloat(payslip.payrollDailyRate || '0');
                 const sickDays = parseFloat(String(payslip.sickDays ?? '0'));
@@ -514,39 +512,31 @@ export default function PayrollDetail() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      {formatRupiah(monthlyRate)}
+                      {formatRupiah(monthlyRate + tunjangan)}
+                      {sickDeduction > 0 && (
+                        <span className="block text-xs text-neutral-500" title={payslip.deductionNotes || undefined}>
+                          −{formatRupiah(sickDeduction)} sick ({sickDays} day{sickDays === 1 ? '' : 's'})
+                        </span>
+                      )}
                       {salaryOutOfSync && (
                         <span className="ml-1 text-xs text-amber-600 dark:text-amber-400" title="Recalculate to update stored payslip">
                           *
                         </span>
                       )}
                     </TableCell>
-                    <TableCell className="font-medium text-[var(--text-primary)]">
-                      {formatRupiah(grossPay)}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {holidayExtra > 0 || sickDeduction > 0 ? (
-                        <span title={payslip.deductionNotes || undefined}>
-                          {holidayExtra > 0 && (
-                            <span className="text-emerald-600 dark:text-emerald-400">
-                              +{formatRupiah(holidayExtra)}
-                              <span className="block text-xs text-neutral-500">
-                                {phWorked} holiday{phWorked === 1 ? '' : 's'} worked
-                              </span>
-                            </span>
-                          )}
-                          {sickDeduction > 0 && (
-                            <span className="text-neutral-500">
-                              {holidayExtra > 0 && ' '}
-                              −{formatRupiah(sickDeduction)}
-                              <span className="block text-xs">{sickDays} sick</span>
-                            </span>
-                          )}
-                        </span>
+                    <TableCell className="text-emerald-600 dark:text-emerald-400">
+                      {holidayExtra > 0 ? (
+                        <>
+                          +{formatRupiah(holidayExtra)}
+                          <span className="block text-xs text-neutral-500">
+                            {phWorked} day{phWorked === 1 ? '' : 's'} worked
+                          </span>
+                        </>
                       ) : (
-                        '—'
+                        <span className="text-neutral-400">—</span>
                       )}
                     </TableCell>
+                    <TableCell>{formatRupiah(tunjangan)}</TableCell>
                     <TableCell className="text-neutral-400">
                       {isEmploymentContract ? (
                         <span className="text-neutral-500" title="Employment contract — no BPJS on payslip. Recalculate payroll to refresh stored payslip lines.">
