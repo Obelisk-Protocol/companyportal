@@ -232,12 +232,6 @@ export default function EmployeeDetail() {
 
   const openSalaryModal = () => {
     if (salary) {
-      const ed = salary.effectiveDate as string | undefined;
-      const effectiveDateStr = ed
-        ? ed.includes('T')
-          ? ed.split('T')[0]!
-          : ed
-        : new Date().toISOString().split('T')[0]!;
       setSalaryForm({
         gajiPokok: parseFloat(salary.gajiPokok) || 0,
         tunjanganTransport: parseFloat(salary.tunjanganTransport) || 0,
@@ -245,7 +239,7 @@ export default function EmployeeDetail() {
         tunjanganKomunikasi: parseFloat(salary.tunjanganKomunikasi) || 0,
         tunjanganJabatan: parseFloat(salary.tunjanganJabatan) || 0,
         tunjanganLainnya: parseFloat(salary.tunjanganLainnya) || 0,
-        effectiveDate: effectiveDateStr,
+        effectiveDate: new Date().toISOString().split('T')[0]!,
       });
     }
     setIsSalaryModalOpen(true);
