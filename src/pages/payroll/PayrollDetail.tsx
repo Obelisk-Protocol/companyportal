@@ -92,7 +92,7 @@ export default function PayrollDetail() {
         const next: Record<string, EmployeeFormRow> = {};
         for (const e of inputContext.employees) {
           const holidayWorked: Record<string, boolean> = {};
-          for (const h of inputContext.holidays) holidayWorked[h.date] = true;
+          for (const h of inputContext.holidays) holidayWorked[h.date] = false;
           next[e.id] = { sickDays: '0', holidayWorked };
         }
         return next;
@@ -261,10 +261,13 @@ export default function PayrollDetail() {
               Pay is based on a standard day of {inputContext?.standardWorkdayHours ?? 7.5} hours. Fixed salary and fixed
               allowances are spread across{' '}
               <span className="text-[var(--text-primary)]">{inputContext?.workWeekdaysInMonth ?? '—'}</span> Mon–Fri
-              weekdays in this month. <span className="font-medium text-[var(--text-primary)]">Check every holiday the employee worked</span>{' '}
-              (unchecked = one day’s pay deducted). Each sick day deducts one day’s pay. After changing any checkbox or
-              sick days, click <span className="font-medium text-[var(--text-primary)]">Recalculate payroll</span> below
-              — the payslip table will not update until you do.
+              weekdays in this month.{' '}
+              <span className="font-medium text-[var(--text-primary)]">
+                Check each public holiday the employee worked
+              </span>{' '}
+              — they receive an extra day&apos;s pay for each checked holiday. Unchecked holidays are normal days off
+              (no deduction). Each sick day deducts one day&apos;s pay. After changing checkboxes or sick days, click{' '}
+              <span className="font-medium text-[var(--text-primary)]">Recalculate payroll</span>.
             </p>
           </div>
           {inputContextLoading ? (
@@ -311,8 +314,8 @@ export default function PayrollDetail() {
                               className="inline-flex cursor-pointer justify-center"
                               title={
                                 worked
-                                  ? 'Worked this public holiday (no deduction for this day)'
-                                  : 'Did not work — one day’s pay deducted'
+                                  ? 'Worked this public holiday — extra day’s pay added'
+                                  : 'Did not work — normal day off, no extra pay'
                               }
                             >
                               <input
@@ -460,7 +463,7 @@ export default function PayrollDetail() {
               <TableHead>Employee</TableHead>
               <TableHead title="Monthly salary rate before holiday/sick adjustments">Monthly rate</TableHead>
               <TableHead title="Pay after holiday and sick day deductions, before BPJS and tax">Gross pay</TableHead>
-              <TableHead>Adjustments</TableHead>
+              <TableHead title="Extra pay for public holidays worked, sick day deductions">Adjustments</TableHead>
               <TableHead>BPJS</TableHead>
               <TableHead>PPh 21</TableHead>
               <TableHead>Take Home Pay</TableHead>
@@ -481,9 +484,13 @@ export default function PayrollDetail() {
                   parseFloat(payslip.tunjanganJabatan || 0) +
                   parseFloat(payslip.tunjanganLainnya || 0);
                 const fixedMonthly = monthlyRate + tunjangan;
-                const dayDeductions = Math.max(0, Math.round(fixedMonthly - grossPay));
+                const holidayExtra = parseFloat(payslip.overtime || '0');
+                const dailyRate = parseFloat(payslip.payrollDailyRate || '0');
                 const sickDays = parseFloat(String(payslip.sickDays ?? '0'));
-                const phUnworked = parseFloat(String(payslip.publicHolidayUnworkedDays ?? '0'));
+                const sickDeduction = Math.round(dailyRate * sickDays);
+                const phWorked = Object.values(
+                  (payslip.publicHolidayAttendance as Record<string, boolean> | null) ?? {}
+                ).filter(Boolean).length;
                 const bpjsEmployee =
                   parseFloat(payslip.bpjsKesehatanEmployee || 0) +
                   parseFloat(payslip.bpjsJhtEmployee || 0) +
@@ -517,15 +524,24 @@ export default function PayrollDetail() {
                     <TableCell className="font-medium text-[var(--text-primary)]">
                       {formatRupiah(grossPay)}
                     </TableCell>
-                    <TableCell className="text-sm text-neutral-500">
-                      {dayDeductions > 0 ? (
+                    <TableCell className="text-sm">
+                      {holidayExtra > 0 || sickDeduction > 0 ? (
                         <span title={payslip.deductionNotes || undefined}>
-                          −{formatRupiah(dayDeductions)}
-                          <span className="block text-xs">
-                            {phUnworked > 0 && `${phUnworked} holiday${phUnworked === 1 ? '' : 's'}`}
-                            {phUnworked > 0 && sickDays > 0 && ', '}
-                            {sickDays > 0 && `${sickDays} sick`}
-                          </span>
+                          {holidayExtra > 0 && (
+                            <span className="text-emerald-600 dark:text-emerald-400">
+                              +{formatRupiah(holidayExtra)}
+                              <span className="block text-xs text-neutral-500">
+                                {phWorked} holiday{phWorked === 1 ? '' : 's'} worked
+                              </span>
+                            </span>
+                          )}
+                          {sickDeduction > 0 && (
+                            <span className="text-neutral-500">
+                              {holidayExtra > 0 && ' '}
+                              −{formatRupiah(sickDeduction)}
+                              <span className="block text-xs">{sickDays} sick</span>
+                            </span>
+                          )}
                         </span>
                       ) : (
                         '—'
