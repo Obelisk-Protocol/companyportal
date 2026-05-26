@@ -76,7 +76,7 @@ export default function PayrollDetail() {
           const ph = item?.payslip?.publicHolidayAttendance;
           const holidayWorked: Record<string, boolean> = {};
           for (const h of inputContext.holidays) {
-            holidayWorked[h.date] = ph?.[h.date] !== false;
+            holidayWorked[h.date] = ph?.[h.date] === true;
           }
           const sickRaw = item?.payslip?.sickDays;
           const sickDays =
@@ -122,6 +122,7 @@ export default function PayrollDetail() {
       queryClient.invalidateQueries({ queryKey: ['payroll-run', id] });
       queryClient.invalidateQueries({ queryKey: ['payroll-payslips', id] });
       queryClient.invalidateQueries({ queryKey: ['payroll-input-context', id] });
+      setEmployeeForm({});
       toast.success('Payroll calculated successfully');
     },
     onError: (error) => {
@@ -260,9 +261,10 @@ export default function PayrollDetail() {
               Pay is based on a standard day of {inputContext?.standardWorkdayHours ?? 7.5} hours. Fixed salary and fixed
               allowances are spread across{' '}
               <span className="text-[var(--text-primary)]">{inputContext?.workWeekdaysInMonth ?? '—'}</span> Mon–Fri
-              weekdays in this month. Check a public holiday only if the employee worked that day (otherwise one day’s
-              pay is deducted). Each sick day deducts one day’s pay. Calculation runs before BPJS and tax. You can
-              recalculate while the run is in calculated status (before approval).
+              weekdays in this month. <span className="font-medium text-[var(--text-primary)]">Check every holiday the employee worked</span>{' '}
+              (unchecked = one day’s pay deducted). Each sick day deducts one day’s pay. After changing any checkbox or
+              sick days, click <span className="font-medium text-[var(--text-primary)]">Recalculate payroll</span> below
+              — the payslip table will not update until you do.
             </p>
           </div>
           {inputContextLoading ? (
@@ -456,8 +458,9 @@ export default function PayrollDetail() {
           <Table>
             <TableHeader>
               <TableHead>Employee</TableHead>
-              <TableHead>Base Salary</TableHead>
-              <TableHead>Allowances</TableHead>
+              <TableHead title="Monthly salary rate before holiday/sick adjustments">Monthly rate</TableHead>
+              <TableHead title="Pay after holiday and sick day deductions, before BPJS and tax">Gross pay</TableHead>
+              <TableHead>Adjustments</TableHead>
               <TableHead>BPJS</TableHead>
               <TableHead>PPh 21</TableHead>
               <TableHead>Take Home Pay</TableHead>
@@ -466,16 +469,21 @@ export default function PayrollDetail() {
             <TableBody>
               {payslips.map((item: any) => {
                 const { payslip, employee, contractualGajiPokok, salaryOutOfSync } = item;
-                const baseSalary =
+                const monthlyRate =
                   contractualGajiPokok != null && !Number.isNaN(contractualGajiPokok)
                     ? contractualGajiPokok
                     : parseFloat(payslip.gajiPokok);
+                const grossPay = parseFloat(payslip.grossSalary);
                 const tunjangan =
                   parseFloat(payslip.tunjanganTransport || 0) +
                   parseFloat(payslip.tunjanganMakan || 0) +
                   parseFloat(payslip.tunjanganKomunikasi || 0) +
                   parseFloat(payslip.tunjanganJabatan || 0) +
                   parseFloat(payslip.tunjanganLainnya || 0);
+                const fixedMonthly = monthlyRate + tunjangan;
+                const dayDeductions = Math.max(0, Math.round(fixedMonthly - grossPay));
+                const sickDays = parseFloat(String(payslip.sickDays ?? '0'));
+                const phUnworked = parseFloat(String(payslip.publicHolidayUnworkedDays ?? '0'));
                 const bpjsEmployee =
                   parseFloat(payslip.bpjsKesehatanEmployee || 0) +
                   parseFloat(payslip.bpjsJhtEmployee || 0) +
@@ -499,14 +507,30 @@ export default function PayrollDetail() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      {formatRupiah(baseSalary)}
+                      {formatRupiah(monthlyRate)}
                       {salaryOutOfSync && (
                         <span className="ml-1 text-xs text-amber-600 dark:text-amber-400" title="Recalculate to update stored payslip">
                           *
                         </span>
                       )}
                     </TableCell>
-                    <TableCell>{formatRupiah(tunjangan)}</TableCell>
+                    <TableCell className="font-medium text-[var(--text-primary)]">
+                      {formatRupiah(grossPay)}
+                    </TableCell>
+                    <TableCell className="text-sm text-neutral-500">
+                      {dayDeductions > 0 ? (
+                        <span title={payslip.deductionNotes || undefined}>
+                          −{formatRupiah(dayDeductions)}
+                          <span className="block text-xs">
+                            {phUnworked > 0 && `${phUnworked} holiday${phUnworked === 1 ? '' : 's'}`}
+                            {phUnworked > 0 && sickDays > 0 && ', '}
+                            {sickDays > 0 && `${sickDays} sick`}
+                          </span>
+                        </span>
+                      ) : (
+                        '—'
+                      )}
+                    </TableCell>
                     <TableCell className="text-neutral-400">
                       {isEmploymentContract ? (
                         <span className="text-neutral-500" title="Employment contract — no BPJS on payslip. Recalculate payroll to refresh stored payslip lines.">
