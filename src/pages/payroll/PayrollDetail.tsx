@@ -24,7 +24,12 @@ type PayrollInputContext = {
 
 type EmployeeFormRow = { sickDays: string; holidayWorked: Record<string, boolean> };
 
-type PayslipRow = { payslip: { sickDays?: string; publicHolidayAttendance?: Record<string, boolean> }; employee: { id: string } };
+type PayslipRow = {
+  payslip: { sickDays?: string; publicHolidayAttendance?: Record<string, boolean> };
+  employee: { id: string };
+  contractualGajiPokok?: number | null;
+  salaryOutOfSync?: boolean;
+};
 
 export default function PayrollDetail() {
   const { id } = useParams();
@@ -71,7 +76,7 @@ export default function PayrollDetail() {
           const ph = item?.payslip?.publicHolidayAttendance;
           const holidayWorked: Record<string, boolean> = {};
           for (const h of inputContext.holidays) {
-            holidayWorked[h.date] = ph?.[h.date] === true;
+            holidayWorked[h.date] = ph?.[h.date] !== false;
           }
           const sickRaw = item?.payslip?.sickDays;
           const sickDays =
@@ -87,7 +92,7 @@ export default function PayrollDetail() {
         const next: Record<string, EmployeeFormRow> = {};
         for (const e of inputContext.employees) {
           const holidayWorked: Record<string, boolean> = {};
-          for (const h of inputContext.holidays) holidayWorked[h.date] = false;
+          for (const h of inputContext.holidays) holidayWorked[h.date] = true;
           next[e.id] = { sickDays: '0', holidayWorked };
         }
         return next;
@@ -366,6 +371,12 @@ export default function PayrollDetail() {
 
       {/* Actions */}
       <Card className="p-4">
+        {canEditPayrollInputs && payslips?.some((p) => p.salaryOutOfSync) && (
+          <p className="text-sm text-amber-700 dark:text-amber-400 mb-3 max-w-3xl rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 px-3 py-2">
+            Employee salary changed since this run was last calculated. Click{' '}
+            <span className="font-medium">Recalculate payroll</span> to refresh payslip amounts and take-home pay.
+          </p>
+        )}
         {canEditPayrollInputs && (
           <p className="text-sm text-neutral-500 mb-3 max-w-3xl">
             Payslip amounts are stored when you calculate. After changing an employee&apos;s salary in Employees, use{' '}
@@ -454,7 +465,11 @@ export default function PayrollDetail() {
             </TableHeader>
             <TableBody>
               {payslips.map((item: any) => {
-                const { payslip, employee } = item;
+                const { payslip, employee, contractualGajiPokok, salaryOutOfSync } = item;
+                const baseSalary =
+                  contractualGajiPokok != null && !Number.isNaN(contractualGajiPokok)
+                    ? contractualGajiPokok
+                    : parseFloat(payslip.gajiPokok);
                 const tunjangan =
                   parseFloat(payslip.tunjanganTransport || 0) +
                   parseFloat(payslip.tunjanganMakan || 0) +
@@ -483,7 +498,14 @@ export default function PayrollDetail() {
                         <p className="text-sm text-neutral-500">{employee.employeeNumber}</p>
                       </div>
                     </TableCell>
-                    <TableCell>{formatRupiah(parseFloat(payslip.gajiPokok))}</TableCell>
+                    <TableCell>
+                      {formatRupiah(baseSalary)}
+                      {salaryOutOfSync && (
+                        <span className="ml-1 text-xs text-amber-600 dark:text-amber-400" title="Recalculate to update stored payslip">
+                          *
+                        </span>
+                      )}
+                    </TableCell>
                     <TableCell>{formatRupiah(tunjangan)}</TableCell>
                     <TableCell className="text-neutral-400">
                       {isEmploymentContract ? (
